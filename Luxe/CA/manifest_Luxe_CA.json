@@ -1,1 +1,13 @@
 
+{
+  "name": "Simple Bluetooth Speaker for MUSE LUXE for Radio Maria CANADA",
+  "version": "1.0",
+  "builds": [
+    {
+      "chipFamily": "ESP32",
+      "parts": [
+        { "path": "./radiomaria13_ca_en_it_es.bin", "offset": 0}
+      ]
+    }
+  ]
+}
