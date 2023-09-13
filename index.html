@@ -131,117 +131,168 @@ img{
 
 
 
-
-
-
 <body>
-<header>
-  <a href="https://raspiaudio.com/"><img src="./images/Logo_raspiaudio_V3-768x170.png" alt="logo" class="logo"></a>    </header>
-<div class="content">
-</header>
-  <h1 class="logo">RASPIAUDIO Open Source App Store<br> </h1>
+    <header>
+        <a href="https://raspiaudio.com/"><img src="./images/Logo_raspiaudio_V3-768x170.png" alt="logo" class="logo"></a>
+    </header>
+    <div class="content">
+        <h1 class="logo">RASPIAUDIO Open Source App Store<br></h1>
 
+        <table align="center">
+            <tr>
+                <td>
+                    <label>Choose a device:</label>
+                </td>
+                <td>
+                    <label>Choose an application:</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="device-form">
+                        <img src="./Luxe/Luxe.png" alt="Luxe">
+                        <input type="radio" name="device" value="Luxe" checked onclick="loadContent()"> Luxe
+                    </div>
+                    <div class="device-form">
+                        <img src="./Mncast/Mncast.png" alt="MnCast">
+                        <input type="radio" name="device" value="Mncast" onclick="loadContent()"> Mn Cast
+                    </div>
+                    <div class="device-form">
+                        <img src="./Proto/Proto.png" alt="Proto">
+                        <input type="radio" name="device" value="Proto" onclick="loadContent()"> Proto
+                    </div>
+                    <div class="device-form">
+                        <img src="./Moduloxbrain/Moduloxbrain.png" alt="Moduloxbrain">
+                        <input type="radio" name="device" value="Moduloxbrain" onclick="loadContent()"> Modulox Brain
+                    </div>
+                </td>
+                <td>
+                    <div class="device-form">
+                        <input type="radio" name="application" value="Bluetooth" onclick="loadContent()"> Bluetooth
+                    </div>
+                    <div class="device-form">
+                        <input type="radio" name="application" value="Radio" onclick="loadContent()"> Radio
+                    </div>
+                    <div class="device-form">
+                        <input type="radio" name="application" value="Squeezelite" onclick="loadContent()"> Squeezelite
+                    </div>
+                    <div class="device-form">
+                        <input type="radio" name="application" value="Homeassistant" onclick="loadContent()"> Home Assistant
+                    </div>
+                    <div class="device-form">
+                        <input type="radio" name="moduloxApp" value="Sampler" onclick="loadContent()"> Sampler
+                    </div>
+                    <div class="device-form">
+                        <input type="radio" name="moduloxApp" value="VA" onclick="loadContent()"> VA
+                    </div>
+                    <div class="device-form">
+                        <input type="radio" name="moduloxApp" value="FM" onclick="loadContent()"> FM
+                    </div>
+                    <div class="device-form">
+                        <input type="radio" name="moduloxApp" value="Granular" onclick="loadContent()"> Granular
+                    </div>
+                </td>
+            </tr>
+        </table>
 
-  <table align="center">
-    <tr>
-      <td>
-        <label>Choose a device:</label>
-      </td>
-      <td>
-        <label>Choose an application:</label>
-      </td>
-    </tr>
-    <tr>
-      <td >
-        <div class="device-form">
-          <img src="./Luxe/Luxe.png" alt="Luxe">
-          <input type="radio" name="device" value="Luxe" checked onclick="loadContent()"> Luxe
+        <div id="descriptif"></div>
+
+        <div id="selection">
+            Selected Device : <span id="device"></span><br>
+            Selected Application : <span id="application"></span>
         </div>
-        <div class="device-form">
-          <img src="./Mncast/Mncast.png" alt="MnCast">
-          <input type="radio" name="device" value="Mncast" onclick="loadContent()"> Mn Cast
-        </div>
-        <div class="device-form">
-          <img src="./Proto/Proto.png" alt="Proto">
-          <input type="radio" name="device" value="Proto" onclick="loadContent()"> Proto
-        </div>
-      </td>
-      <td>
-        <div class="device-form">
-          <input type="radio" name="application" value="Bluetooth" onclick="loadContent()"> Bluetooth
-        </div>
-        <div class="device-form">
-          <input type="radio" name="application" value="Radio" onclick="loadContent()"> Radio
-        </div>
-        <div class="device-form">
-          <input type="radio" name="application" value="Squeezelite" onclick="loadContent()"> Squeezelite
-        </div>
-        <div class="device-form">
-          <input type="radio" name="application" value="Homeassistant" onclick="loadContent()"> Home Assistant
-        </div>
-      </td>
-    </tr>
-  </table>
 
-  <div id="descriptif"></div>
+        <p class="button-row" align="center">
+            <esp-web-install-button class="upload-button"></esp-web-install-button>
 
-  <div id="selection">
-    Selected Device : <span id="device"></span><br>
-    Selected Application : <span id="application"></span>
-  </div>
+        </p>
 
-  <p class="button-row" align="center">
-    <esp-web-install-button class="upload-button"></esp-web-install-button>
+        <script type="module" src="https://unpkg.com/esp-web-tools@9.2.1/dist/web/install-button.js?module"></script>
+        <script>
+            function loadContent() {
+                hideAllApplicationOptions();
 
+                var device = document.querySelector('input[name="device"]:checked').value;
+                var application;
+                if (device === 'Moduloxbrain') {
+                    displayModuloxOptions();
+                    application = document.querySelector('input[name="moduloxApp"]:checked').value;
+                } else {
+                    displayGeneralOptions();
+                    application = document.querySelector('input[name="application"]:checked').value;
+                }
 
+                document.getElementById("device").innerHTML = device;
+                document.getElementById("application").innerHTML = application;
 
-
-    <script type="module" src="https://unpkg.com/esp-web-tools@9.2.1/dist/web/install-button.js?module"></script>
-
-    <script>
-
-    function loadContent() {
-      var device = document.querySelector('input[name = "device"]:checked').value;
-      var application = document.querySelector('input[name = "application"]:checked').value;
-
-      document.getElementById("device").innerHTML = device;
-      document.getElementById("application").innerHTML = application;
-
-      fetch(`./${device}/${application}/${application}.html`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        } else {
-          const button = document.querySelector('esp-web-install-button');
-          button.manifest = `./${device}/${application}/manifest_${device}_${application}.json`;
-          button.classList.remove('invisible');
-          button.style.visibility = "visible";
-          return response.text()
-        }
-      })
-      .then(data => {
-        document.getElementById('descriptif').innerHTML = data;
-        // Enlever le bouton upload-button si le fichier n'est pas trouvé
+                // ... rest of your fetch code ...
+				      fetch(`./${device}/${application}/${application}.html`)
+					  .then(response => {
+						if (!response.ok) {
+						  throw new Error(`HTTP error! status: ${response.status}`);
+						} else {
+						  const button = document.querySelector('esp-web-install-button');
+						  button.manifest = `./${device}/${application}/manifest_${device}_${application}.json`;
+						  button.classList.remove('invisible');
+						  button.style.visibility = "visible";
+						  return response.text()
+						}
+					  })
+					  .then(data => {
+						document.getElementById('descriptif').innerHTML = data;
+						// Enlever le bouton upload-button si le fichier n'est pas trouvé
 
 
-      })
-      .catch(error => {
-        console.log(error);
-        const button = document.querySelector('esp-web-install-button');
-        document.getElementById('descriptif').innerHTML = 'This project as not yet been ported for this device please let us know if you want it !';
+					  })
+					  .catch(error => {
+						console.log(error);
+						const button = document.querySelector('esp-web-install-button');
+						document.getElementById('descriptif').innerHTML = 'Coming soon! This project as not yet been ported for this device please let us know if you want it !';
 
-        button.style.visibility = "hidden";
-      });
-    }
-    </script>
+						button.style.visibility = "hidden";
+					  });
+            }
 
-    <footer>
-	<center>
-<p>Installer powered by <a href="https://esphome.github.io/esp-web-tools/">ESP Web Tools</a></p>
-<p>The Bluetooth and Radio App has been created by Raspiaudio.</p>
-<p>Squeezelite and ESP Home are not created by Raspiaudio.</p>
-<p>Source code of this site is <a href="https://github.com/RASPIAUDIO/raspiaudio.github.io">here</a></p>
-    </footer>
-  </body>
+            function hideAllApplicationOptions() {
+                let allApps = document.querySelectorAll('input[name="application"]');
+                allApps.forEach(app => {
+                    app.parentElement.style.display = 'none';
+                });
 
-  </html>
+                let allModuloxApps = document.querySelectorAll('input[name="moduloxApp"]');
+                allModuloxApps.forEach(app => {
+                    app.parentElement.style.display = 'none';
+                });
+            }
+
+            function displayGeneralOptions() {
+                let generalApps = document.querySelectorAll('input[name="application"]');
+                generalApps.forEach(app => {
+                    app.parentElement.style.display = 'block';
+                });
+            }
+
+            function displayModuloxOptions() {
+                let moduloxApps = document.querySelectorAll('input[name="moduloxApp"]');
+                moduloxApps.forEach(app => {
+                    app.parentElement.style.display = 'block';
+                });
+            }
+
+            window.onload = function () {
+                hideAllApplicationOptions();
+                displayGeneralOptions();
+            };
+        </script>
+
+        <footer>
+            <center>
+                <p>Installer powered by <a href="https://esphome.github.io/esp-web-tools/">ESP Web Tools</a></p>
+                <p>The Bluetooth and Radio App has been created by Raspiaudio.</p>
+                <p>Squeezelite and ESP Home are not created by Raspiaudio.</p>
+                <p>Source code of this site is <a href="https://github.com/RASPIAUDIO/raspiaudio.github.io">here</a></p>
+            </center>
+        </footer>
+    </div>
+</body>
+</html>
