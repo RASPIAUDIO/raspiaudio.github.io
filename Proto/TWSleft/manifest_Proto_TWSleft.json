@@ -1,0 +1,12 @@
+{
+  "name": "TWS_left for Muse Proto",
+  "version": "1.0",
+  "builds": [
+    {
+      "chipFamily": "ESP32",
+      "parts": [
+        { "path": "./proto_TWSleft.bin", "offset": 0}
+      ]
+    }
+  ]
+}
