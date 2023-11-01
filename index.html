@@ -38,7 +38,6 @@
     padding: 12px;
   }
 
-}
 h2 {
   margin-top: 2em;
 }
@@ -124,6 +123,8 @@ img{
     color: #58a6ff;
   }
 }
+
+
 </style>
 
 
@@ -179,6 +180,8 @@ img{
                     <div class="device-form">
                         <input type="radio" name="application" value="Homeassistant" onclick="loadContent()"> Home Assistant
                     </div>
+
+                  
                     <div class="device-form">
                         <input type="radio" name="moduloxApp" value="Sampler" onclick="loadContent()"> Sampler
                     </div>
@@ -190,6 +193,14 @@ img{
                     </div>
                     <div class="device-form">
                         <input type="radio" name="moduloxApp" value="Granular" onclick="loadContent()"> Granular
+                    </div>
+                    
+                    <div class="device-form">
+                      <input type="radio" name="protoApp" value="TWSleft" onclick="loadContent()"> TWS audio Left
+                    </div>
+
+                    <div class="device-form">
+                      <input type="radio" name="protoApp" value="TWSright" onclick="loadContent()"> TWS audio Right
                     </div>
                 </td>
             </tr>
@@ -212,21 +223,28 @@ img{
 		<script type="module" src="https://unpkg.com/esp-web-tools@9.4.0/dist/web/install-button.js?module"></script>
 
         <script>
-            function loadContent() {
-                hideAllApplicationOptions();
+           function loadContent() {
+    hideAllApplicationOptions();
 
-                var device = document.querySelector('input[name="device"]:checked').value;
-                var application;
-                if (device === 'Moduloxbrain') {
-                    displayModuloxOptions();
-                    application = document.querySelector('input[name="moduloxApp"]:checked').value;
-                } else {
-                    displayGeneralOptions();
-                    application = document.querySelector('input[name="application"]:checked').value;
-                }
+    var device = document.querySelector('input[name="device"]:checked').value;
+    var application;
 
-                document.getElementById("device").innerHTML = device;
-                document.getElementById("application").innerHTML = application;
+    if (device === 'Moduloxbrain') {
+        displayModuloxOptions();
+        application = document.querySelector('input[name="moduloxApp"]:checked').value;
+    } else if (device === 'Proto') {
+        displayGeneralOptions();
+        displayProtoOptions();
+        application = document.querySelector('input[name="protoApp"]:checked').value;
+
+    } else {
+        displayGeneralOptions();
+        application = document.querySelector('input[name="application"]:checked').value;
+        document.querySelector('.proto-app').style.display = 'none';
+    }
+
+    document.getElementById("device").innerHTML = device;
+    document.getElementById("application").innerHTML = application;
 
                 // ... rest of your fetch code ...
 				      fetch(`./${device}/${application}/${application}.html`)
@@ -266,6 +284,12 @@ img{
                 allModuloxApps.forEach(app => {
                     app.parentElement.style.display = 'none';
                 });
+
+
+                let allProtoApps = document.querySelectorAll('input[name="protoApp"]');
+                allProtoApps.forEach(app => {
+                    app.parentElement.style.display = 'none';
+                });
             }
 
             function displayGeneralOptions() {
@@ -277,6 +301,13 @@ img{
 
             function displayModuloxOptions() {
                 let moduloxApps = document.querySelectorAll('input[name="moduloxApp"]');
+                moduloxApps.forEach(app => {
+                    app.parentElement.style.display = 'block';
+                });
+            }
+
+            function displayProtoOptions() {
+                let moduloxApps = document.querySelectorAll('input[name="protoApp"]');
                 moduloxApps.forEach(app => {
                     app.parentElement.style.display = 'block';
                 });
