@@ -23,7 +23,7 @@
     text-align: center;
   }
   footer{
- 
+
   }
   body {
     font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
@@ -181,7 +181,7 @@ img{
                         <input type="radio" name="application" value="Homeassistant" onclick="loadContent()"> Home Assistant
                     </div>
 
-                  
+
                     <div class="device-form">
                         <input type="radio" name="moduloxApp" value="Sampler" onclick="loadContent()"> Sampler
                     </div>
@@ -207,7 +207,7 @@ img{
                   <div class="device-form">
                       <input type="radio" name="protoApp" value="Homeassistant" onclick="loadContent()"> Home Assistant
                   </div>
-                    
+
                     <div class="device-form">
                       <input type="radio" name="protoApp" value="TWSleft" onclick="loadContent()"> TWS audio Left
                     </div>
@@ -232,13 +232,13 @@ img{
         </p>
 
         <!-- <script type="module" src="/js/install-button.js"></script>  -->
-		
+
 		<script type="module" src="https://unpkg.com/esp-web-tools@9.4.0/dist/web/install-button.js?module"></script>
 
         <script>
 function loadContent() {
     hideAllApplicationOptions();
-    
+
     var device = document.querySelector('input[name="device"]:checked').value;
     var applicationElement;
     var application = ''; // Initialize as an empty string
@@ -271,7 +271,7 @@ function loadContent() {
     document.getElementById("application").innerHTML = application;
 
 
-            
+
 				      fetch(`./${device}/${application}/${application}.html`)
 					  .then(response => {
 						if (!response.ok) {
@@ -343,7 +343,7 @@ function loadContent() {
         radio.checked = false;
     });
 }
-            
+
 
             window.onload = function () {
                 hideAllApplicationOptions();
