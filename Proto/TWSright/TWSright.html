@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>True Wireless Stereo with ESP32</title>
+</head>
+<body>
+    <h1>Experiment: True Wireless Stereo with ESP32</h1>
+
+    <p>This experiment demonstrates how to implement a True Wireless Stereo (TWS) system using two ESP32 modules and a Proto board.</p>
+
+    <h2>Materials Needed</h2>
+    <ul>
+        <li>2 ESP32 Modules</li>
+        <li>Proto board (<a href="https://raspiaudio.com/produit/muse-proto" target="_blank">Muse Proto</a>)</li>
+    </ul>
+
+    <h2>Instructions</h2>
+    <ol>
+        <li>
+            <p>Connect to the left ESP32 module using a standard Bluetooth connection.</p>
+        </li>
+        <li>
+            <p>Configure the left ESP32 to transmit the right channel data to the right ESP32 using the ESP-NOW protocol. ESP-NOW is preferred for its very low latency.</p>
+        </li>
+        <li>
+            <p>After a predetermined duration, synchronize the left and right ESP32 modules to play their respective audio samples simultaneously.</p>
+        </li>
+        <li>
+            <p>Continue the process of transmitting data and playing audio samples synchronously until the next sample.</p>
+        </li>
+    </ol>
+
+    <h2>References</h2>
+    <ul>
+        <li><a href="https://forum.raspiaudio.com/t/airpods-like-true-wireless-speaker-bluetooth-experiment-on-esp32-proto/848" target="_blank">Tutorial on Raspiaudio Forum</a></li>
+        <li><a href="https://github.com/RASPIAUDIO/LRAudioNow" target="_blank">GitHub Repository for LRAudioNow</a></li>
+    </ul>
+</body>
+</html>
