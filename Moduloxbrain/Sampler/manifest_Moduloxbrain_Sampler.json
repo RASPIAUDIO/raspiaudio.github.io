@@ -1,0 +1,12 @@
+{
+  "name": "Sampler for Modulox Brain",
+  "version": "1.0",
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "parts": [
+        { "path": "./sampler.bin", "offset": 0}
+      ]
+    }
+  ]
+}
