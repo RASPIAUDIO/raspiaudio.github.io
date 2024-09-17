@@ -1,0 +1,12 @@
+{
+  "name": "Radio for Muse Radio",
+  "version": "1.0",
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "parts": [
+        { "path": "./Radio.bin", "offset": 0}
+      ]
+    }
+  ]
+}
