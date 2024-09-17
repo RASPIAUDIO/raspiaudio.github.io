@@ -166,6 +166,10 @@ img{
                         <img src="./Moduloxbrain/Moduloxbrain.png" alt="Moduloxbrain">
                         <input type="radio" name="device" value="Moduloxbrain" onclick="loadContent()"> Modulox Brain
                     </div>
+                    <div class="device-form">
+                      <img src="./Radio/Radio.png" alt="Radio">
+                      <input type="radio" name="device" value="Radio" onclick="loadContent()"> Muse Radio
+                  </div>
                 </td>
                 <td>
                     <div class="device-form">
@@ -214,6 +218,7 @@ img{
                       <input type="radio" name="protoApp" value="Homeassistant" onclick="loadContent()"> Home Assistant
                   </div>
 
+
                     <div class="device-form">
                       <input type="radio" name="protoApp" value="TWSleft" onclick="loadContent()"> TWS audio Left
                     </div>
@@ -221,6 +226,19 @@ img{
                     <div class="device-form">
                       <input type="radio" name="protoApp" value="TWSright" onclick="loadContent()"> TWS audio Right
                     </div>
+
+
+                    <div class="device-form">
+                      <input type="radio" name=radioApp" value="Radio" onclick="loadContent()"> Radio
+                  </div>
+                  <div class="device-form">
+                      <input type="radio" name="radioApp" value="Squeezelite" onclick="loadContent()"> Squeezelite
+                  </div>
+                  <div class="device-form">
+                      <input type="radio" name="radioApp" value="Homeassistant" onclick="loadContent()"> Home Assistant
+                  </div>
+
+
                 </td>
             </tr>
         </table>
@@ -261,6 +279,15 @@ function loadContent() {
         // Uncheck modulox applications
         uncheckRadioButtons('moduloxApp');
         applicationElement = document.querySelector('input[name="protoApp"]:checked');
+
+      } else if (device === 'Radio') {
+        //displayGeneralOptions();
+        displayRadioOptions();
+        // Uncheck modulox applications
+        uncheckRadioButtons('application');
+        uncheckRadioButtons('radioApp');
+        applicationElement = document.querySelector('input[name="radioApp"]:checked');
+
     } else {
         displayGeneralOptions();
         // Uncheck modulox and proto applications
@@ -321,6 +348,12 @@ function loadContent() {
                 allProtoApps.forEach(app => {
                     app.parentElement.style.display = 'none';
                 });
+
+                let allRadioApps = document.querySelectorAll('input[name="radioApp"]');
+                allRadioApps.forEach(app => {
+                    app.parentElement.style.display = 'none';
+                });
+                
             }
 
             function displayGeneralOptions() {
@@ -332,6 +365,13 @@ function loadContent() {
 
             function displayModuloxOptions() {
                 let moduloxApps = document.querySelectorAll('input[name="moduloxApp"]');
+                moduloxApps.forEach(app => {
+                    app.parentElement.style.display = 'block';
+                });
+            }
+
+            function displayRadioOptions() {
+                let moduloxApps = document.querySelectorAll('input[name="radioApp"]');
                 moduloxApps.forEach(app => {
                     app.parentElement.style.display = 'block';
                 });
