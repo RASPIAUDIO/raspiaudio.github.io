@@ -282,16 +282,15 @@ function loadContent() {
     }
     else if (device === 'MuseRadio') {
     displayRadioOptions();
-    uncheckRadioButtons('application');
-    uncheckRadioButtons('radioApp');
-
+    uncheckRadioButtons('application'); // Garde uniquement les applications générales désactivées
     // Sélectionnez automatiquement la première option si aucune n'est sélectionnée
     if (!document.querySelector('input[name="radioApp"]:checked')) {
         document.querySelector('input[name="radioApp"]').checked = true;
     }
-
     applicationElement = document.querySelector('input[name="radioApp"]:checked');
-} else {
+
+    
+  } else {
         displayGeneralOptions();
         // Uncheck modulox and proto applications
         uncheckRadioButtons('moduloxApp');
