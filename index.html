@@ -1,413 +1,409 @@
-
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Squeezelite-ESP32 installer</title>
-  <meta
-  name="description"
-  content="Easily allow users to install Squeezelite-ESP32 firmware on the web."
-  />
-  <meta name="viewport" content="width=device-width" />
+  <title>RASPIAUDIO Open Source App Store</title>
+  <meta name="description" content="Easily allow users to install firmware on the web." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="color-scheme" content="dark light" />
+  <style>
+    /* CSS Styles */
+    body {
+      font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
+        Roboto, Ubuntu, sans-serif;
+      padding: 0;
+      margin: 0;
+      line-height: 1.6;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    header {
+      background-color: #89B4BA; /* Updated color */
+      padding: 10px 0; /* Reduced padding for smaller header */
+      text-align: center;
+    }
+    .logo img {
+      max-width: 20px; /* Further reduced to make the logo smaller */
+      height: auto;
+    }
+    .content {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+    h1 {
+      text-align: center; /* Centered the title */
+      margin-bottom: 30px;
+    }
+    .container {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .left-panel,
+    .right-panel {
+      width: 48%;
+    }
+    .selection-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .selection-card {
+      flex: 1 1 calc(50% - 15px);
+      max-width: calc(50% - 15px);
+      border: 1px solid #ccc; /* Thinner border */
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      display: flex;
+      align-items: center; /* Align items vertically center */
+      background-color: #fafafa;
+    }
+    /* Specific styles for device cards */
+    .device-card {
+      justify-content: flex-start; /* Align items to the start */
+    }
+    .device-card img {
+      width: 40px; /* Adjust image size as needed */
+      height: 40px;
+      object-fit: contain;
+      margin-right: 10px; /* Space between image and text */
+    }
+    .application-card {
+      justify-content: center; /* Center align for application cards */
+      flex-direction: column;
+    }
+    .selection-card.selected {
+      border-color: #89B4BA; /* Updated color */
+      box-shadow: 0 0 10px rgba(137, 180, 186, 0.5); /* Updated color */
+    }
+    #device-description,
+    #application-description {
+      margin-top: 20px;
+    }
+    .button-row {
+      margin-top: 20px;
+      text-align: center;
+    }
+    footer {
+      background-color: #89B4BA; /* Updated color */
+      padding: 5px 0; /* Further reduced padding */
+      text-align: center;
+      font-size: 0.8em; /* Smaller font size */
+      color: #fff;
+    }
+    footer a {
+      color: #fff;
+      text-decoration: underline;
+    }
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .left-panel,
+      .right-panel {
+        width: 100%;
+      }
+      .selection-card {
+        flex: 1 1 100%;
+        max-width: 100%;
+      }
+    }
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #333;
+        color: #fff;
+      }
+      header {
+        background-color: #444;
+      }
+      footer {
+        background-color: #444;
+      }
+      a {
+        color: #58a6ff;
+      }
+      .content {
+        background-color: #555;
+      }
+      .selection-card {
+        background-color: #666;
+        border-color: #888;
+      }
+      .selection-card.selected {
+        border-color: #58a6ff;
+        box-shadow: 0 0 10px rgba(88, 166, 255, 0.5);
+      }
+      .application-card {
+        background-color: #666;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="https://raspiaudio.com/">
+      <img src="./images/Logo_raspiaudio_V3-768x170.png" alt="RASPIAUDIO Logo" class="logo">
+    </a>
+  </header>
 
   <style>
-  header{
-    background-color: #6EC1E4;
-    border-top: 1px solid #ccc;
-    padding-top: 24px;
-    text-align: center;
-
-  }
-  .logo {
-    text-align: center;
-  }
-  footer{
-
-  }
-  body {
-    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
-    Roboto, Ubuntu, sans-serif;
-    padding: 0;
-    margin: 0;
-    line-height: 1.4;
-  }
-  .content {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 12px;
-  }
-
-h2 {
-  margin-top: 2em;
-}
-
-td {
-  height: 50px;
-  vertical-align: center;
-}
-h3 {
-  margin-top: 1.5em;
-}
-a {
-  color: #03a9f4;
-}
-.invisible {
-  visibility: hidden;
-}
-.hidden {
-  display: none;
-}
-esp-web-install-button[install-unsupported] {
-  visibility: inherit;
-}
-.content pre {
-  max-width: 100%;
-  overflow-y: scroll;
-}
-.footer {
-  margin-top: 24px;
-
-  padding-top: 24px;
-  text-align: center;
-}
-.footer .initiative {
-  font-style: italic;
-  margin-top: 16px;
-}
-table {
-  border-spacing:  0 15px;
-  display: table;
-
-}
-td, tr, th{
-  padding: 8px;
-  vertical-align:middle;
-
-}
-
-img{
-  width:150px;
-}
-
-
-.m{
-  grid-column: 1;
-  height: 220px;
-  width:300px;
-  text-align: center;
-}
-.s{
-  height: 200px;
-  width:300px;
-}
-
-.l{
-  width:180px;
-  height: 200px;
-
-}
-.explication{
-  width:auto;
-  height: auto;
-  padding: 20px;
-
-}
-
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: #333;
-    color: #fff;
-  }
-  a {
-    color: #58a6ff;
-  }
-}
-
-
-</style>
-
-
-</head>
-
-
-
-<body>
-    <header>
-        <a href="https://raspiaudio.com/"><img src="./images/Logo_raspiaudio_V3-768x170.png" alt="logo" class="logo"></a>
-    </header>
-    <div class="content">
-        <h1 class="logo">RASPIAUDIO Open Source App Store<br></h1>
-
-        <table align="center">
-            <tr>
-                <td>
-                    <label>Choose a device:</label>
-                </td>
-                <td>
-                    <label>Choose an application:</label>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="device-form">
-                        <img src="./Luxe/Luxe.png" alt="Luxe">
-                        <input type="radio" name="device" value="Luxe" checked onclick="loadContent()"> Luxe
-                    </div>
-                    <div class="device-form">
-                        <img src="./Mncast/Mncast.png" alt="MnCast">
-                        <input type="radio" name="device" value="Mncast" onclick="loadContent()"> Mn Cast
-                    </div>
-                    <div class="device-form">
-                        <img src="./Proto/Proto.png" alt="Proto">
-                        <input type="radio" name="device" value="Proto" onclick="loadContent()"> Proto
-                    </div>
-                    <div class="device-form">
-                        <img src="./Moduloxbrain/Moduloxbrain.png" alt="Moduloxbrain">
-                        <input type="radio" name="device" value="Moduloxbrain" onclick="loadContent()"> Modulox Brain
-                    </div>
-                    <div class="device-form">
-                      <img src="./MuseRadio/MuseRadio.png" alt="MuseRadio">
-                      <input type="radio" name="device" value="MuseRadio" onclick="loadContent()"> Muse Radio
-                    </div>
-                </td>
-                <td>
-                    <div class="device-form">
-                        <input type="radio" name="application" value="Bluetooth" onclick="loadContent()"> Bluetooth
-                    </div>
-                    <div class="device-form">
-                        <input type="radio" name="application" value="Radio" onclick="loadContent()"> Radio
-                    </div>
-                    <div class="device-form">
-                        <input type="radio" name="application" value="Squeezelite" onclick="loadContent()"> Squeezelite
-                    </div>
-                    <div class="device-form">
-                        <input type="radio" name="application" value="Homeassistant" onclick="loadContent()"> Home Assistant
-                    </div>
-
-
-                    <div class="device-form">
-                        <input type="radio" name="moduloxApp" value="Sampler" onclick="loadContent()"> Sampler
-                    </div>
-                    <div class="device-form">
-                        <input type="radio" name="moduloxApp" value="VA" onclick="loadContent()"> VA
-                    </div>
-                    <div class="device-form">
-                        <input type="radio" name="moduloxApp" value="FM" onclick="loadContent()"> FM
-                    </div>
-                    <div class="device-form">
-                        <input type="radio" name="moduloxApp" value="Granular" onclick="loadContent()"> Granular
-                    </div>
-		    <div class="device-form">
-                        <input type="radio" name="moduloxApp" value="Organ" onclick="loadContent()"> Organ
-                    </div>
-		    <div class="device-form">
-                        <input type="radio" name="moduloxApp" value="Modunoid" onclick="loadContent()"> Modunoid
-                    </div>
-
-                    <div class="device-form">
-                      <input type="radio" name="protoApp" value="Bluetooth" onclick="loadContent()"> Bluetooth
-                  </div>
-                  <div class="device-form">
-                      <input type="radio" name="protoApp" value="Radio" onclick="loadContent()"> Radio
-                  </div>
-                  <div class="device-form">
-                      <input type="radio" name="protoApp" value="Squeezelite" onclick="loadContent()"> Squeezelite
-                  </div>
-                  <div class="device-form">
-                      <input type="radio" name="protoApp" value="Homeassistant" onclick="loadContent()"> Home Assistant
-                  </div>
-
-
-                    <div class="device-form">
-                      <input type="radio" name="protoApp" value="TWSleft" onclick="loadContent()"> TWS audio Left
-                    </div>
-
-                    <div class="device-form">
-                      <input type="radio" name="protoApp" value="TWSright" onclick="loadContent()"> TWS audio Right
-                    </div>
-
-
-                    <div class="device-form">
-                      <input type="radio" name="radioApp" value="Radio" onclick="loadContent()"> Radio
-                  </div>
-                  <div class="device-form">
-                      <input type="radio" name="radioApp" value="Squeezelite" onclick="loadContent()"> Squeezelite
-                  </div>
-                  <div class="device-form">
-                      <input type="radio" name="radioApp" value="Homeassistant" onclick="loadContent()"> Home Assistant
-                  </div>
-
-
-                </td>
-            </tr>
-        </table>
-
-        <div id="descriptif"></div>
-
-        <div id="selection">
-            Selected Device : <span id="device"></span><br>
-            Selected Application : <span id="application"></span>
-        </div>
-
-        <p class="button-row" align="center">
-            <esp-web-install-button class="upload-button"></esp-web-install-button>
-
-        </p>
-
-        <!-- <script type="module" src="/js/install-button.js"></script>  -->
-
-		<script type="module" src="https://unpkg.com/esp-web-tools@9.4.0/dist/web/install-button.js?module"></script>
-
-        <script>
-function loadContent() {
-    hideAllApplicationOptions();
-
-    var device = document.querySelector('input[name="device"]:checked').value;
-    var applicationElement;
-    var application = ''; // Initialize as an empty string
-
-    if (device === 'Moduloxbrain') {
-        displayModuloxOptions();
-        // Uncheck general and proto applications
-        uncheckRadioButtons('application');
-        uncheckRadioButtons('protoApp');
-        applicationElement = document.querySelector('input[name="moduloxApp"]:checked');
-    } else if (device === 'Proto') {
-        //displayGeneralOptions();
-        displayProtoOptions();
-        // Uncheck modulox applications
-        uncheckRadioButtons('moduloxApp');
-        applicationElement = document.querySelector('input[name="protoApp"]:checked');
+    header .logo {
+      max-width: 100px; /* Adjust this value to make the logo smaller */
+      height: auto;
     }
-    else if (device === 'MuseRadio') {
-    displayRadioOptions();
-    uncheckRadioButtons('application'); // Garde uniquement les applications générales désactivées
-    // Sélectionnez automatiquement la première option si aucune n'est sélectionnée
-    if (!document.querySelector('input[name="radioApp"]:checked')) {
-        document.querySelector('input[name="radioApp"]').checked = true;
-    }
-    applicationElement = document.querySelector('input[name="radioApp"]:checked');
-
-    
-  } else {
-        displayGeneralOptions();
-        // Uncheck modulox and proto applications
-        uncheckRadioButtons('moduloxApp');
-        uncheckRadioButtons('protoApp');
-        uncheckRadioButtons('radioApp');
-        applicationElement = document.querySelector('input[name="application"]:checked');
-    }
-
-    if (applicationElement) {
-        application = applicationElement.value;
-    }
-
-    document.getElementById("device").innerHTML = device;
-    document.getElementById("application").innerHTML = application;
-
-
-
-				      fetch(`./${device}/${application}/${application}.html`)
-					  .then(response => {
-						if (!response.ok) {
-						  throw new Error(`HTTP error! status: ${response.status}`);
-						} else {
-						  const button = document.querySelector('esp-web-install-button');
-						  button.manifest = `./${device}/${application}/manifest_${device}_${application}.json`;
-						  button.classList.remove('invisible');
-						  button.style.visibility = "visible";
-						  return response.text()
-						}
-					  })
-					  .then(data => {
-						document.getElementById('descriptif').innerHTML = data;
-						// Enlever le bouton upload-button si le fichier n'est pas trouvé
-
-
-					  })
-					  .catch(error => {
-						console.log(error);
-						const button = document.querySelector('esp-web-install-button');
-						document.getElementById('descriptif').innerHTML = 'Coming soon! This project as not yet been ported for this device please let us know if you want it !';
-
-						button.style.visibility = "hidden";
-					  });
-            }
-
-            function hideAllApplicationOptions() {
-                let allApps = document.querySelectorAll('input[name="application"]');
-                allApps.forEach(app => {
-                    app.parentElement.style.display = 'none';
-                });
-
-                let allModuloxApps = document.querySelectorAll('input[name="moduloxApp"]');
-                allModuloxApps.forEach(app => {
-                    app.parentElement.style.display = 'none';
-                });
-
-
-                let allProtoApps = document.querySelectorAll('input[name="protoApp"]');
-                allProtoApps.forEach(app => {
-                    app.parentElement.style.display = 'none';
-                });
-
-                let allRadioApps = document.querySelectorAll('input[name="radioApp"]');
-                allRadioApps.forEach(app => {
-                    app.parentElement.style.display = 'none';
-                });
-                
-            }
-
-            function displayGeneralOptions() {
-                let generalApps = document.querySelectorAll('input[name="application"]');
-                generalApps.forEach(app => {
-                    app.parentElement.style.display = 'block';
-                });
-            }
-
-            function displayModuloxOptions() {
-                let moduloxApps = document.querySelectorAll('input[name="moduloxApp"]');
-                moduloxApps.forEach(app => {
-                    app.parentElement.style.display = 'block';
-                });
-            }
-
-            function displayRadioOptions() {
-                let moduloxApps = document.querySelectorAll('input[name="radioApp"]');
-                moduloxApps.forEach(app => {
-                    app.parentElement.style.display = 'block';
-                });
-            }
-
-            function displayProtoOptions() {
-                let moduloxApps = document.querySelectorAll('input[name="protoApp"]');
-                moduloxApps.forEach(app => {
-                    app.parentElement.style.display = 'block';
-                });
-            }
-
-            function uncheckRadioButtons(groupName) {
-    document.querySelectorAll(`input[name="${groupName}"]`).forEach(radio => {
-        radio.checked = false;
-    });
-}
-
-
-            window.onload = function () {
-                hideAllApplicationOptions();
-                displayGeneralOptions();
-            };
-        </script>
-
-        <footer>
-            <center>
-                <p>Installer powered by <a href="https://esphome.github.io/esp-web-tools/">ESP Web Tools</a></p>
-                <p>The Bluetooth and Radio App has been created by Raspiaudio.</p>
-                <p>Squeezelite and ESP Home are not created by Raspiaudio.</p>
-                <p>Source code of this site is <a href="https://github.com/RASPIAUDIO/raspiaudio.github.io">here</a></p>
-            </center>
-        </footer>
+  </style>
+  
+  <div class="content">
+    <h1>RASPIAUDIO Open Source App Store</h1>
+    <div class="container">
+      <div class="left-panel">
+        <h2>Select a Device:</h2>
+        <div id="device-list" class="selection-grid"></div>
+        <div id="device-description"></div>
+      </div>
+      <div class="right-panel">
+        <h2>Select an Application:</h2>
+        <div id="application-list" class="selection-grid"></div>
+        <div id="application-description"></div>
+      </div>
     </div>
+    <div id="selection" style="text-align: center; margin-top: 20px;">
+      Selected Device: <span id="selected-device">None</span><br />
+      Selected Application: <span id="selected-application">None</span>
+    </div>
+    <p class="button-row" align="center">
+      <esp-web-install-button class="upload-button"></esp-web-install-button>
+    </p>
+    <!-- ESP Web Tools Script -->
+    <script
+      type="module"
+      src="https://unpkg.com/esp-web-tools@9.4.0/dist/web/install-button.js?module"
+    ></script>
+    <script>
+      // JavaScript for Handling Logic
+      document.addEventListener("DOMContentLoaded", () => {
+        const devices = {
+          Luxe: {
+            html: "./Luxe/Luxe.html",
+            image: "./Luxe/Luxe.png",
+            applications: ["Bluetooth", "Radio", "Squeezelite", "Homeassistant"],
+          },
+          Mncast: {
+            html: "./Mncast/Mncast.html",
+            image: "./Mncast/Mncast.png",
+            applications: ["Bluetooth", "Radio", "Squeezelite", "Homeassistant"],
+          },
+          Proto: {
+            html: "./Proto/Proto.html",
+            image: "./Proto/Proto.png",
+            applications: [
+              "Bluetooth",
+              "Radio",
+              "Squeezelite",
+              "Homeassistant",
+              "TWSleft",
+              "TWSright",
+            ],
+          },
+          Moduloxbrain: {
+            html: "./Moduloxbrain/Moduloxbrain.html",
+            image: "./Moduloxbrain/Moduloxbrain.png",
+            applications: ["Sampler", "VA", "FM", "Granular", "Organ", "Modunoid"],
+          },
+          MuseRadio: {
+            html: "./MuseRadio/MuseRadio.html",
+            image: "./MuseRadio/MuseRadio.png",
+            applications: ["Radio", "Squeezelite", "Homeassistant"],
+          },
+        };
+
+        const deviceList = document.getElementById("device-list");
+        const applicationList = document.getElementById("application-list");
+        const selectedDeviceElement = document.getElementById("selected-device");
+        const selectedApplicationElement = document.getElementById("selected-application");
+        const deviceDescription = document.getElementById("device-description");
+        const applicationDescription = document.getElementById("application-description");
+        const installButton = document.querySelector("esp-web-install-button");
+
+        let selectedDevice = null;
+        let selectedApplication = null;
+
+        // Function to clear selections
+        function clearSelections(type) {
+          if (type === 'device') {
+            selectedDevice = null;
+            selectedDeviceElement.textContent = "None";
+            deviceDescription.innerHTML = "";
+          } else if (type === 'application') {
+            selectedApplication = null;
+            selectedApplicationElement.textContent = "None";
+            applicationDescription.innerHTML = "";
+          }
+        }
+
+        // Generate Device List with Clickable Cards
+        for (let deviceName in devices) {
+          let deviceCard = document.createElement("div");
+          deviceCard.className = "selection-card device-card";
+          deviceCard.dataset.device = deviceName;
+
+          let deviceImage = document.createElement("img");
+          deviceImage.src = devices[deviceName].image;
+          deviceImage.alt = `${deviceName} Image`;
+
+          let deviceLabel = document.createElement("span");
+          deviceLabel.textContent = deviceName;
+
+          deviceCard.appendChild(deviceImage);
+          deviceCard.appendChild(deviceLabel);
+          deviceList.appendChild(deviceCard);
+
+          // Event Listener for Device Selection
+          deviceCard.addEventListener("click", () => {
+            // Deselect all device cards
+            deviceList.querySelectorAll('.device-card').forEach(card => {
+              card.classList.remove('selected');
+            });
+            // Select the clicked card
+            deviceCard.classList.add('selected');
+
+            selectedDevice = deviceName;
+            selectedDeviceElement.textContent = selectedDevice;
+            selectedApplication = null;
+            selectedApplicationElement.textContent = "None";
+            applicationDescription.innerHTML = "";
+            loadDeviceHTML(selectedDevice);
+            generateApplicationList(selectedDevice);
+            updateInstallButton();
+          });
+        }
+
+        // Load Device Specific HTML Content
+        function loadDeviceHTML(deviceName) {
+          let device = devices[deviceName];
+          fetch(device.html)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+              }
+              return response.text();
+            })
+            .then((data) => {
+              deviceDescription.innerHTML = data;
+            })
+            .catch((error) => {
+              console.error(error);
+              deviceDescription.innerHTML = "Device description not available.";
+            });
+        }
+
+        // Generate Application List Based on Selected Device
+        function generateApplicationList(deviceName) {
+          applicationList.innerHTML = "";
+          let applications = devices[deviceName].applications;
+          applications.forEach((appName) => {
+            let appCard = document.createElement("div");
+            appCard.className = "selection-card application-card";
+            appCard.dataset.application = appName;
+
+            let appLabel = document.createElement("span");
+            appLabel.textContent = appName;
+
+            appCard.appendChild(appLabel);
+            applicationList.appendChild(appCard);
+
+            // Event Listener for Application Selection
+            appCard.addEventListener("click", () => {
+              // Deselect all application cards
+              applicationList.querySelectorAll('.application-card').forEach(card => {
+                card.classList.remove('selected');
+              });
+              // Select the clicked card
+              appCard.classList.add('selected');
+
+              selectedApplication = appName;
+              selectedApplicationElement.textContent = selectedApplication;
+              loadApplicationHTML(selectedDevice, selectedApplication);
+              updateInstallButton();
+            });
+          });
+
+          // Automatically select the first application
+          if (applications.length > 0) {
+            const firstAppCard = applicationList.querySelector('.application-card');
+            if (firstAppCard) {
+              firstAppCard.click();
+            }
+          }
+        }
+
+        // Load Application Specific HTML Content
+        function loadApplicationHTML(deviceName, appName) {
+          let path = `./${deviceName}/${appName}/${appName}.html`;
+          fetch(path)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+              }
+              return response.text();
+            })
+            .then((data) => {
+              applicationDescription.innerHTML = data;
+            })
+            .catch((error) => {
+              console.error(error);
+              applicationDescription.innerHTML = "Application description not available.";
+            });
+        }
+
+        // Update the Install Button Manifest
+        function updateInstallButton() {
+          if (selectedDevice && selectedApplication) {
+            let manifestPath = `./${selectedDevice}/${selectedApplication}/manifest_${selectedDevice}_${selectedApplication}.json`;
+            installButton.manifest = manifestPath;
+            installButton.style.visibility = "visible";
+          } else {
+            installButton.style.visibility = "hidden";
+          }
+        }
+
+        // Initialize by selecting the default device and application
+        function initialize() {
+          const defaultDevice = 'Luxe'; // Set your default device here
+          const deviceCards = deviceList.querySelectorAll('.device-card');
+          deviceCards.forEach(card => {
+            if (card.dataset.device === defaultDevice) {
+              card.click();
+            }
+          });
+        }
+
+        // Hide the install button initially
+        installButton.style.visibility = "hidden";
+
+        // Initialize the selections on page load
+        initialize();
+      });
+    </script>
+  </div>
+  <footer>
+    <p>
+      Installer powered by
+      <a href="https://esphome.github.io/esp-web-tools/" target="_blank">ESP Web Tools</a>
+    </p>
+    <p>
+      The Bluetooth and Radio applications were created by Raspiaudio.<br />
+      Squeezelite and ESP Home are not created by Raspiaudio.<br />
+      Source code of this site is available
+      <a href="https://github.com/RASPIAUDIO/raspiaudio.github.io" target="_blank">here</a>.
+    </p>
+  </footer>
 </body>
 </html>
