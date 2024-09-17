@@ -167,9 +167,9 @@ img{
                         <input type="radio" name="device" value="Moduloxbrain" onclick="loadContent()"> Modulox Brain
                     </div>
                     <div class="device-form">
-                      <img src="./Radio/Radio.png" alt="Radio">
-                      <input type="radio" name="device" value="Radio" onclick="loadContent()"> Muse Radio
-                  </div>
+                      <img src="./MuseRadio/MuseRadio.png" alt="MuseRadio">
+                      <input type="radio" name="device" value="MuseRadio" onclick="loadContent()"> Muse Radio
+                    </div>
                 </td>
                 <td>
                     <div class="device-form">
@@ -280,7 +280,7 @@ function loadContent() {
         uncheckRadioButtons('moduloxApp');
         applicationElement = document.querySelector('input[name="protoApp"]:checked');
 
-      } else if (device === 'Radio') {
+      } else if (device === 'MuseRadio') {
         //displayGeneralOptions();
         displayRadioOptions();
         // Uncheck modulox applications
@@ -293,6 +293,7 @@ function loadContent() {
         // Uncheck modulox and proto applications
         uncheckRadioButtons('moduloxApp');
         uncheckRadioButtons('protoApp');
+        uncheckRadioButtons('radioApp');
         applicationElement = document.querySelector('input[name="application"]:checked');
     }
 
