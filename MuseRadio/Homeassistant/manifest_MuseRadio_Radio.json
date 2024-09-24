@@ -5,10 +5,7 @@
     {
       "chipFamily": "ESP32-S3",
       "parts": [
-        {
-          "path": "https://raw.githubusercontent.com/RASPIAUDIO/esphomeRadio/main/raspiaudioradio.factory.bin",
-          "offset": 0
-        }
+        { "path": "./MuseRadioHomeAssitant.bin", "offset": 0}
       ]
     }
   ]
