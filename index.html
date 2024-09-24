@@ -359,22 +359,26 @@
           }
         }
 
-        // Function to load device-specific HTML
         async function loadDeviceHTML(deviceName) {
-          let device = devices[deviceName];
-          try {
-            // Add cache-busting parameter
-            let response = await fetch(`${device.html}?t=${new Date().getTime()}`);
-            if (!response.ok) {
-              throw new Error(`HTTP Error! status: ${response.status}`);
-            }
-            let data = await response.text();
-            deviceDescription.innerHTML = data;
-          } catch (error) {
-            console.error(error);
-            deviceDescription.innerHTML = "Device description not available.";
+        let device = devices[deviceName];
+        try {
+          let response = await fetch(`${device.html}?t=${new Date().getTime()}`);
+          if (!response.ok) {
+            throw new Error(`HTTP Error! status: ${response.status}`);
           }
+          let data = await response.text();
+
+          // Parse the fetched HTML
+          let parser = new DOMParser();
+          let doc = parser.parseFromString(data, 'text/html');
+
+          // Extract and set the body content
+          deviceDescription.innerHTML = doc.body.innerHTML;
+        } catch (error) {
+          console.error(error);
+          deviceDescription.innerHTML = "Device description not available.";
         }
+      }
 
         // Function to generate the application list
         function generateApplicationList(deviceName) {
@@ -413,17 +417,21 @@
           }
         }
 
-        // Function to load application HTML or GitHub README
         async function loadApplicationHTML(deviceName, appName) {
           let application = devices[deviceName].applications[appName];
           try {
-            // Add cache-busting parameter
             let response = await fetch(`${application.html}?t=${new Date().getTime()}`);
             if (!response.ok) {
               throw new Error(`HTTP Error! status: ${response.status}`);
             }
             let data = await response.text();
-            applicationDescription.innerHTML = data;
+
+            // Parse the fetched HTML
+            let parser = new DOMParser();
+            let doc = parser.parseFromString(data, 'text/html');
+
+            // Extract and set the body content
+            applicationDescription.innerHTML = doc.body.innerHTML;
 
             // Add GitHub repository link if available
             if (application.github) {
