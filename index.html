@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <title>RASPIAUDIO Open Source App Store</title>
@@ -18,12 +18,12 @@
       color: #333;
     }
     header {
-      background-color: #89B4BA; /* Updated color */
-      padding: 10px 0; /* Reduced padding for smaller header */
+      background-color: #89B4BA;
+      padding: 10px 0;
       text-align: center;
     }
     .logo img {
-      max-width: 20px; /* Further reduced to make the logo smaller */
+      max-width: 100px;
       height: auto;
     }
     .content {
@@ -35,7 +35,7 @@
       border-radius: 8px;
     }
     h1 {
-      text-align: center; /* Centered the title */
+      text-align: center;
       margin-bottom: 30px;
     }
     .container {
@@ -55,33 +55,33 @@
     .selection-card {
       flex: 1 1 calc(50% - 15px);
       max-width: calc(50% - 15px);
-      border: 1px solid #ccc; /* Thinner border */
+      border: 1px solid #ccc;
       border-radius: 8px;
       padding: 10px;
       text-align: center;
       cursor: pointer;
       transition: border-color 0.3s, box-shadow 0.3s;
       display: flex;
-      align-items: center; /* Align items vertically center */
+      align-items: center;
       background-color: #fafafa;
     }
     /* Specific styles for device cards */
     .device-card {
-      justify-content: flex-start; /* Align items to the start */
+      justify-content: flex-start;
     }
     .device-card img {
-      width: 40px; /* Adjust image size as needed */
+      width: 40px;
       height: 40px;
       object-fit: contain;
-      margin-right: 10px; /* Space between image and text */
+      margin-right: 10px;
     }
     .application-card {
-      justify-content: center; /* Center align for application cards */
+      justify-content: center;
       flex-direction: column;
     }
     .selection-card.selected {
-      border-color: #89B4BA; /* Updated color */
-      box-shadow: 0 0 10px rgba(137, 180, 186, 0.5); /* Updated color */
+      border-color: #89B4BA;
+      box-shadow: 0 0 10px rgba(137, 180, 186, 0.5);
     }
     #device-description,
     #application-description {
@@ -92,10 +92,10 @@
       text-align: center;
     }
     footer {
-      background-color: #89B4BA; /* Updated color */
-      padding: 5px 0; /* Further reduced padding */
+      background-color: #89B4BA;
+      padding: 5px 0;
       text-align: center;
-      font-size: 0.8em; /* Smaller font size */
+      font-size: 0.8em;
       color: #fff;
     }
     footer a {
@@ -145,7 +145,7 @@
       }
     }
   </style>
-  <!-- Ajout de la bibliothèque Showdown.js pour convertir Markdown en HTML -->
+  <!-- Added Showdown.js for Markdown to HTML conversion -->
   <script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
 </head>
 <body>
@@ -155,13 +155,6 @@
     </a>
   </header>
 
-  <style>
-    header .logo {
-      max-width: 100px; /* Adjust this value to make the logo smaller */
-      height: auto;
-    }
-  </style>
-  
   <div class="content">
     <h1>RASPIAUDIO Open Source App Store</h1>
     <div class="container">
@@ -189,7 +182,7 @@
       src="https://unpkg.com/esp-web-tools@9.4.0/dist/web/install-button.js?module"
     ></script>
     <script>
-      // JavaScript pour gérer la logique
+      // JavaScript to handle the logic
       document.addEventListener("DOMContentLoaded", () => {
         const devices = {
           Luxe: {
@@ -327,66 +320,67 @@
         let selectedDevice = null;
         let selectedApplication = null;
 
-        // Fonction pour générer la liste des appareils
-        for (let deviceName in devices) {
-          let deviceCard = document.createElement("div");
-          deviceCard.className = "selection-card device-card";
-          deviceCard.dataset.device = deviceName;
+        // Function to generate the device list
+        function generateDeviceList() {
+          for (let deviceName in devices) {
+            let deviceCard = document.createElement("div");
+            deviceCard.className = "selection-card device-card";
+            deviceCard.dataset.device = deviceName;
 
-          let deviceImage = document.createElement("img");
-          deviceImage.src = devices[deviceName].image;
-          deviceImage.alt = `${deviceName} Image`;
+            let deviceImage = document.createElement("img");
+            deviceImage.src = devices[deviceName].image;
+            deviceImage.alt = `${deviceName} Image`;
 
-          let deviceLabel = document.createElement("span");
-          deviceLabel.textContent = deviceName;
+            let deviceLabel = document.createElement("span");
+            deviceLabel.textContent = deviceName;
 
-          deviceCard.appendChild(deviceImage);
-          deviceCard.appendChild(deviceLabel);
-          deviceList.appendChild(deviceCard);
+            deviceCard.appendChild(deviceImage);
+            deviceCard.appendChild(deviceLabel);
+            deviceList.appendChild(deviceCard);
 
-          // Écouteur d'événement pour la sélection de l'appareil
-          deviceCard.addEventListener("click", () => {
-            // Désélectionner tous les appareils
-            deviceList.querySelectorAll('.device-card').forEach(card => {
-              card.classList.remove('selected');
+            // Event listener for device selection
+            deviceCard.addEventListener("click", () => {
+              // Deselect all devices
+              deviceList.querySelectorAll('.device-card').forEach(card => {
+                card.classList.remove('selected');
+              });
+              deviceCard.classList.add('selected');
+
+              selectedDevice = deviceName;
+              selectedDeviceElement.textContent = selectedDevice;
+              selectedApplication = null;
+              selectedApplicationElement.textContent = "None";
+              applicationDescription.innerHTML = "";
+              loadDeviceHTML(selectedDevice).then(() => {
+                generateApplicationList(selectedDevice);
+              });
+              updateInstallButton();
             });
-            deviceCard.classList.add('selected');
-
-            selectedDevice = deviceName;
-            selectedDeviceElement.textContent = selectedDevice;
-            selectedApplication = null;
-            selectedApplicationElement.textContent = "None";
-            applicationDescription.innerHTML = "";
-            loadDeviceHTML(selectedDevice);
-            generateApplicationList(selectedDevice);
-            updateInstallButton();
-          });
+          }
         }
 
-        // Fonction pour charger le HTML spécifique à l'appareil
-        function loadDeviceHTML(deviceName) {
+        // Function to load device-specific HTML
+        async function loadDeviceHTML(deviceName) {
           let device = devices[deviceName];
-          fetch(device.html)
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error(`Erreur HTTP ! statut : ${response.status}`);
-              }
-              return response.text();
-            })
-            .then((data) => {
-              deviceDescription.innerHTML = data;
-            })
-            .catch((error) => {
-              console.error(error);
-              deviceDescription.innerHTML = "Description de l'appareil non disponible.";
-            });
+          try {
+            // Add cache-busting parameter
+            let response = await fetch(`${device.html}?t=${new Date().getTime()}`);
+            if (!response.ok) {
+              throw new Error(`HTTP Error! status: ${response.status}`);
+            }
+            let data = await response.text();
+            deviceDescription.innerHTML = data;
+          } catch (error) {
+            console.error(error);
+            deviceDescription.innerHTML = "Device description not available.";
+          }
         }
 
-        // Fonction pour générer la liste des applications
+        // Function to generate the application list
         function generateApplicationList(deviceName) {
           applicationList.innerHTML = "";
           let applications = devices[deviceName].applications;
-          Object.keys(applications).forEach((appName) => {
+          for (let appName in applications) {
             let appCard = document.createElement("div");
             appCard.className = "selection-card application-card";
             appCard.dataset.application = appName;
@@ -397,9 +391,9 @@
             appCard.appendChild(appLabel);
             applicationList.appendChild(appCard);
 
-            // Écouteur d'événement pour la sélection de l'application
+            // Event listener for application selection
             appCard.addEventListener("click", () => {
-              // Désélectionner toutes les applications
+              // Deselect all applications
               applicationList.querySelectorAll('.application-card').forEach(card => {
                 card.classList.remove('selected');
               });
@@ -410,80 +404,74 @@
               loadApplicationHTML(selectedDevice, selectedApplication);
               updateInstallButton();
             });
-          });
+          }
 
-          // Sélection automatique de la première application
-          if (Object.keys(applications).length > 0) {
-            const firstAppCard = applicationList.querySelector('.application-card');
-            if (firstAppCard) {
-              firstAppCard.click();
-            }
+          // Automatically select the first application
+          const firstAppCard = applicationList.querySelector('.application-card');
+          if (firstAppCard) {
+            firstAppCard.click();
           }
         }
 
-        // Fonction pour charger le HTML de l'application ou le README.md
-        function loadApplicationHTML(deviceName, appName) {
+        // Function to load application HTML or GitHub README
+        async function loadApplicationHTML(deviceName, appName) {
           let application = devices[deviceName].applications[appName];
-          let path = application.html;
-          fetch(path)
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error(`Erreur HTTP ! statut : ${response.status}`);
-              }
-              return response.text();
-            })
-            .then((data) => {
-              applicationDescription.innerHTML = data;
-            })
-            .catch((error) => {
-              console.error(error);
-              // Si le fichier HTML n'est pas disponible, charger le README.md depuis GitHub
-              fetchReadmeFromGithub(application.github);
-            });
+          try {
+            // Add cache-busting parameter
+            let response = await fetch(`${application.html}?t=${new Date().getTime()}`);
+            if (!response.ok) {
+              throw new Error(`HTTP Error! status: ${response.status}`);
+            }
+            let data = await response.text();
+            applicationDescription.innerHTML = data;
+
+            // Add GitHub repository link if available
+            if (application.github) {
+              applicationDescription.innerHTML += `<p>Repository: <a href="${application.github}" target="_blank">${application.github}</a></p>`;
+            }
+          } catch (error) {
+            console.error(error);
+            // If HTML file not available, load README.md from GitHub
+            fetchReadmeFromGithub(application.github);
+          }
         }
 
-        // Fonction pour obtenir l'URL brute du README.md sur GitHub
-        function getRawReadmeUrl(githubUrl, branch) {
+        // Function to get the raw README.md URL from GitHub
+        function getRawReadmeUrl(githubUrl, branch = "main") {
           let parts = githubUrl.replace("https://github.com/", "").split("/");
           let user = parts[0];
           let repo = parts[1];
-          let readmeUrl = `https://raw.githubusercontent.com/${user}/${repo}/${branch}/README.md`;
-          return readmeUrl;
+          return `https://raw.githubusercontent.com/${user}/${repo}/${branch}/README.md`;
         }
 
-        // Fonction pour charger le README.md depuis GitHub
-        function fetchReadmeFromGithub(githubUrl) {
-          let branches = ["main", "master"];
-          let fetchReadme = (branchIndex) => {
-            if (branchIndex >= branches.length) {
-              applicationDescription.innerHTML = "Description de l'application non disponible.";
-              return;
-            }
-            let branch = branches[branchIndex];
+        // Function to load README.md from GitHub
+        async function fetchReadmeFromGithub(githubUrl) {
+          const branches = ["main", "master"];
+          for (let branch of branches) {
             let readmeUrl = getRawReadmeUrl(githubUrl, branch);
-            fetch(readmeUrl)
-              .then((response) => {
-                if (!response.ok) {
-                  throw new Error(`Erreur HTTP ! statut : ${response.status}`);
-                }
-                return response.text();
-              })
-              .then((markdown) => {
-                // Convertir le Markdown en HTML
-                let converter = new showdown.Converter();
-                let html = converter.makeHtml(markdown);
-                applicationDescription.innerHTML = html;
-              })
-              .catch((error) => {
-                console.error(error);
-                // Essayer la prochaine branche
-                fetchReadme(branchIndex + 1);
-              });
-          };
-          fetchReadme(0);
+            try {
+              let response = await fetch(`${readmeUrl}?t=${new Date().getTime()}`);
+              if (!response.ok) {
+                throw new Error(`HTTP Error! status: ${response.status}`);
+              }
+              let markdown = await response.text();
+              // Convert Markdown to HTML
+              let converter = new showdown.Converter();
+              let html = converter.makeHtml(markdown);
+              applicationDescription.innerHTML = html;
+              // Add GitHub repository link
+              applicationDescription.innerHTML += `<p>Repository: <a href="${githubUrl}" target="_blank">${githubUrl}</a></p>`;
+              return; // Exit if successful
+            } catch (error) {
+              console.error(`Failed to load README.md from ${readmeUrl}:`, error);
+              // Continue to next branch
+            }
+          }
+          // If all branches fail
+          applicationDescription.innerHTML = "Application description not available.";
         }
 
-        // Fonction pour mettre à jour le bouton d'installation
+        // Function to update the install button
         function updateInstallButton() {
           if (selectedDevice && selectedApplication) {
             let manifestPath = `./${selectedDevice}/${selectedApplication}/manifest_${selectedDevice}_${selectedApplication}.json`;
@@ -494,21 +482,20 @@
           }
         }
 
-        // Initialisation
+        // Initialization function
         function initialize() {
-          const defaultDevice = 'Luxe'; // Définit votre appareil par défaut ici
-          const deviceCards = deviceList.querySelectorAll('.device-card');
-          deviceCards.forEach(card => {
-            if (card.dataset.device === defaultDevice) {
-              card.click();
-            }
-          });
+          generateDeviceList();
+          // Automatically select the first device
+          const firstDeviceCard = deviceList.querySelector('.device-card');
+          if (firstDeviceCard) {
+            firstDeviceCard.click();
+          }
         }
 
-        // Masquer le bouton d'installation initialement
+        // Hide the install button initially
         installButton.style.visibility = "hidden";
 
-        // Initialiser les sélections au chargement de la page
+        // Initialize selections on page load
         initialize();
       });
     </script>
