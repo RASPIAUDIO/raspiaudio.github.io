@@ -5,7 +5,7 @@
     {
       "chipFamily": "ESP32-S3",
       "parts": [
-        { "path": "./Radio.bin", "offset": 0}
+        { "path": "https://github.com/RASPIAUDIO/MuseRadio-DEMO/raw/refs/heads/main/RadioV01/Radiov011.bin", "offset": 0}
       ]
     }
   ]

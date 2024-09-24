@@ -145,6 +145,8 @@
       }
     }
   </style>
+  <!-- Ajout de la bibliothèque Showdown.js pour convertir Markdown en HTML -->
+  <script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
 </head>
 <body>
   <header>
@@ -187,40 +189,130 @@
       src="https://unpkg.com/esp-web-tools@9.4.0/dist/web/install-button.js?module"
     ></script>
     <script>
-      // JavaScript for Handling Logic
+      // JavaScript pour gérer la logique
       document.addEventListener("DOMContentLoaded", () => {
         const devices = {
           Luxe: {
             html: "./Luxe/Luxe.html",
             image: "./Luxe/Luxe.png",
-            applications: ["Bluetooth", "Radio", "Squeezelite", "Homeassistant"],
+            applications: {
+              Bluetooth: {
+                html: "./Luxe/Bluetooth/Bluetooth.html",
+                github: "https://github.com/RASPIAUDIO/esp32-bluetooth-speaker",
+              },
+              Radio: {
+                html: "./Luxe/Radio/Radio.html",
+                github: "https://github.com/RASPIAUDIO/esp32-radio",
+              },
+              Squeezelite: {
+                html: "./Luxe/Squeezelite/Squeezelite.html",
+                github: "https://github.com/RASPIAUDIO/ESP32-Squeezelite",
+              },
+              Homeassistant: {
+                html: "./Luxe/Homeassistant/Homeassistant.html",
+                github: "https://github.com/RASPIAUDIO/esp-home",
+              },
+            },
           },
           Mncast: {
             html: "./Mncast/Mncast.html",
             image: "./Mncast/Mncast.png",
-            applications: ["Bluetooth", "Radio", "Squeezelite", "Homeassistant"],
+            applications: {
+              Bluetooth: {
+                html: "./Mncast/Bluetooth/Bluetooth.html",
+                github: "https://github.com/RASPIAUDIO/esp32-bluetooth-speaker",
+              },
+              Radio: {
+                html: "./Mncast/Radio/Radio.html",
+                github: "https://github.com/RASPIAUDIO/esp32-radio",
+              },
+              Squeezelite: {
+                html: "./Mncast/Squeezelite/Squeezelite.html",
+                github: "https://github.com/RASPIAUDIO/ESP32-Squeezelite",
+              },
+              Homeassistant: {
+                html: "./Mncast/Homeassistant/Homeassistant.html",
+                github: "https://github.com/RASPIAUDIO/esp-home",
+              },
+            },
           },
           Proto: {
             html: "./Proto/Proto.html",
             image: "./Proto/Proto.png",
-            applications: [
-              "Bluetooth",
-              "Radio",
-              "Squeezelite",
-              "Homeassistant",
-              "TWSleft",
-              "TWSright",
-            ],
+            applications: {
+              Bluetooth: {
+                html: "./Proto/Bluetooth/Bluetooth.html",
+                github: "https://github.com/RASPIAUDIO/esp32-bluetooth-speaker",
+              },
+              Radio: {
+                html: "./Proto/Radio/Radio.html",
+                github: "https://github.com/RASPIAUDIO/esp32-radio",
+              },
+              Squeezelite: {
+                html: "./Proto/Squeezelite/Squeezelite.html",
+                github: "https://github.com/RASPIAUDIO/ESP32-Squeezelite",
+              },
+              Homeassistant: {
+                html: "./Proto/Homeassistant/Homeassistant.html",
+                github: "https://github.com/RASPIAUDIO/esp-home",
+              },
+              TWSleft: {
+                html: "./Proto/TWSleft/TWSleft.html",
+                github: "https://github.com/RASPIAUDIO/esp32-bluetooth-speaker",
+              },
+              TWSright: {
+                html: "./Proto/TWSright/TWSright.html",
+                github: "https://github.com/RASPIAUDIO/esp32-bluetooth-speaker",
+              },
+            },
           },
           Moduloxbrain: {
             html: "./Moduloxbrain/Moduloxbrain.html",
             image: "./Moduloxbrain/Moduloxbrain.png",
-            applications: ["Sampler", "VA", "FM", "Granular", "Organ", "Modunoid"],
+            applications: {
+              Sampler: {
+                html: "./Moduloxbrain/Sampler/Sampler.html",
+                github: "https://github.com/RASPIAUDIO/Modulox_Sampler",
+              },
+              VA: {
+                html: "./Moduloxbrain/VA/VA.html",
+                github: "https://github.com/RASPIAUDIO/Modulox_VA",
+              },
+              FM: {
+                html: "./Moduloxbrain/FM/FM.html",
+                github: "https://github.com/RASPIAUDIO/Modulox_FM",
+              },
+              Granular: {
+                html: "./Moduloxbrain/Granular/Granular.html",
+                github: "https://github.com/RASPIAUDIO/Modulox_Granular",
+              },
+              Organ: {
+                html: "./Moduloxbrain/Organ/Organ.html",
+                github: "https://github.com/RASPIAUDIO/Modulox_Organ",
+              },
+              Modunoid: {
+                html: "./Moduloxbrain/Modunoid/Modunoid.html",
+                github: "https://github.com/RASPIAUDIO/Modulox_Modunoid",
+              },
+            },
           },
           MuseRadio: {
             html: "./MuseRadio/MuseRadio.html",
             image: "./MuseRadio/MuseRadio.png",
-            applications: ["Radio", "Squeezelite", "Homeassistant"],
+            applications: {
+              Radio: {
+                html: "./MuseRadio/Radio/Radio.html",
+                github: "https://github.com/RASPIAUDIO/MuseRadio-DEMO",
+              },
+              Squeezelite: {
+                html: "./MuseRadio/Squeezelite/Squeezelite.html",
+                github: "https://github.com/RASPIAUDIO/ESP32-Squeezelite",
+              },
+              Homeassistant: {
+                html: "./MuseRadio/Homeassistant/Homeassistant.html",
+                github: "https://github.com/RASPIAUDIO/esphomeRadio",
+              },
+            },
           },
         };
 
@@ -235,20 +327,7 @@
         let selectedDevice = null;
         let selectedApplication = null;
 
-        // Function to clear selections
-        function clearSelections(type) {
-          if (type === 'device') {
-            selectedDevice = null;
-            selectedDeviceElement.textContent = "None";
-            deviceDescription.innerHTML = "";
-          } else if (type === 'application') {
-            selectedApplication = null;
-            selectedApplicationElement.textContent = "None";
-            applicationDescription.innerHTML = "";
-          }
-        }
-
-        // Generate Device List with Clickable Cards
+        // Fonction pour générer la liste des appareils
         for (let deviceName in devices) {
           let deviceCard = document.createElement("div");
           deviceCard.className = "selection-card device-card";
@@ -265,13 +344,12 @@
           deviceCard.appendChild(deviceLabel);
           deviceList.appendChild(deviceCard);
 
-          // Event Listener for Device Selection
+          // Écouteur d'événement pour la sélection de l'appareil
           deviceCard.addEventListener("click", () => {
-            // Deselect all device cards
+            // Désélectionner tous les appareils
             deviceList.querySelectorAll('.device-card').forEach(card => {
               card.classList.remove('selected');
             });
-            // Select the clicked card
             deviceCard.classList.add('selected');
 
             selectedDevice = deviceName;
@@ -285,13 +363,13 @@
           });
         }
 
-        // Load Device Specific HTML Content
+        // Fonction pour charger le HTML spécifique à l'appareil
         function loadDeviceHTML(deviceName) {
           let device = devices[deviceName];
           fetch(device.html)
             .then((response) => {
               if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`Erreur HTTP ! statut : ${response.status}`);
               }
               return response.text();
             })
@@ -300,15 +378,15 @@
             })
             .catch((error) => {
               console.error(error);
-              deviceDescription.innerHTML = "Device description not available.";
+              deviceDescription.innerHTML = "Description de l'appareil non disponible.";
             });
         }
 
-        // Generate Application List Based on Selected Device
+        // Fonction pour générer la liste des applications
         function generateApplicationList(deviceName) {
           applicationList.innerHTML = "";
           let applications = devices[deviceName].applications;
-          applications.forEach((appName) => {
+          Object.keys(applications).forEach((appName) => {
             let appCard = document.createElement("div");
             appCard.className = "selection-card application-card";
             appCard.dataset.application = appName;
@@ -319,13 +397,12 @@
             appCard.appendChild(appLabel);
             applicationList.appendChild(appCard);
 
-            // Event Listener for Application Selection
+            // Écouteur d'événement pour la sélection de l'application
             appCard.addEventListener("click", () => {
-              // Deselect all application cards
+              // Désélectionner toutes les applications
               applicationList.querySelectorAll('.application-card').forEach(card => {
                 card.classList.remove('selected');
               });
-              // Select the clicked card
               appCard.classList.add('selected');
 
               selectedApplication = appName;
@@ -335,8 +412,8 @@
             });
           });
 
-          // Automatically select the first application
-          if (applications.length > 0) {
+          // Sélection automatique de la première application
+          if (Object.keys(applications).length > 0) {
             const firstAppCard = applicationList.querySelector('.application-card');
             if (firstAppCard) {
               firstAppCard.click();
@@ -344,13 +421,14 @@
           }
         }
 
-        // Load Application Specific HTML Content
+        // Fonction pour charger le HTML de l'application ou le README.md
         function loadApplicationHTML(deviceName, appName) {
-          let path = `./${deviceName}/${appName}/${appName}.html`;
+          let application = devices[deviceName].applications[appName];
+          let path = application.html;
           fetch(path)
             .then((response) => {
               if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`Erreur HTTP ! statut : ${response.status}`);
               }
               return response.text();
             })
@@ -359,11 +437,53 @@
             })
             .catch((error) => {
               console.error(error);
-              applicationDescription.innerHTML = "Application description not available.";
+              // Si le fichier HTML n'est pas disponible, charger le README.md depuis GitHub
+              fetchReadmeFromGithub(application.github);
             });
         }
 
-        // Update the Install Button Manifest
+        // Fonction pour obtenir l'URL brute du README.md sur GitHub
+        function getRawReadmeUrl(githubUrl, branch) {
+          let parts = githubUrl.replace("https://github.com/", "").split("/");
+          let user = parts[0];
+          let repo = parts[1];
+          let readmeUrl = `https://raw.githubusercontent.com/${user}/${repo}/${branch}/README.md`;
+          return readmeUrl;
+        }
+
+        // Fonction pour charger le README.md depuis GitHub
+        function fetchReadmeFromGithub(githubUrl) {
+          let branches = ["main", "master"];
+          let fetchReadme = (branchIndex) => {
+            if (branchIndex >= branches.length) {
+              applicationDescription.innerHTML = "Description de l'application non disponible.";
+              return;
+            }
+            let branch = branches[branchIndex];
+            let readmeUrl = getRawReadmeUrl(githubUrl, branch);
+            fetch(readmeUrl)
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error(`Erreur HTTP ! statut : ${response.status}`);
+                }
+                return response.text();
+              })
+              .then((markdown) => {
+                // Convertir le Markdown en HTML
+                let converter = new showdown.Converter();
+                let html = converter.makeHtml(markdown);
+                applicationDescription.innerHTML = html;
+              })
+              .catch((error) => {
+                console.error(error);
+                // Essayer la prochaine branche
+                fetchReadme(branchIndex + 1);
+              });
+          };
+          fetchReadme(0);
+        }
+
+        // Fonction pour mettre à jour le bouton d'installation
         function updateInstallButton() {
           if (selectedDevice && selectedApplication) {
             let manifestPath = `./${selectedDevice}/${selectedApplication}/manifest_${selectedDevice}_${selectedApplication}.json`;
@@ -374,9 +494,9 @@
           }
         }
 
-        // Initialize by selecting the default device and application
+        // Initialisation
         function initialize() {
-          const defaultDevice = 'Luxe'; // Set your default device here
+          const defaultDevice = 'Luxe'; // Définit votre appareil par défaut ici
           const deviceCards = deviceList.querySelectorAll('.device-card');
           deviceCards.forEach(card => {
             if (card.dataset.device === defaultDevice) {
@@ -385,10 +505,10 @@
           });
         }
 
-        // Hide the install button initially
+        // Masquer le bouton d'installation initialement
         installButton.style.visibility = "hidden";
 
-        // Initialize the selections on page load
+        // Initialiser les sélections au chargement de la page
         initialize();
       });
     </script>
