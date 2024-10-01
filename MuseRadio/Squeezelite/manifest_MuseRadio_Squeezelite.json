@@ -1,0 +1,13 @@
+{
+  "name": "Squeezelite for Muse Radio",
+  "version": "1.0",
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "parts": [
+        { "path": "https://raw.githubusercontent.com/RASPIAUDIO/squeezelite-esp32/master-v4.3/squeezelite_radio.bin
+", "offset": 0}
+      ]
+    }
+  ]
+}
