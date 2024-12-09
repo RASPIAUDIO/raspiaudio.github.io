@@ -1,11 +1,11 @@
 {
   "name": "ESPHome for MUSE Luxe",
-  "version": "2022.12.3",
+  "version": "2024.11.3",
   "builds": [
     {
       "chipFamily": "ESP32",
       "parts": [
-    { "path": "./LuxeHomeAssistant1.bin", "offset": 0}
+    { "path": "./LuxeHomeAssistant.bin", "offset": 0}
       ]
     }
   ]
