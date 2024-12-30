@@ -1,11 +1,11 @@
 {
   "name": "ESPHOME for Muse Radio",
-  "version": "1.10",
+  "version": "1.11",
   "builds": [
     {
       "chipFamily": "ESP32-S3",
       "parts": [
-        { "path": "https://raw.githubusercontent.com/RASPIAUDIO/muse-radio-voice-satellite/main/esphome/raspiaudio-radio.bin", "offset": 0}
+        { "path": "https://github.com/RASPIAUDIO/esphomeRadio/raw/refs/heads/main/RadioHA.bin", "offset": 0}
       ]
     }
   ]
