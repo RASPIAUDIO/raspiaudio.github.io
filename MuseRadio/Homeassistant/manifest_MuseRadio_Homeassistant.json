@@ -5,7 +5,7 @@
     {
       "chipFamily": "ESP32-S3",
       "parts": [
-        { "path": "https://raw.githubusercontent.com/RASPIAUDIO/muse-radio-voice-satellite/main/esphome/radio-microWW.bin", "offset": 0}
+        { "path": "https://raw.githubusercontent.com/RASPIAUDIO/muse-radio-voice-satellite/main/MuseRadioHomeAssitant.bin", "offset": 0}
       ]
     }
   ]
