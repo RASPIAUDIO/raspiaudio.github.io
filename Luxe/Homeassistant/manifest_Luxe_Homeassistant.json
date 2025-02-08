@@ -1,11 +1,11 @@
 {
   "name": "ESPHome for MUSE Luxe",
-  "version": "2.0",
+  "version": "2.1",
   "builds": [
     {
       "chipFamily": "ESP32",
       "parts": [
-    { "path": "./LuxeHomeAssistant.bin", "offset": 0}
+    { "path": "https://raw.githubusercontent.com/RASPIAUDIO/esphomeLuxe/main/luxe_microWW.bin", "offset": 0}
       ]
     }
   ]
