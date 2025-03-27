@@ -1,5 +1,5 @@
 {
-  "name": "raspiaudio_radio_firmware",
+  "name": "voice-assistant",
   "version": "1.15",
   "builds": [
     {
