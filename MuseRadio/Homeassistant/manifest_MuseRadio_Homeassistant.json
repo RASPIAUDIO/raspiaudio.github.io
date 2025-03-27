@@ -1,5 +1,5 @@
 {
-  "name": "ESPHOME for Muse Radio",
+  "name": "voice-assistant",
   "version": "1.15",
   "builds": [
     {
