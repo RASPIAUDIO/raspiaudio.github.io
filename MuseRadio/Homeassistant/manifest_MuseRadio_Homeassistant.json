@@ -1,5 +1,5 @@
 {
-  "name": "voice-assistant",
+  "name": "esphome.voice-assistant",
   "version": "1.15",
   "builds": [
     {
