@@ -1,5 +1,13 @@
 {
   "name": "esphome.voice-assistant",
   "version": "1.15",
-  "url": "https://firmware.esphome.io/voice-assistant/esp32-s3-box-3/esp32-s3-box-3.bin"
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "ota": {
+         "path": "https://raw.githubusercontent.com/RASPIAUDIO/muse-radio-voice-satellite/main/MuseRadioHomeAssistant.bin",
+         "summary": "up-to-date firmware",
+         }
+    }
+    ]     
 }
