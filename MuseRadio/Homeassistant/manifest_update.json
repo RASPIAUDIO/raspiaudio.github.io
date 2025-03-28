@@ -1,6 +1,8 @@
 {
-  "name": "esphome.voice-assistant",
+  "name": "raspiaudio.voice-assistant",
   "version": "1.11",
+  "home_assistant_domain": "esphome",
+  "new_install_prompt_erase": false,
   "builds": [
     {
       "chipFamily": "ESP32-S3",
@@ -8,7 +10,13 @@
          "md5": "7b7800fd910ec36b032ebfb5602a7df8",
          "path": "https://raw.githubusercontent.com/RASPIAUDIO/muse-radio-voice-satellite/main/MuseRadioHomeAssistant.bin",
          "summary": "up-to-date firmware",
-         }
+         },
+         "parts": [
+         {
+           "path": "https://raw.githubusercontent.com/RASPIAUDIO/muse-radio-voice-satellite/main/MuseRadioHomeAssistant.bin",
+           "offset": 0
+           }
+           ]
     }
     ]     
 }
