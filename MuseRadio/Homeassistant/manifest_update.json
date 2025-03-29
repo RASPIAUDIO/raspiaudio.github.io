@@ -11,12 +11,6 @@
          "path": "https://raw.githubusercontent.com/RASPIAUDIO/muse-radio-voice-satellite/main/MuseRadioHomeAssistant.bin",
          "summary": "up-to-date firmware",
          },
-         "parts": [
-         {
-           "path": "https://raw.githubusercontent.com/RASPIAUDIO/muse-radio-voice-satellite/main/MuseRadioHomeAssistant.bin",
-           "offset": 0
-           }
-           ]
     }
     ]     
 }
