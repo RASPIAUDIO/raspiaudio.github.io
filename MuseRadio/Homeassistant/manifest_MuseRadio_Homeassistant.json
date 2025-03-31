@@ -1,6 +1,6 @@
 {
   "name": "esphome.voice-assistant",
-  "version": "1.10",
+  "version": "2025.1.10",
   "builds": [
     {
       "chipFamily": "ESP32-S3",
