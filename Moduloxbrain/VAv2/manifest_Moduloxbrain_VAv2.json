@@ -1,0 +1,12 @@
+{
+  "name": "VA for Modulox Brain",
+  "version": "1.0",
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "parts": [
+        { "path": "./VAv2.bin", "offset": 0}
+      ]
+    }
+  ]
+}
