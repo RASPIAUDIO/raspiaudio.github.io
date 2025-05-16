@@ -5,7 +5,7 @@
     {
       "chipFamily": "ESP32-S3",
       "parts": [
-        { "path": "./grain2.bin", "offset": 0}
+        { "path": "./grainv2.bin", "offset": 0}
       ]
     }
   ]
