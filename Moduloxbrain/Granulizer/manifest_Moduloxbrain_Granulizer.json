@@ -1,11 +1,11 @@
 {
   "name": "Moduloxbrain/Granulizer",
-  "version": "1.0",
+  "version": "2.0",
   "builds": [
     {
       "chipFamily": "ESP32-S3",
       "parts": [
-        { "path": "https://raw.githubusercontent.com/RASPIAUDIO/MODULOX_BRAIN/main/synths/granulizer/granulizer.bin", "offset": 0}
+        { "path": "./grain.bin", "offset": 0}
       ]
     }
   ]

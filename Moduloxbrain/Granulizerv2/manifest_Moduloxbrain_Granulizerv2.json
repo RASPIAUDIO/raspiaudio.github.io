@@ -1,0 +1,12 @@
+{
+  "name": "Moduloxbrain/Granulizerv2",
+  "version": "2.0",
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "parts": [
+        { "path": "./grainv2.bin", "offset": 0}
+      ]
+    }
+  ]
+}
