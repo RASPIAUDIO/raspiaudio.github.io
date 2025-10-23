@@ -1,6 +1,6 @@
 {
   "name": "ESPHome for MUSE Luxe",
-  "version": "2025.2.6",
+  "version": "2025.3.0",
   "builds": [
     {
       "chipFamily": "ESP32",
