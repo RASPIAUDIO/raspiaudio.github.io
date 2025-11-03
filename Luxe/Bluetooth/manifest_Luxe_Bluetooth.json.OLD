@@ -1,0 +1,12 @@
+{
+  "name": "Simple Bluetooth Speaker for MUSE LUXE",
+  "version": "1.3",
+  "builds": [
+    {
+      "chipFamily": "ESP32",
+      "parts": [
+        { "path": "https://raw.githubusercontent.com/RASPIAUDIO/Simple_Bluetooth_Speaker_ESP32/main/LuxeBtSd.bin", "offset": 0}
+      ]
+    }
+  ]
+}   
