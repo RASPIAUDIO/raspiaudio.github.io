@@ -1,0 +1,12 @@
+{
+  "name": "ESPHome for Manga Cast",
+  "version": "2025.3.0",
+  "builds": [
+    {
+      "chipFamily": "ESP32",
+      "parts": [
+    { "path": "https://raw.githubusercontent.com/RASPIAUDIO/esphomeMangaCast/main/manga_microWW.bin", "offset": 0}
+      ]
+    }
+  ]
+}
