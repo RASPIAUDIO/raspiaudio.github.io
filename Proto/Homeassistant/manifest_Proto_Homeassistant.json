@@ -1,6 +1,6 @@
 {
   "name": "ESPHome for MUSE Proto",
-  "version": "2025.04",
+  "version": "2025.3.0",
   "builds": [
     {
       "chipFamily": "ESP32",
