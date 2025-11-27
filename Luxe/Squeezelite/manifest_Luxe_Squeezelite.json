@@ -5,7 +5,9 @@
     {
       "chipFamily": "ESP32",
       "parts": [
-        { "path": "./luxe_squeezelite.bin", "offset": 0}
+        { "path": "./luxe_squeezelite.bin", "offset": 0},
+        { "path": "./recovery.bin", "offset": 65536}, 
+        { "path": "./squeezelite.bin", "offset": 1376256}               
       ]
     }
   ]
