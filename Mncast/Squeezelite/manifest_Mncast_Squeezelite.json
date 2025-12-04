@@ -1,6 +1,6 @@
 {
   "name": "Squeezelite Muse Mn Cast",
-  "version": "Muse-16 2.1254",
+  "version": "2025.3.0",
   "builds": [
     {
       "chipFamily": "ESP32",
