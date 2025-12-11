@@ -5,7 +5,7 @@
     {
       "chipFamily": "ESP32-S3",
       "parts": [
-        { "path": "https://raw.githubusercontent.com/RASPIAUDIO/squeezelite-esp32/master-v4.3/squeezelite_radio.bin", "offset": 0}
+        { "path": "./SQ011024.bin", "offset": 0}
       ]
     }
   ]
