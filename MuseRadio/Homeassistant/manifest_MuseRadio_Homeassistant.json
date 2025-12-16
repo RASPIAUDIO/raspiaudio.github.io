@@ -1,11 +1,11 @@
 {
   "name": "esphome.voice-assistant",
-  "version": "2025.3.1",
+  "version": "2025.3.2",
   "builds": [
     {
       "chipFamily": "ESP32-S3",
       "parts": [
-        { "path": "https://raw.githubusercontent.com/RASPIAUDIO/muse-radio-voice-satellite/main/MuseRadioHomeAssistant.bin", "offset": 0}
+        { "path": "./MuseRadioHomeAssistant.bin", "offset": 0}
       ]
     }
   ]
