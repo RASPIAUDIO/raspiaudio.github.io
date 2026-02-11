@@ -1,0 +1,12 @@
+{
+  "name": "MUSE Luxe for Music Assistant",
+  "version": "2026.1.0",
+  "builds": [
+    {
+      "chipFamily": "ESP32",
+      "parts": [
+    { "path": "https://raw.githubusercontent.com/RASPIAUDIO/esphomeLuxeMusic/main/luxe_music.bin", "offset": 0}
+      ]
+    }
+  ]
+}
