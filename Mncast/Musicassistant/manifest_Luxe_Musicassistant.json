@@ -1,0 +1,12 @@
+{
+  "name": "Manga Cast for Music Assistant",
+  "version": "2026.1.0",
+  "builds": [
+    {
+      "chipFamily": "ESP32",
+      "parts": [
+    { "path": "https://raw.githubusercontent.com/RASPIAUDIO/esphomeMangaCastMusic/main/manga_music.bin", "offset": 0}
+      ]
+    }
+  ]
+}
