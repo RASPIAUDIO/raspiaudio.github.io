@@ -5,7 +5,7 @@
     {
       "chipFamily": "ESP32-S3",
       "parts": [
-    { "path": "https://raw.githubusercontent.com/RASPIAUDIO/esphomeRadioMusic/main/luxe_music.bin", "offset": 0}
+    { "path": "https://raw.githubusercontent.com/RASPIAUDIO/esphomeRadioMusic/main/radio_music.bin", "offset": 0}
       ]
     }
   ]
