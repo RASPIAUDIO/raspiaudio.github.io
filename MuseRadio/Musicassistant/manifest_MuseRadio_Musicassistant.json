@@ -3,9 +3,9 @@
   "version": "2026.1.1",
   "builds": [
     {
-      "chipFamily": "ESP32",
+      "chipFamily": "ESP32-S3",
       "parts": [
-    { "path": "https://raw.githubusercontent.com/RASPIAUDIO/esphomeRadioMusic/main/radio_music.bin", "offset": 0}
+    { "path": "./radio_music.bin", "offset": 0}
       ]
     }
   ]
