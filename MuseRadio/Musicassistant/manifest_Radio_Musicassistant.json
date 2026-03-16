@@ -1,0 +1,12 @@
+{
+  "name": "MUSE Radio for Music Assistant",
+  "version": "2026.1.1",
+  "builds": [
+    {
+      "chipFamily": "ESP32S3",
+      "parts": [
+    { "path": "https://raw.githubusercontent.com/RASPIAUDIO/esphomeRadioMusic/main/luxe_music.bin", "offset": 0}
+      ]
+    }
+  ]
+}
