@@ -1,0 +1,15 @@
+{
+  "name": "MuseRadio - Radio stable",
+  "version": "1.0-radio",
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "parts": [
+        {
+          "path": "./MuseRadio-radio-stable-full.bin",
+          "offset": 0
+        }
+      ]
+    }
+  ]
+}
