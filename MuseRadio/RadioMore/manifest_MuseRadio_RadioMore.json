@@ -1,0 +1,15 @@
+{
+  "name": "MuseRadio - Radio & more",
+  "version": "2.0-rc1-d4e1f0f",
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "parts": [
+        {
+          "path": "./MuseRadio-Radio-and-more-V2.0-rc1-full.bin",
+          "offset": 0
+        }
+      ]
+    }
+  ]
+}
