@@ -512,6 +512,7 @@
         function updateInstallButton() {
           if (selectedDevice && selectedApplication) {
             let manifestPath = `./${selectedDevice}/${selectedApplication}/manifest_${selectedDevice}_${selectedApplication}.json`;
+            installButton.setAttribute("manifest", manifestPath);
             installButton.manifest = manifestPath;
             installButton.style.visibility = "visible";
           } else {
