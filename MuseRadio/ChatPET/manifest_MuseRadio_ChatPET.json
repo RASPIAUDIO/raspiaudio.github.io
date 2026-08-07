@@ -1,0 +1,15 @@
+{
+  "name": "ChatPET for Muse Radio",
+  "version": "1.0.0",
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "parts": [
+        {
+          "path": "./chatpet.factory.bin",
+          "offset": 0
+        }
+      ]
+    }
+  ]
+}
