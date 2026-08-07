@@ -327,6 +327,10 @@
                 html: "./MuseRadio/RadioMore/RadioMore.html",
                 github: "https://github.com/RASPIAUDIO/MuseRadio-DEMO/tree/radio-and-more",
               },
+              ChatPET: {
+                html: "./MuseRadio/ChatPET/ChatPET.html",
+                github: "https://github.com/RASPIAUDIO/ChatG-PET-Muse/tree/6e12768acb52c26c598f5d358b726659a7cbc5de",
+              },
               Squeezelite: {
                 html: "./MuseRadio/Squeezelite/Squeezelite.html",
                 github: "https://github.com/RASPIAUDIO/squeezelite-esp32/",
@@ -469,7 +473,7 @@
 
             // Add GitHub repository link if available
             if (application.github) {
-              applicationDescription.innerHTML += `<p>Repository: .`;
+              applicationDescription.innerHTML += `<p>Repository: <a href="${application.github}" target="_blank" rel="noopener">${application.github}</a></p>`;
             }
           } catch (error) {
             console.error(error);
