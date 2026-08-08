@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="color-scheme" content="light">
+  <title>Muse Radio RM - Installation</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #eef2f4;
+      color: #18212b;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; }
+    main { width: min(100% - 32px, 760px); margin: 0 auto; padding: 32px 0 48px; }
+    header { display: grid; grid-template-columns: 112px 1fr; gap: 22px; align-items: center; margin-bottom: 24px; }
+    header img { width: 112px; height: 112px; object-fit: contain; background: #fff; border: 1px solid #d7dee3; border-radius: 8px; }
+    h1 { margin: 0 0 6px; font-size: clamp(30px, 6vw, 48px); line-height: 1.05; letter-spacing: 0; }
+    header p { margin: 0; color: #52606d; font-size: 17px; }
+    section { background: #fff; border: 1px solid #d7dee3; border-radius: 8px; padding: 24px; box-shadow: 0 4px 18px rgb(24 33 43 / 8%); }
+    h2 { margin: 0 0 8px; font-size: 22px; letter-spacing: 0; }
+    p { line-height: 1.55; }
+    label { display: block; margin: 18px 0 7px; font-weight: 700; }
+    .password-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+    input, button { min-height: 46px; border-radius: 6px; font: inherit; }
+    input { width: 100%; border: 1px solid #9aa7b2; padding: 10px 12px; color: #111827; background: #fff; }
+    input:focus { outline: 3px solid rgb(15 118 110 / 20%); border-color: #0f766e; }
+    button { border: 0; padding: 10px 18px; cursor: pointer; color: #fff; background: #0f766e; font-weight: 750; }
+    button:hover { background: #115e59; }
+    .error { min-height: 24px; margin: 10px 0 0; color: #b42318; font-weight: 650; }
+    .installer { display: none; }
+    .installer.unlocked { display: block; }
+    .auth.hidden { display: none; }
+    .facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0; }
+    .fact { padding: 13px; border: 1px solid #d7dee3; border-radius: 6px; background: #f8fafb; }
+    .fact strong { display: block; margin-bottom: 3px; }
+    .warning { border-left: 4px solid #b42318; padding: 10px 12px; background: #fff5f3; color: #7a271a; }
+    .install-row { display: flex; justify-content: center; margin: 24px 0 12px; min-height: 52px; }
+    .small { color: #687582; font-size: 13px; text-align: center; }
+    @media (max-width: 620px) {
+      main { width: min(100% - 24px, 760px); padding-top: 18px; }
+      header { grid-template-columns: 76px 1fr; gap: 14px; }
+      header img { width: 76px; height: 76px; }
+      section { padding: 18px; }
+      .password-row { grid-template-columns: 1fr; }
+      .facts { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <img src="../MuseRadio/MuseRadio.png" alt="Muse Radio">
+      <div>
+        <h1>Muse Radio RM</h1>
+        <p>Firmware radio personnalisé avec modem Wi-Fi 4G.</p>
+      </div>
+    </header>
+
+    <section id="auth" class="auth" aria-labelledby="auth-title">
+      <h2 id="auth-title">Accès au firmware</h2>
+      <p>Entrez le mot de passe de cette installation.</p>
+      <form id="password-form">
+        <label for="password">Mot de passe</label>
+        <div class="password-row">
+          <input id="password" name="password" type="password" autocomplete="current-password" required autofocus>
+          <button type="submit">Ouvrir le loader</button>
+        </div>
+        <p id="password-error" class="error" role="alert" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section id="installer" class="installer" aria-labelledby="installer-title">
+      <h2 id="installer-title">Installer Muse Radio RM</h2>
+      <div class="facts">
+        <div class="fact"><strong>Modem 4G</strong>GPIO38 maintenu HIGH</div>
+        <div class="fact"><strong>Wi-Fi usine</strong>xhkap préconfiguré</div>
+        <div class="fact"><strong>Boutons 1-2-3</strong>Radio Maria en direct</div>
+      </div>
+      <p class="warning"><strong>Installation complète :</strong> le flash remplace les réseaux Wi-Fi, presets et réglages déjà enregistrés sur la radio.</p>
+      <div class="install-row">
+        <esp-web-install-button manifest="./manifest.json"></esp-web-install-button>
+      </div>
+      <p class="small">Utilisez Chrome ou Edge sur ordinateur avec la Muse Radio connectée en USB.</p>
+    </section>
+  </main>
+
+  <script>
+    const expectedPasswordHash = "6addc3f3fd82d4f95bda745ccbcf3e3bba8461a16c73870a6f2ba06a2872954e";
+    const authSection = document.querySelector("#auth");
+    const installerSection = document.querySelector("#installer");
+    const form = document.querySelector("#password-form");
+    const passwordInput = document.querySelector("#password");
+    const error = document.querySelector("#password-error");
+
+    function unlock() {
+      authSection.classList.add("hidden");
+      installerSection.classList.add("unlocked");
+      sessionStorage.setItem("muse-radio-rm-unlocked", "1");
+    }
+
+    async function sha256(value) {
+      const bytes = new TextEncoder().encode(value);
+      const digest = await crypto.subtle.digest("SHA-256", bytes);
+      return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, "0")).join("");
+    }
+
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+      error.textContent = "";
+      if (await sha256(passwordInput.value) === expectedPasswordHash) {
+        passwordInput.value = "";
+        unlock();
+      } else {
+        error.textContent = "Mot de passe incorrect.";
+        passwordInput.select();
+      }
+    });
+
+    if (sessionStorage.getItem("muse-radio-rm-unlocked") === "1") unlock();
+  </script>
+  <script type="module" src="https://unpkg.com/esp-web-tools@9.4.0/dist/web/install-button.js?module"></script>
+</body>
+</html>
