@@ -1,6 +1,6 @@
 {
   "name": "MUSE Radio for Music Assistant",
-  "version": "2026.1.3",
+  "version": "2026.8.7",
   "builds": [
     {
       "chipFamily": "ESP32-S3",
