@@ -77,7 +77,8 @@ For **standalone USB audio without an ESP32**, use the separate
   I2S BCLK GPIO8, LRCLK GPIO7, DOUT GPIO9, DIN GPIO15; GPIO16/MCLK unused.
 - Firmware and asset hashes are in [SHA256SUMS](SHA256SUMS) and
   [release.json](release.json). The source is the source used for this build.
-- The product illustration is the ZeroCore S3 image supplied by RASPIAUDIO.
+- The product illustration is the ZeroCore S3 image supplied by RASPIAUDIO,
+  with its background removed to real PNG transparency, without redrawing the board.
 
 See [third-party provenance and licenses](source/UPSTREAM.md). ESPHome source
 and XMOS binary firmware are different licensing scopes; this is not a claim
