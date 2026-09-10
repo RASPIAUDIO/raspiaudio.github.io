@@ -1,0 +1,52 @@
+---
+wifi:
+  id: wifi_id
+  ap:
+    ssid: "Voice DSP Plus Setup"
+    password: "voice-dsp-plus"
+  on_connect:
+    - delay: 5s
+    - ble.disable:
+        id: voice_dsp_ble
+  on_disconnect:
+    - if:
+        condition:
+          lambda: return !id(wifi_id).has_sta();
+        then:
+          - ble.enable:
+              id: voice_dsp_ble
+
+esp32_ble:
+  id: voice_dsp_ble
+  enable_on_boot: true
+
+esp32_improv:
+  authorizer: none
+  wifi_timeout: 2min
+  on_start:
+    - lambda: id(voice_dsp_xmos_manager).set_ui_state(2);
+  on_provisioning:
+    - lambda: id(voice_dsp_xmos_manager).set_ui_state(2);
+  on_provisioned:
+    - script.execute: restore_xmos_ui
+  on_stop:
+    - script.execute: restore_xmos_ui
+
+improv_serial:
+
+captive_portal:
+
+esphome:
+  on_boot:
+    - priority: 200
+      then:
+        - delay: 2s
+        - if:
+            condition:
+              lambda: return id(wifi_id).has_sta();
+            then:
+              - ble.disable:
+                  id: voice_dsp_ble
+            else:
+              - ble.enable:
+                  id: voice_dsp_ble

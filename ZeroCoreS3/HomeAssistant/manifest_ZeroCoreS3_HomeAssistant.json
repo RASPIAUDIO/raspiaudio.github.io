@@ -1,0 +1,15 @@
+{
+  "name": "RASPIAUDIO.ZeroCore-S3-Voice-DSP-Plus",
+  "version": "0.1.66-web-beta",
+  "home_assistant_domain": "esphome",
+  "new_install_prompt_erase": true,
+  "new_install_improv_wait_time": 120,
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "parts": [
+        { "path": "voice-dsp-plus-zerocore-s3-0.1.66.factory.bin", "offset": 0 }
+      ]
+    }
+  ]
+}

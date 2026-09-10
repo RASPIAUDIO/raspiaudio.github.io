@@ -1,0 +1,42 @@
+---
+esp32:
+  board: esp32-s3-devkitc-1
+  variant: ESP32S3
+  flash_size: 16MB
+  framework:
+    type: esp-idf
+    sdkconfig_options:
+      CONFIG_SPIRAM_RODATA: "y"
+      CONFIG_SPIRAM_FETCH_INSTRUCTIONS: "y"
+      CONFIG_ESP32S3_DATA_CACHE_64KB: "y"
+      CONFIG_ESP32S3_DATA_CACHE_LINE_64B: "y"
+      CONFIG_ESP32S3_INSTRUCTION_CACHE_32KB: "y"
+      CONFIG_MBEDTLS_EXTERNAL_MEM_ALLOC: "y"
+      CONFIG_MBEDTLS_SSL_PROTO_TLS1_3: "y"
+
+psram:
+  mode: octal
+  speed: 80MHz
+  ignore_not_found: false
+
+i2c:
+  - id: voice_dsp_i2c
+    sda: GPIO5
+    scl: GPIO6
+    # The PAJ7620U2 breakout shares this header bus through jumper wiring.
+    # Its standalone validation used 50 kHz; keep that conservative rate while
+    # diagnosing all devices on the assembled bus.
+    frequency: 50kHz
+    # Fail fast when a peripheral holds SCL/SDA instead of starving the ESPHome
+    # main loop until the task watchdog resets the ESP32.
+    timeout: 5ms
+    scan: true
+
+spi:
+  - id: voice_dsp_spi
+    clk_pin: GPIO12
+    mosi_pin: GPIO11
+    miso_pin: GPIO13
+    interface: SPI2
+
+# I2S and GPIO16/MCLK remain unconfigured during the ESP32-only checkpoint.

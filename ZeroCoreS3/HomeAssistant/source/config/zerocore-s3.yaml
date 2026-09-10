@@ -1,0 +1,71 @@
+---
+substitutions:
+  node_name: voice-dsp-plus
+  friendly_name: Voice DSP Plus
+  company_name: RASPIAUDIO
+  project_name: ZeroCore-S3-Voice-DSP-Plus
+  esp32_fw_version: 0.1.66-web-beta
+  xmos_fw_version: 0.2.11
+  xmos_expected_version: 0.2.11
+  xmos_cs_allow_other_uses: 'true'
+
+esphome:
+  name: ${node_name}
+  name_add_mac_suffix: true
+  friendly_name: ${friendly_name}
+  min_version: 2026.8.1
+  project:
+    name: ${company_name}.${project_name}
+    version: ${esp32_fw_version}
+  on_boot:
+    - priority: -100
+      then:
+        - logger.log:
+            format: "Voice DSP+ product candidate %s; XMOS target %s"
+            args:
+              - '"${esp32_fw_version}"'
+              - '"${xmos_fw_version}"'
+        # Ignore PAJ7620 startup transients, then synchronize the gesture state
+        # with speaker_source's persisted mute state.
+        - delay: 10s
+        - lambda: |-
+            id(gesture_speaker_muted) = id(voice_dsp_media_player).is_muted();
+            id(gesture_speaker_mute_changed_ms) = 0;
+            id(gesture_control_ready) = true;
+            if (id(gesture_speaker_muted)) {
+              id(voice_dsp_xmos_manager).set_ui_state(9);
+            } else {
+              id(restore_xmos_ui).execute();
+            }
+            ESP_LOGI("gesture_control", "Gesture control ready; speaker is %s",
+                     id(gesture_speaker_muted) ? "muted" : "unmuted");
+
+packages:
+  core_board: !include packages/core_board.yaml
+  wifi_improv: !include packages/wifi-improv-product.yaml
+  home_assistant: !include packages/home_assistant.yaml
+  runtime: !include packages/voice-dsp-plus-runtime.yaml
+  # The firmware manager checks QSPI first and owns the recovery SPI loader.
+  speaker_media: !include packages/speaker-media-product.yaml
+  speaker_types: !include packages/speaker-types.yaml
+  assist: !include packages/assist-product.yaml
+  # Restore speaker gestures alongside the repaired diagnostic and S/M profiles.
+  gesture_control: !include packages/gesture-control.yaml
+
+external_components:
+  - source:
+      type: local
+      path: ../components
+    components:
+      - i2s_audio
+      - voice_dsp_i2s_microphone
+      - voice_dsp_plus
+      - xmos_spi_boot
+      - xmos_firmware_manager
+      - paj7620u2
+
+logger:
+  level: DEBUG
+
+safe_mode:
+
