@@ -1,0 +1,26 @@
+---
+api:
+  id: api_id
+  reboot_timeout: 0s
+  max_connections: 6
+
+ota:
+  - platform: esphome
+    id: ota_esphome
+
+button:
+  - platform: restart
+    name: Restart ESP32
+    entity_category: diagnostic
+
+text_sensor:
+  - platform: version
+    name: ESPHome version
+    entity_category: diagnostic
+  - platform: wifi_info
+    ip_address:
+      name: IP address
+      entity_category: diagnostic
+    ssid:
+      name: Connected SSID
+      entity_category: diagnostic

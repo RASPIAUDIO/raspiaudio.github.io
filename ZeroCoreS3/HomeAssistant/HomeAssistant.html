@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Voice DSP+ Home Assistant</title></head>
+<body>
+  <h2>Voice DSP+ for Home Assistant</h2>
+  <p><strong>Beta 0.1.66</strong> · ESPHome + XMOS audio firmware in one installation.</p>
+  <p>Local wake word on ESP32-S3, Home Assistant Assist, music playback and XMOS microphone processing. Configure your preferred Assist pipeline in Home Assistant.</p>
+  <ol>
+    <li>With power off, fit the Voice DSP+ board and the microphone module to ZeroCore S3.</li>
+    <li>Connect a USB data cable to <strong>ZeroCore S3</strong>, not to the Voice DSP+ XMOS USB port. Use Chrome or Edge on a computer.</li>
+    <li>Click <strong>Connect</strong> below and install. If needed, hold <strong>IO0</strong>, tap <strong>RESET</strong>, then release IO0 and reconnect to the bootloader port.</li>
+    <li>After the ESP32 restarts, follow the Wi-Fi setup. Serial Improv, Bluetooth Improv and the <strong>Voice DSP Plus Setup</strong> access point are available; the access-point password is <code>voice-dsp-plus</code>.</li>
+    <li><strong>Keep both boards powered.</strong> The ESP32 checks and, when necessary, updates XMOS automatically. The ESP32 installer finishing does not mean the audio processor is ready.</li>
+    <li>Add the discovered <strong>Voice DSP Plus</strong> device in Home Assistant, then check <strong>XMOS firmware status</strong>. Wait for a <strong>PASS</strong> result before testing audio. If it reports <strong>DEGRADED</strong> or <strong>ERROR</strong>, open the diagnostics instead of repeatedly unplugging.</li>
+  </ol>
+  <p class="install-note"><strong>Allow several minutes for the first XMOS update.</strong> Progress is reported in ESP32 serial logs and Home Assistant. This page does not yet display live XMOS progress itself. Do not disconnect at the end of the ESP32 progress bar.</p>
+  <p><strong>Before you install:</strong> this is a ZeroCore test release, not a finished production qualification. It requires compatible 40-pin wiring, a 12-LED XMOS ring if fitted, and an existing Home Assistant server. LINE/SQUARE is selected at cold boot. Physical ZeroCore onboarding and DOA performance still need validation.</p>
+  <p>Factory installation can erase saved Wi-Fi and settings; the installer asks first. Microphone audio goes to your configured Home Assistant pipeline after activation; the internal benchmark UDP capture has been removed.</p>
+  <p><a href="https://my.home-assistant.io/redirect/config_flow_start/?domain=esphome" target="_blank" rel="noopener">Add ESPHome device to Home Assistant</a> · <a href="./ZeroCoreS3/HomeAssistant/README.md" target="_blank" rel="noopener">Release notes and recovery</a></p>
+</body></html>

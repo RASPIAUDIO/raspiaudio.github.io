@@ -1,0 +1,504 @@
+---
+i2s_audio:
+  - id: i2s_shared
+    i2s_lrclk_pin: GPIO7
+    i2s_bclk_pin: GPIO8
+    i2s_mode: primary
+    access_mode: duplex
+
+microphone:
+  - platform: voice_dsp_i2s_microphone
+    id: voice_dsp_mics
+    sample_rate: 48000
+    i2s_din_pin: GPIO15
+    bits_per_sample: 32bit
+    channel: stereo
+    pdm: false
+    adc_type: external
+    correct_dc_offset: false
+    i2s_audio_id: i2s_shared
+
+micro_wake_word:
+  id: local_wake_word
+  models:
+    - model: ../assets/wake_word/hey_jarvis.json
+      id: hey_jarvis
+    - model: ../assets/wake_word/okay_nabu.json
+      id: okay_nabu
+    - model: ../assets/wake_word/stop.json
+      id: stop_word
+      internal: true
+  vad:
+    model: ../assets/wake_word/vad.json
+  microphone:
+    microphone: voice_dsp_mics
+    channels: 0
+    gain_factor: 6
+  stop_after_detection: false
+  on_wake_word_detected:
+    - lambda: |-
+        id(wake_word_count) += 1;
+        id(wake_word_count_sensor).publish_state(id(wake_word_count));
+        id(last_wake_word).publish_state(wake_word);
+        ESP_LOGI("voice_dsp_assist", "WAKE WORD DETECTED: %s",
+                 wake_word.c_str());
+    - if:
+        condition:
+          switch.is_off: master_mute_switch
+        then:
+          - if:
+              condition:
+                lambda: return wake_word == "Stop";
+              then:
+                - if:
+                    condition:
+                      switch.is_on: timer_ringing
+                    then:
+                      - switch.turn_off: timer_ringing
+                - voice_assistant.stop:
+                - media_player.stop:
+                    id: voice_dsp_media_player
+                    announcement: true
+                - media_player.stop:
+                    id: voice_dsp_media_player
+                    announcement: false
+                - text_sensor.template.publish:
+                    id: assist_phase
+                    state: idle
+                - script.execute: sync_stop_word_policy
+                - script.execute: restore_xmos_ui
+              else:
+                - if:
+                    condition:
+                      and:
+                        - binary_sensor.is_on: assist_client_connected
+                        - lambda: return id(voice_dsp_xmos_manager).ready();
+                    then:
+                      - mixer_speaker.apply_ducking:
+                          id: voice_dsp_media_input
+                          decibel_reduction: 20
+                          duration: 0s
+                      - lambda: id(voice_dsp_xmos_manager).set_ui_state(4);
+                      - text_sensor.template.publish:
+                          id: assist_phase
+                          state: waiting
+                      - script.execute:
+                          id: play_local_sound
+                          priority: true
+                          sound_file: wake_word_triggered_sound
+                      - delay: 300ms
+                      - voice_assistant.start:
+                          wake_word: !lambda return wake_word;
+                    else:
+                      - lambda: id(voice_dsp_xmos_manager).set_ui_state(4);
+                      - text_sensor.template.publish:
+                          id: assist_phase
+                          state: wake_detected_no_ha_client
+
+voice_assistant:
+  id: voice_dsp_assistant
+  microphone:
+    microphone: voice_dsp_mics
+    channels: 0
+  media_player: voice_dsp_media_player
+  micro_wake_word: local_wake_word
+  use_wake_word: false
+  noise_suppression_level: 0
+  auto_gain: 0 dBFS
+  volume_multiplier: 1
+  on_client_connected:
+    - binary_sensor.template.publish:
+        id: assist_client_connected
+        state: true
+    - if:
+        condition:
+          switch.is_off: master_mute_switch
+        then:
+          - delay: 5s
+          - if:
+              condition:
+                and:
+                  - binary_sensor.is_on: assist_client_connected
+                  - switch.is_off: master_mute_switch
+                  - lambda: return id(voice_dsp_xmos_manager).ready();
+              then:
+                - micro_wake_word.start:
+                - delay: 1s
+                - script.execute: apply_wake_word_sensitivity
+                - script.execute: sync_stop_word_policy
+                - lambda: id(voice_dsp_xmos_manager).set_ui_state(0);
+    - text_sensor.template.publish:
+        id: assist_phase
+        state: idle
+  on_client_disconnected:
+    - voice_assistant.stop:
+    - micro_wake_word.stop:
+    - binary_sensor.template.publish:
+        id: assist_client_connected
+        state: false
+    - lambda: id(voice_dsp_xmos_manager).set_ui_state(4);
+    - text_sensor.template.publish:
+        id: assist_phase
+        state: no_ha_client
+  on_start:
+    - mixer_speaker.apply_ducking:
+        id: voice_dsp_media_input
+        decibel_reduction: 20
+        duration: 0s
+  on_listening:
+    - lambda: id(voice_dsp_xmos_manager).set_ui_state(4);
+    - text_sensor.template.publish:
+        id: assist_phase
+        state: waiting
+  on_stt_vad_start:
+    - lambda: id(voice_dsp_xmos_manager).set_ui_state(5);
+    - text_sensor.template.publish:
+        id: assist_phase
+        state: listening
+  on_stt_vad_end:
+    - lambda: id(voice_dsp_xmos_manager).set_ui_state(6);
+    - text_sensor.template.publish:
+        id: assist_phase
+        state: thinking
+  on_stt_end:
+    - text_sensor.template.publish:
+        id: last_stt_transcript
+        state: !lambda return x;
+    - lambda: |-
+        ESP_LOGI("voice_dsp_assist", "STT TRANSCRIPT: %s", x.c_str());
+  on_intent_progress:
+    - if:
+        condition:
+          lambda: return !x.empty();
+        then:
+          - lambda: id(voice_dsp_xmos_manager).set_ui_state(7);
+          - text_sensor.template.publish:
+              id: assist_phase
+              state: replying
+          - script.execute: sync_stop_word_policy
+  on_tts_start:
+    - lambda: id(voice_dsp_xmos_manager).set_ui_state(7);
+    - text_sensor.template.publish:
+        id: assist_phase
+        state: replying
+    - script.execute: sync_stop_word_policy
+  on_end:
+    - wait_until:
+        not:
+          voice_assistant.is_running:
+    - mixer_speaker.apply_ducking:
+        id: voice_dsp_media_input
+        decibel_reduction: 0
+        duration: 1s
+    - text_sensor.template.publish:
+        id: assist_phase
+        state: idle
+    - script.execute: restart_wake_word_engine
+    - script.execute: restore_xmos_ui
+  on_error:
+    - mixer_speaker.apply_ducking:
+        id: voice_dsp_media_input
+        decibel_reduction: 0
+        duration: 1s
+    - lambda: id(voice_dsp_xmos_manager).set_ui_state(8);
+    - text_sensor.template.publish:
+        id: assist_phase
+        state: error
+    - delay: 1s
+    - script.execute: restore_xmos_ui
+    - text_sensor.template.publish:
+        id: assist_phase
+        state: idle
+    - script.execute: restart_wake_word_engine
+  on_timer_finished:
+    - switch.turn_on: timer_ringing
+  on_timer_started:
+    - script.execute: sync_stop_word_policy
+  on_timer_cancelled:
+    - script.execute: sync_stop_word_policy
+  on_timer_updated:
+    - script.execute: sync_stop_word_policy
+  on_timer_tick:
+    - script.execute: sync_stop_word_policy
+
+script:
+  - id: restart_wake_word_engine
+    mode: restart
+    then:
+      - if:
+          condition:
+            and:
+              - binary_sensor.is_on: assist_client_connected
+              - switch.is_off: master_mute_switch
+              - not:
+                  voice_assistant.is_running:
+              - lambda: return id(assist_phase).state == "idle";
+              - lambda: return !id(wake_restart_in_progress);
+              - lambda: return id(voice_dsp_xmos_manager).ready();
+          then:
+            - lambda: id(wake_restart_in_progress) = true;
+            - logger.log:
+                tag: wake_reliability
+                level: INFO
+                format: Restarting local wake-word engine from a clean idle state
+            - micro_wake_word.stop:
+            - wait_until:
+                condition:
+                  not:
+                    micro_wake_word.is_running:
+                timeout: 3s
+            - micro_wake_word.start:
+            - delay: 1s
+            - script.execute: apply_wake_word_sensitivity
+            - script.execute: sync_stop_word_policy
+            - lambda: id(wake_restart_in_progress) = false;
+
+  - id: ensure_wake_word_engine
+    mode: restart
+    then:
+      - if:
+          condition:
+            and:
+              - binary_sensor.is_on: assist_client_connected
+              - switch.is_off: master_mute_switch
+              - not:
+                  voice_assistant.is_running:
+              - not:
+                  micro_wake_word.is_running:
+              - lambda: return id(assist_phase).state == "idle";
+              - lambda: return !id(wake_restart_in_progress);
+              - lambda: return id(voice_dsp_xmos_manager).ready();
+          then:
+            - lambda: |-
+                id(wake_restart_in_progress) = true;
+                id(wake_word_recovery_count) += 1;
+                id(wake_word_recovery_count_sensor).publish_state(
+                    id(wake_word_recovery_count));
+            - logger.log:
+                tag: wake_reliability
+                level: WARN
+                format: Wake-word engine stopped unexpectedly; restarting it
+            - micro_wake_word.start:
+            - delay: 1s
+            - script.execute: apply_wake_word_sensitivity
+            - script.execute: sync_stop_word_policy
+            - lambda: id(wake_restart_in_progress) = false;
+
+  - id: apply_wake_word_sensitivity
+    mode: restart
+    then:
+      - lambda: |-
+          const auto x = id(wake_word_sensitivity).current_option();
+          // FutureProofHomes thresholds for okay_nabu@20241226.3 and
+          // hey_jarvis@v2.
+          if (x == "Slightly sensitive") {
+            id(okay_nabu).set_probability_cutoff(217);  // 0.85
+            id(hey_jarvis).set_probability_cutoff(247); // 0.97
+            id(stop_word).set_probability_cutoff(128);  // 0.50
+          } else if (x == "Moderately sensitive") {
+            id(okay_nabu).set_probability_cutoff(176);  // 0.69
+            id(hey_jarvis).set_probability_cutoff(235); // 0.92
+            id(stop_word).set_probability_cutoff(115);  // 0.45
+          } else {
+            id(okay_nabu).set_probability_cutoff(143);  // 0.56
+            // The XMOS AEC removes most playback energy, but residual music
+            // still lowers the model score. This candidate lowers only the
+            // most-sensitive Hey Jarvis gate for wake-over-music testing.
+            id(hey_jarvis).set_probability_cutoff(128); // 0.50
+            id(stop_word).set_probability_cutoff(89);   // 0.35
+          }
+
+select:
+  - platform: template
+    id: wake_word_sensitivity
+    name: Wake word sensitivity
+    icon: mdi:account-voice
+    optimistic: true
+    initial_option: Very sensitive
+    restore_value: true
+    options:
+      - Slightly sensitive
+      - Moderately sensitive
+      - Very sensitive
+    on_value:
+      - script.execute: apply_wake_word_sensitivity
+
+  - platform: template
+    id: stop_word_mode
+    name: Stop word mode
+    icon: mdi:stop-circle-outline
+    optimistic: true
+    initial_option: Music, responses and timers
+    restore_value: true
+    options:
+      - Disabled
+      - Timers only
+      - Responses and timers
+      - Music, responses and timers
+    on_value:
+      - script.execute: sync_stop_word_policy
+
+switch:
+  - platform: template
+    id: master_mute_switch
+    name: Mute microphones
+    icon: mdi:microphone-off
+    entity_category: config
+    optimistic: true
+    restore_mode: ALWAYS_OFF
+    on_turn_on:
+      - voice_assistant.stop:
+      - micro_wake_word.stop:
+      - script.execute:
+          id: play_local_sound
+          priority: true
+          sound_file: mute_switch_on_sound
+      - lambda: |-
+          id(voice_dsp_xmos_manager).set_mic_mute(true);
+          id(voice_dsp_xmos_manager).set_ui_state(9);
+      - text_sensor.template.publish:
+          id: assist_phase
+          state: muted
+    on_turn_off:
+      - lambda: id(voice_dsp_xmos_manager).set_mic_mute(false);
+      - script.execute:
+          id: play_local_sound
+          priority: true
+          sound_file: mute_switch_off_sound
+      - if:
+          condition:
+            and:
+              - binary_sensor.is_on: assist_client_connected
+              - lambda: return id(voice_dsp_xmos_manager).ready();
+          then:
+            - micro_wake_word.start:
+            - delay: 1s
+            - script.execute: apply_wake_word_sensitivity
+            - script.execute: sync_stop_word_policy
+      - script.execute: restore_xmos_ui
+      - text_sensor.template.publish:
+          id: assist_phase
+          state: idle
+
+globals:
+  - id: wake_word_count
+    type: uint32_t
+    restore_value: false
+    initial_value: "0"
+  - id: wake_word_recovery_count
+    type: uint32_t
+    restore_value: false
+    initial_value: "0"
+  - id: wake_restart_in_progress
+    type: bool
+    restore_value: false
+    initial_value: "false"
+  - id: stop_word_enabled
+    type: bool
+    restore_value: false
+    # All models start enabled. The first policy synchronization disables Stop
+    # unless media, a response or a timer actually needs it.
+    initial_value: "true"
+
+sensor:
+  - platform: template
+    id: wake_word_count_sensor
+    name: Wake word detections
+    accuracy_decimals: 0
+    entity_category: diagnostic
+  - platform: template
+    id: wake_word_recovery_count_sensor
+    name: Wake word automatic recoveries
+    accuracy_decimals: 0
+    entity_category: diagnostic
+
+binary_sensor:
+  - platform: template
+    id: assist_client_connected
+    name: Assist client connected
+    entity_category: diagnostic
+  - platform: template
+    id: wake_word_engine_running
+    name: Wake word engine running
+    entity_category: diagnostic
+    lambda: return id(local_wake_word).is_running();
+
+button:
+  - platform: template
+    id: restart_wake_word_button
+    name: Restart wake word engine
+    icon: mdi:restart-alert
+    entity_category: diagnostic
+    on_press:
+      - script.execute: restart_wake_word_engine
+
+text_sensor:
+  - platform: template
+    id: last_wake_word
+    name: Last wake word
+    entity_category: diagnostic
+  - platform: template
+    id: assist_phase
+    name: Assist phase
+    entity_category: diagnostic
+  - platform: template
+    id: last_stt_transcript
+    name: Last STT transcript
+    entity_category: diagnostic
+
+interval:
+  - interval: 5s
+    then:
+      - script.execute: ensure_wake_word_engine
+
+esphome:
+  on_boot:
+    - priority: -100
+      then:
+        - voice_assistant.stop:
+        - micro_wake_word.stop:
+        - binary_sensor.template.publish:
+            id: assist_client_connected
+            state: false
+        - switch.template.publish:
+            id: master_mute_switch
+            state: false
+        - text_sensor.template.publish:
+            id: assist_phase
+            state: booting
+        - text_sensor.template.publish:
+            id: last_stt_transcript
+            state: ""
+        - wait_until:
+            condition:
+              lambda: return id(voice_dsp_xmos_manager).ready();
+            # A verified I2C DFU can take several minutes. This automation
+            # yields to the main loop; do not permanently skip I2S startup.
+        - if:
+            condition:
+              lambda: return id(voice_dsp_xmos_manager).ready();
+            then:
+              - lambda: |-
+                  // RX has no BCLK/LRCLK until the shared I2S TX path runs.
+                  // Keep a silent 48 kHz stereo stream active for the
+                  // microphones.
+                  id(voice_dsp_i2s_speaker).set_audio_stream_info(
+                      audio::AudioStreamInfo(16, 2, 48000));
+                  id(voice_dsp_i2s_speaker).start();
+                  id(voice_dsp_xmos_manager).set_ui_state(4);
+        - sensor.template.publish:
+            id: wake_word_count_sensor
+            state: 0
+        - sensor.template.publish:
+            id: wake_word_recovery_count_sensor
+            state: 0
+        - text_sensor.template.publish:
+            id: assist_phase
+            state: !lambda |-
+              return id(assist_client_connected).state ? "idle" : "no_ha_client";
+        - script.execute: restore_xmos_ui
+        - script.execute: ensure_wake_word_engine
+        - logger.log:
+            format: >-
+              Local wake word and Assist bridge started on Voice DSP+ processed
+              channel

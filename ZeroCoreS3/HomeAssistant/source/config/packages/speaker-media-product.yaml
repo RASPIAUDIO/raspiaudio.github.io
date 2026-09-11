@@ -1,0 +1,353 @@
+---
+speaker:
+  - platform: i2s_audio
+    id: voice_dsp_i2s_speaker
+    sample_rate: 48000
+    i2s_dout_pin: GPIO9
+    bits_per_sample: 32bit
+    i2s_audio_id: i2s_shared
+    dac_type: external
+    channel: stereo
+    timeout: never
+    buffer_duration: 100ms
+
+  - platform: mixer
+    id: voice_dsp_mixing_speaker
+    output_speaker: voice_dsp_i2s_speaker
+    num_channels: 2
+    source_speakers:
+      - id: voice_dsp_announcement_input
+        timeout: never
+      - id: voice_dsp_media_input
+        timeout: never
+        buffer_duration: 100ms
+
+  - platform: resampler
+    id: voice_dsp_announcement_resampler
+    output_speaker: voice_dsp_announcement_input
+    sample_rate: 48000
+    bits_per_sample: 16
+  - platform: resampler
+    id: voice_dsp_media_resampler
+    output_speaker: voice_dsp_media_input
+    sample_rate: 48000
+    bits_per_sample: 16
+
+audio_file:
+  - id: voice_dsp_test_tone
+    file: ../assets/raspiaudio_sounds/test_tone.wav
+  - id: wake_word_triggered_sound
+    file: ../assets/raspiaudio_sounds/wake_word_triggered.wav
+  - id: mute_switch_on_sound
+    file: ../assets/raspiaudio_sounds/mute_switch_on.wav
+  - id: mute_switch_off_sound
+    file: ../assets/raspiaudio_sounds/mute_switch_off.wav
+  - id: jack_connected_sound
+    file: ../assets/raspiaudio_sounds/jack_connected.wav
+  - id: jack_disconnected_sound
+    file: ../assets/raspiaudio_sounds/jack_disconnected.wav
+  - id: timer_finished_sound
+    file: ../assets/raspiaudio_sounds/timer_finished.wav
+
+media_source:
+  - platform: audio_file
+    id: voice_dsp_audio_file_source
+  - platform: audio_http
+    id: voice_dsp_http_announcement_source
+    buffer_size: 250000
+  - platform: audio_http
+    id: voice_dsp_http_media_source
+    buffer_size: 500000
+
+media_player:
+  - platform: speaker_source
+    id: voice_dsp_media_player
+    name: Voice DSP+ Media Player
+    volume_increment: 5%
+    # speaker_source remaps the HA 0..100% slider into this range. Keep the
+    # initial level conservative, but do not silently cap full scale at 60%.
+    volume_initial: 15%
+    volume_min: 5%
+    volume_max: 100%
+    announcement_pipeline:
+      speaker: voice_dsp_announcement_resampler
+      format: FLAC
+      num_channels: 1
+      sample_rate: 48000
+      sources:
+        - voice_dsp_audio_file_source
+        - voice_dsp_http_announcement_source
+    media_pipeline:
+      speaker: voice_dsp_media_resampler
+      format: FLAC
+      num_channels: 2
+      sample_rate: 48000
+      sources:
+        - voice_dsp_http_media_source
+    on_play:
+      - script.execute: sync_stop_word_policy
+    on_idle:
+      - script.execute: sync_stop_word_policy
+      # Recreate the inference task after media playback. This recovers the
+      # ESPHome wake-word engine if a model-list transition stalled it while
+      # leaving XMOS and the I2S stream untouched.
+      - script.execute: restart_wake_word_engine
+    on_state:
+      - lambda: |-
+          const bool muted = id(voice_dsp_media_player).is_muted();
+          if (muted != id(gesture_speaker_muted)) {
+            id(gesture_speaker_muted) = muted;
+            id(gesture_speaker_mute_changed_ms) = millis();
+            if (muted) {
+              id(voice_dsp_xmos_manager).set_ui_state(9);
+            } else {
+              id(restore_xmos_ui).execute();
+            }
+            ESP_LOGI("gesture_control", "Speaker mute state synchronized from media player: %s",
+                     muted ? "muted" : "unmuted");
+          }
+
+select:
+  - platform: template
+    id: speaker_channel_output
+    name: Speaker channel output
+    icon: mdi:speaker-multiple
+    options:
+      - Mono (Left + Right)
+      - Left Channel Only
+      - Right Channel Only
+    initial_option: Mono (Left + Right)
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    on_value:
+      - script.execute: apply_speaker_channel_output
+
+  - platform: template
+    id: speaker_sound_profile
+    name: Sound profile
+    icon: mdi:tune-vertical
+    options:
+      - Flat
+      - Voice
+      - Music
+      - Night
+    initial_option: Flat
+    entity_category: config
+    optimistic: true
+    restore_value: true
+    on_value:
+      - script.execute: apply_output_equalizer
+
+number:
+  - platform: template
+    id: speaker_bass_db
+    name: Bass
+    icon: mdi:music-clef-bass
+    unit_of_measurement: dB
+    min_value: -6
+    max_value: 6
+    step: 1
+    initial_value: 0
+    optimistic: true
+    restore_value: true
+    mode: slider
+    entity_category: config
+    on_value:
+      - script.execute: apply_output_equalizer
+
+  - platform: template
+    id: speaker_treble_db
+    name: Treble
+    icon: mdi:music-clef-treble
+    unit_of_measurement: dB
+    min_value: -6
+    max_value: 6
+    step: 1
+    initial_value: 0
+    optimistic: true
+    restore_value: true
+    mode: slider
+    entity_category: config
+    on_value:
+      - script.execute: apply_output_equalizer
+
+script:
+  - id: apply_speaker_channel_output
+    mode: restart
+    then:
+      - lambda: |-
+          // The jack route is always true stereo. The selected downmix applies
+          // only to the differential mono speaker route.
+          uint8_t mode = i2s_audio::I2SAudioSpeaker::OUTPUT_STEREO;
+          if (!id(voice_dsp_jack_detect).state) {
+            const auto selected = id(speaker_channel_output).active_index();
+            mode = selected.has_value() ? static_cast<uint8_t>(selected.value()) :
+                                          static_cast<uint8_t>(i2s_audio::I2SAudioSpeaker::OUTPUT_MONO_MIX);
+          }
+          id(voice_dsp_i2s_speaker).set_output_channel_mode(mode);
+          ESP_LOGI("speaker_channel", "Output mode=%u (%s)", mode,
+                   id(voice_dsp_jack_detect).state ? "headphone stereo" :
+                   id(speaker_channel_output).current_option().c_str());
+
+  - id: apply_output_equalizer
+    mode: restart
+    then:
+      - delay: 150ms
+      - lambda: |-
+          float preset_bass = 0.0f;
+          float preset_treble = 0.0f;
+          const auto profile = id(speaker_sound_profile).current_option();
+          if (profile == "Voice") {
+            preset_bass = -2.0f;
+            preset_treble = 2.0f;
+          } else if (profile == "Music") {
+            preset_bass = 2.0f;
+            preset_treble = 1.0f;
+          } else if (profile == "Night") {
+            preset_bass = -4.0f;
+            preset_treble = -2.0f;
+          }
+          const float bass = std::clamp(preset_bass + id(speaker_bass_db).state, -6.0f, 6.0f);
+          const float treble = std::clamp(preset_treble + id(speaker_treble_db).state, -6.0f, 6.0f);
+          if (!id(voice_dsp_controller).apply_output_equalizer(bass, treble)) {
+            ESP_LOGE("output_eq", "Codec EQ update failed");
+          } else {
+            ESP_LOGI("output_eq", "%s: bass=%.1f dB treble=%.1f dB",
+                     profile.c_str(), bass, treble);
+          }
+
+  - id: sync_stop_word_policy
+    mode: restart
+    then:
+      - delay: 50ms
+      - if:
+          condition:
+            lambda: |-
+              if (id(master_mute_switch).state)
+                return false;
+              const auto mode = id(stop_word_mode).current_option();
+              if (mode == "Disabled")
+                return false;
+              if (id(timer_ringing).state)
+                return true;
+              if (mode == "Timers only")
+                return false;
+              if (id(assist_phase).state == "replying")
+                return true;
+              const auto state = id(voice_dsp_media_player).state;
+              return mode == "Music, responses and timers" &&
+                     (state == media_player::MediaPlayerState::
+                                   MEDIA_PLAYER_STATE_PLAYING ||
+                      state == media_player::MediaPlayerState::
+                                   MEDIA_PLAYER_STATE_ANNOUNCING);
+          then:
+            - if:
+                condition:
+                  lambda: return !id(stop_word_enabled);
+                then:
+                  - lambda: id(stop_word_enabled) = true;
+                  - logger.log:
+                      tag: wake_reliability
+                      level: DEBUG
+                      format: Enabling Stop model for active media/response/timer
+                  - micro_wake_word.enable_model: stop_word
+          else:
+            - if:
+                condition:
+                  lambda: return id(stop_word_enabled);
+                then:
+                  - lambda: id(stop_word_enabled) = false;
+                  - logger.log:
+                      tag: wake_reliability
+                      level: DEBUG
+                      format: Disabling Stop model outside media/response/timer
+                  - micro_wake_word.disable_model: stop_word
+
+  - id: play_local_sound
+    mode: restart
+    parameters:
+      priority: bool
+      sound_file: string
+    then:
+      - if:
+          condition:
+            lambda: return priority;
+          then:
+            - media_player.stop:
+                id: voice_dsp_media_player
+                announcement: true
+      - lambda: |-
+          const bool is_announcement =
+              id(voice_dsp_media_player).state ==
+              media_player::MediaPlayerState::MEDIA_PLAYER_STATE_ANNOUNCING;
+          if (!is_announcement ||
+              priority) {
+            id(voice_dsp_media_player)
+              ->make_call()
+              .set_media_url("audio-file://" + sound_file)
+              .set_announcement(true)
+              .perform();
+          }
+
+switch:
+  - platform: template
+    id: timer_ringing
+    internal: true
+    optimistic: true
+    restore_mode: ALWAYS_OFF
+    on_turn_on:
+      - mixer_speaker.apply_ducking:
+          id: voice_dsp_media_input
+          decibel_reduction: 20
+          duration: 0s
+      - media_player.repeat_one:
+          id: voice_dsp_media_player
+          announcement: true
+      - speaker_source.set_playlist_delay:
+          id: voice_dsp_media_player
+          pipeline: announcement
+          delay: 500ms
+      - script.execute: sync_stop_word_policy
+      - script.execute:
+          id: play_local_sound
+          priority: true
+          sound_file: timer_finished_sound
+      - delay: 15min
+      - switch.turn_off: timer_ringing
+    on_turn_off:
+      - media_player.repeat_off:
+          id: voice_dsp_media_player
+          announcement: true
+      - speaker_source.set_playlist_delay:
+          id: voice_dsp_media_player
+          pipeline: announcement
+          delay: 0ms
+      - if:
+          condition:
+            media_player.is_announcing: voice_dsp_media_player
+          then:
+            - media_player.stop:
+                id: voice_dsp_media_player
+                announcement: true
+      - if:
+          condition:
+            not:
+              voice_assistant.is_running:
+          then:
+            - mixer_speaker.apply_ducking:
+                id: voice_dsp_media_input
+                decibel_reduction: 0
+                duration: 1s
+      - script.execute: sync_stop_word_policy
+
+button:
+  - platform: template
+    id: play_safe_i2s_test_tone
+    name: Play safe I2S test tone
+    entity_category: diagnostic
+    on_press:
+      - script.execute:
+          id: play_local_sound
+          priority: true
+          sound_file: voice_dsp_test_tone

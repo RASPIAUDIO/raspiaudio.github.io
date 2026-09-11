@@ -1,0 +1,267 @@
+---
+binary_sensor:
+  - platform: template
+    id: voice_dsp_jack_detect
+    name: Jack inserted
+    entity_category: diagnostic
+    on_press:
+      - script.execute: apply_speaker_channel_output
+      - script.execute:
+          id: play_local_sound
+          priority: false
+          sound_file: jack_connected_sound
+      - lambda: id(voice_dsp_xmos_manager).set_ui_state(10);
+      - delay: 1200ms
+      - script.execute: restore_xmos_ui
+    on_release:
+      - script.execute: apply_speaker_channel_output
+      - script.execute:
+          id: play_local_sound
+          priority: false
+          sound_file: jack_disconnected_sound
+      - lambda: id(voice_dsp_xmos_manager).set_ui_state(11);
+      - delay: 1200ms
+      - script.execute: restore_xmos_ui
+
+  - platform: template
+    id: voice_dsp_square_geometry
+    name: Square microphone geometry
+    entity_category: diagnostic
+
+  - platform: template
+    id: voice_dsp_user_button
+    internal: true
+    on_press:
+      - switch.toggle: master_mute_switch
+
+text_sensor:
+  - platform: template
+    id: voice_dsp_microphone_geometry
+    name: Microphone geometry
+    icon: mdi:microphone-settings
+    entity_category: diagnostic
+    update_interval: 1s
+    lambda: |-
+      if (!id(voice_dsp_square_geometry).has_state() ||
+          id(voice_dsp_controller).status_has_warning())
+        return std::string("UNKNOWN");
+      return id(voice_dsp_square_geometry).state ? std::string("SQUARE") :
+                                                  std::string("LINE");
+
+  - platform: template
+    id: voice_dsp_controller_status
+    name: Voice DSP controller status
+    entity_category: diagnostic
+  - platform: template
+    id: voice_dsp_firmware_status
+    name: XMOS firmware status
+    entity_category: diagnostic
+  - platform: template
+    id: voice_dsp_pp_profile
+    name: XMOS DSP profile
+    entity_category: diagnostic
+  - platform: template
+    id: voice_dsp_aec_profile
+    name: XMOS AEC profile
+    entity_category: diagnostic
+  - platform: template
+    id: voice_dsp_audio_output_chain
+    name: Audio output chain
+    icon: mdi:amplifier
+    entity_category: diagnostic
+    update_interval: never
+
+  - platform: template
+    id: voice_dsp_microphone_diagnostic
+    name: Microphone diagnostic
+    icon: mdi:microphone-message
+    entity_category: diagnostic
+
+sensor:
+  - platform: template
+    id: voice_dsp_doa_azimuth
+    name: BeClear DOA azimuth
+    icon: mdi:compass-outline
+    unit_of_measurement: deg
+    accuracy_decimals: 0
+
+  - platform: template
+    id: voice_dsp_doa_energy
+    name: BeClear DOA speech energy
+    icon: mdi:waveform
+    accuracy_decimals: 3
+    entity_category: diagnostic
+
+  - platform: template
+    id: voice_dsp_firmware_progress
+    name: XMOS firmware update progress
+    unit_of_measurement: "%"
+    accuracy_decimals: 0
+    entity_category: diagnostic
+
+  - platform: template
+    id: voice_dsp_mic_d0_level
+    name: Microphone D0 raw level
+    unit_of_measurement: dB
+    accuracy_decimals: 1
+    icon: mdi:microphone
+    entity_category: diagnostic
+
+  - platform: template
+    id: voice_dsp_mic_d1_level
+    name: Microphone D1 raw level
+    unit_of_measurement: dB
+    accuracy_decimals: 1
+    icon: mdi:microphone
+    entity_category: diagnostic
+
+  - platform: template
+    id: voice_dsp_mic_d2_level
+    name: Microphone D2 raw level
+    unit_of_measurement: dB
+    accuracy_decimals: 1
+    icon: mdi:microphone
+    entity_category: diagnostic
+
+  - platform: template
+    id: voice_dsp_mic_d3_level
+    name: Microphone D3 raw level
+    unit_of_measurement: dB
+    accuracy_decimals: 1
+    icon: mdi:microphone
+    entity_category: diagnostic
+
+voice_dsp_plus:
+  id: voice_dsp_controller
+  i2c_id: voice_dsp_i2c
+  address: 0x20
+  xmos_address: 0x2C
+  dac_address: 0x18
+  update_interval: 200ms
+  jack_sensor: voice_dsp_jack_detect
+  square_sensor: voice_dsp_square_geometry
+  xmos_status: voice_dsp_controller_status
+  dsp_status: voice_dsp_pp_profile
+  aec_status: voice_dsp_aec_profile
+  doa_sensor: voice_dsp_doa_azimuth
+  doa_energy_sensor: voice_dsp_doa_energy
+  mic_d0_level_sensor: voice_dsp_mic_d0_level
+  mic_d1_level_sensor: voice_dsp_mic_d1_level
+  mic_d2_level_sensor: voice_dsp_mic_d2_level
+  mic_d3_level_sensor: voice_dsp_mic_d3_level
+  mic_diagnostic_status: voice_dsp_microphone_diagnostic
+
+api:
+  actions:
+    - action: verify_xmos_firmware
+      then:
+        - voice_assistant.stop:
+        - micro_wake_word.stop:
+        - media_player.stop:
+            id: voice_dsp_media_player
+        - lambda: id(voice_dsp_xmos_manager).request_verify();
+    - action: xmos_apply_dsp_profile
+      variables:
+        echo_suppression: bool
+        min_ns: float
+        min_nn: float
+        agc_enabled: bool
+        agc_max_gain: float
+        agc_target: float
+        limiter_enabled: bool
+        limiter_power: float
+      then:
+        - lambda: |-
+            id(voice_dsp_controller).apply_pp_profile(
+                echo_suppression, min_ns, min_nn, agc_enabled, agc_max_gain,
+                agc_target, limiter_enabled, limiter_power);
+    - action: xmos_refresh_dsp_profile
+      then:
+        - lambda: id(voice_dsp_controller).refresh_pp_profile();
+    - action: xmos_apply_aec_profile
+      variables:
+        far_ext_gain: float
+        echo_suppression: bool
+        gamma_e: float
+        gamma_etail: float
+        gamma_enl: float
+        nl_attenuation: bool
+        mgscale_max: float
+        mgscale_min: float
+        mgscale_current: float
+        dt_sensitive: int
+      then:
+        - lambda: |-
+            id(voice_dsp_controller).apply_aec_profile(
+                far_ext_gain, echo_suppression, gamma_e, gamma_etail,
+                gamma_enl, nl_attenuation, mgscale_max, mgscale_min,
+                mgscale_current, dt_sensitive);
+    - action: xmos_refresh_aec_profile
+      then:
+        - lambda: id(voice_dsp_controller).refresh_aec_profile();
+    - action: xmos_diagnose_doa
+      then:
+        - lambda: id(voice_dsp_controller).start_doa_diagnostic();
+
+xmos_firmware_manager:
+  id: voice_dsp_xmos_manager
+  diagnostic_passive: false
+  controller_id: voice_dsp_controller
+  i2c_id: voice_dsp_i2c
+  address: 0x20
+  xmos_address: 0x2C
+  spi_id: voice_dsp_spi
+  cs_pin:
+    number: GPIO10
+    allow_other_uses: false
+  data_rate: 5MHz
+  spi_mode: MODE0
+  upgrade_image: ../xmos/voice_dsp_plus_48khz_auto_ui_v0.2.11.upgrade.bin
+  upgrade_sha256: >-
+    21c1f844e41201416f249408304e6fdb80bd0d6a8d6f46e4453523448fcca2c6
+  # Use the candidate itself as the recovery image while validating its runtime
+  # independently from the persistent QSPI container.
+  spi_boot_image: ../xmos/voice_dsp_plus_48khz_auto_ui_v0.2.11.spi_boot.bin
+  spi_boot_sha256: >-
+    dd113cc2c79f5f4f9280132333566960782d568aca8eeacceb445c73101e8706
+  spi_transfer_block_num: 107
+  qspi_capacity_bytes: 2097152
+  expected_version: 0.2.11
+  status_sensor: voice_dsp_firmware_status
+  progress_sensor: voice_dsp_firmware_progress
+  button_sensor: voice_dsp_user_button
+
+button:
+  - platform: template
+    id: run_microphone_diagnostic
+    name: Run microphone check
+    icon: mdi:microphone-question
+    entity_category: diagnostic
+    on_press:
+      - lambda: id(voice_dsp_controller).start_microphone_diagnostic();
+
+  - platform: template
+    id: repair_xmos_firmware
+    name: Repair or reflash XMOS firmware
+    entity_category: diagnostic
+    on_press:
+      - voice_assistant.stop:
+      - micro_wake_word.stop:
+      - media_player.stop:
+          id: voice_dsp_media_player
+      - lambda: id(voice_dsp_xmos_manager).request_reflash();
+
+script:
+  - id: restore_xmos_ui
+    mode: restart
+    then:
+      - lambda: |-
+          if (id(master_mute_switch).state || id(gesture_speaker_muted)) {
+            id(voice_dsp_xmos_manager).set_ui_state(9);
+          } else if (!id(assist_client_connected).state) {
+            // Reuse the Satellite1-inspired blue twinkle while Home Assistant
+            // is not connected instead of the former orange pulse.
+            id(voice_dsp_xmos_manager).set_ui_state(4);
+          } else {
+            id(voice_dsp_xmos_manager).set_ui_state(0);
+          }

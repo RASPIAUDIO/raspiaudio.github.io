@@ -1,0 +1,143 @@
+dependencies:
+  esphome/esp-audio-libs:
+    component_hash: 7e554555cce160b406ad6280f6efa9f0e10fceb1bd69ceb70b7e5fd3135b500a
+    dependencies: []
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 3.2.1
+  esphome/esp-micro-speech-features:
+    component_hash: 2b720b4ed49fa9df14b24f35fd3ec8a012eddde1c8dd4709448e36a581eebd3e
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=4.4'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 1.2.3
+  esphome/micro-decoder:
+    component_hash: 003c9bc4b2350f4f06a7b1e8560ea5ae8758ecba91e58a521b40cd8be2f4f119
+    dependencies:
+    - name: esphome/micro-flac
+      registry_url: https://components.espressif.com
+      require: private
+      rules:
+      - if: $CONFIG{MICRO_DECODER_CODEC_FLAC} == True
+      version: '>=0.1.1'
+    - name: esphome/micro-mp3
+      registry_url: https://components.espressif.com
+      require: private
+      rules:
+      - if: $CONFIG{MICRO_DECODER_CODEC_MP3} == True
+      version: '>=0.2.0'
+    - name: esphome/micro-opus
+      registry_url: https://components.espressif.com
+      require: private
+      rules:
+      - if: $CONFIG{MICRO_DECODER_CODEC_OPUS} == True
+      version: '>=0.3.5'
+    - name: esphome/micro-vorbis
+      registry_url: https://components.espressif.com
+      require: private
+      rules:
+      - if: $CONFIG{MICRO_DECODER_CODEC_VORBIS} == True
+      version: '>=0.1.0'
+    - name: esphome/micro-wav
+      registry_url: https://components.espressif.com
+      require: private
+      rules:
+      - if: $CONFIG{MICRO_DECODER_CODEC_WAV} == True
+      version: '>=0.1.0'
+    - name: idf
+      require: private
+      version: '>=5.5'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 0.4.0
+  esphome/micro-flac:
+    component_hash: d2e75ea77eaa45b83ed4ba968040957b27f53a7344b04d1c27495321b95bd44e
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=4.4'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 0.2.0
+  esphome/micro-wav:
+    component_hash: e06aa5757ed7477baee030ee56f2eb479b5a39b2de3759d7dac17bdd47502d70
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=4.4'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 0.2.0
+  espressif/esp-nn:
+    component_hash: f4633a02f05fef53b80de65ade1f733ebdef637e4c8b8be4eb11f5e27f6d9f3e
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=4.2'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 1.1.2
+  espressif/esp-tflite-micro:
+    component_hash: 78502e833b227ec15b917222ed046df1a46f2e5d3593d2a77a162012fa9a1aa0
+    dependencies:
+    - name: espressif/esp-nn
+      registry_url: https://components.espressif.com
+      require: private
+      version: ^1.1.0
+    - name: idf
+      require: private
+      version: '>=4.4'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 1.3.3~1
+  espressif/mdns:
+    component_hash: e81ca7a7f53ea34e78274df054da692c272e1315572876b237b1748e267c013b
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=5.0'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 1.11.3
+  idf:
+    source:
+      type: idf
+    version: 5.5.5
+  improv/Improv:
+    dependencies: []
+    source:
+      path: C:\Users\olivi\Desktop\codex\xmos\raspiaudio-apps-publish\ZeroCoreS3\HomeAssistant\source\config\.esphome\pio_components\idf\f41367da\improv\Improv
+      type: local
+    version: '*'
+  zorxx/multipart-parser:
+    component_hash: a80b98bbdd530829b5a4df54cd8332a265ef4d310392562cf37d4cac548c5fd2
+    dependencies: []
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 1.0.1
+direct_dependencies:
+- esphome/esp-audio-libs
+- esphome/esp-micro-speech-features
+- esphome/micro-decoder
+- esphome/micro-flac
+- esphome/micro-wav
+- espressif/esp-nn
+- espressif/esp-tflite-micro
+- espressif/mdns
+- improv/Improv
+- zorxx/multipart-parser
+manifest_hash: 53784cfca83f9dafacad7c5276aff5eea94758d2eebcb6ab5bd953cf98b2e555
+target: esp32s3
+version: 2.0.0

@@ -1,0 +1,189 @@
+---
+globals:
+  - id: gesture_control_ready
+    type: bool
+    restore_value: false
+    initial_value: 'false'
+  - id: gesture_speaker_muted
+    type: bool
+    restore_value: false
+    initial_value: 'false'
+  - id: gesture_speaker_mute_changed_ms
+    type: uint32_t
+    restore_value: false
+    initial_value: '0'
+  - id: gesture_transition_busy
+    type: bool
+    initial_value: 'false'
+
+binary_sensor:
+  - platform: template
+    id: gesture_sensor_connected
+    name: Gesture sensor connected
+    device_class: connectivity
+    entity_category: diagnostic
+    lambda: return id(gesture_sensor).is_ready();
+
+text_sensor:
+  - platform: template
+    id: paj7620_communication
+    name: Gesture I2C communication
+    icon: mdi:lan-connect
+    entity_category: diagnostic
+    update_interval: 2s
+    lambda: return id(gesture_sensor).communication_summary();
+
+  - platform: template
+    id: paj7620_last_gesture
+    name: Last gesture
+    icon: mdi:gesture-swipe
+    entity_category: diagnostic
+
+sensor:
+  - platform: template
+    name: Gesture I2C successful reads
+    icon: mdi:counter
+    entity_category: diagnostic
+    accuracy_decimals: 0
+    state_class: total_increasing
+    update_interval: 2s
+    lambda: return id(gesture_sensor).successful_reads();
+  - platform: template
+    name: Gesture I2C errors
+    icon: mdi:alert-circle-outline
+    entity_category: diagnostic
+    accuracy_decimals: 0
+    state_class: total_increasing
+    update_interval: 2s
+    lambda: return id(gesture_sensor).communication_errors();
+  - platform: template
+    name: Gesture last response age
+    icon: mdi:timer-outline
+    entity_category: diagnostic
+    unit_of_measurement: s
+    accuracy_decimals: 3
+    update_interval: 2s
+    lambda: return id(gesture_sensor).last_response_age_seconds();
+
+script:
+  - id: gesture_handle
+    parameters:
+      gesture_code: int
+    then:
+      - lambda: |-
+          // Ignore every action during startup/firmware recovery, not just mute.
+          if (!id(gesture_control_ready) || id(gesture_transition_busy) ||
+              !id(voice_dsp_xmos_manager).ready() ||
+              !id(voice_dsp_controller).xmos_control_responding())
+            return;
+          if (id(voice_dsp_media_player).is_muted()) {
+            id(gesture_unmute_speaker).execute();
+            return;
+          }
+          if (gesture_code == 0x10) {
+            id(gesture_mute_speaker).execute();
+            return;
+          }
+          auto call = id(voice_dsp_media_player).make_call();
+          switch (gesture_code) {
+            case 0x02: call.set_command(media_player::MEDIA_PLAYER_COMMAND_VOLUME_UP); break;
+            case 0x01: call.set_command(media_player::MEDIA_PLAYER_COMMAND_VOLUME_DOWN); break;
+            case 0x04: call.set_command(media_player::MEDIA_PLAYER_COMMAND_NEXT); break;
+            case 0x08: call.set_command(media_player::MEDIA_PLAYER_COMMAND_PREVIOUS); break;
+            default: return;
+          }
+          call.perform();
+
+  - id: gesture_mute_speaker
+    mode: single
+    then:
+      - if:
+          condition:
+            lambda: |-
+              const uint32_t last = id(gesture_speaker_mute_changed_ms);
+              return id(gesture_control_ready) &&
+                     !id(gesture_transition_busy) &&
+                     !id(voice_dsp_media_player).is_muted() &&
+                     (last == 0 || millis() - last >= 1000U);
+          then:
+            - lambda: id(gesture_transition_busy) = true;
+            # Brief red pulse, followed by the persistent two-point mute mark.
+            - lambda: id(voice_dsp_xmos_manager).set_ui_state(8);
+            - script.execute:
+                id: play_local_sound
+                priority: true
+                sound_file: mute_switch_on_sound
+            - delay: 750ms
+            - media_player.mute:
+                id: voice_dsp_media_player
+            - lambda: id(voice_dsp_xmos_manager).set_ui_state(9);
+            - lambda: |-
+                id(gesture_speaker_muted) = true;
+                id(gesture_speaker_mute_changed_ms) = millis();
+                id(gesture_transition_busy) = false;
+                ESP_LOGI("gesture_control", "Speaker muted; gesture lock active for 1 second");
+
+  - id: gesture_unmute_speaker
+    mode: single
+    then:
+      - if:
+          condition:
+            lambda: |-
+              const uint32_t last = id(gesture_speaker_mute_changed_ms);
+              return id(gesture_control_ready) &&
+                     !id(gesture_transition_busy) &&
+                     id(voice_dsp_media_player).is_muted() &&
+                     (last == 0 || millis() - last >= 1000U);
+          then:
+            - lambda: id(gesture_transition_busy) = true;
+            - media_player.unmute:
+                id: voice_dsp_media_player
+            - lambda: |-
+                id(gesture_speaker_muted) = false;
+                id(gesture_speaker_mute_changed_ms) = millis();
+                ESP_LOGI("gesture_control", "Speaker unmuted; gesture lock active for 1 second");
+            - script.execute:
+                id: play_local_sound
+                priority: true
+                sound_file: mute_switch_off_sound
+            - script.execute: restore_xmos_ui
+            - lambda: id(gesture_transition_busy) = false;
+
+paj7620u2:
+  id: gesture_sensor
+  i2c_id: voice_dsp_i2c
+  address: 0x73
+  update_interval: 20ms
+  last_gesture: paj7620_last_gesture
+
+  # Moving away from the sensor mutes. While muted, any reliable gesture is
+  # consumed as an unmute request and never also changes volume or track.
+  on_backward:
+    - script.execute:
+        id: gesture_handle
+        gesture_code: 0x10
+
+  on_forward:
+    - script.execute:
+        id: gesture_handle
+        gesture_code: 0x20
+
+  on_left:
+    - script.execute:
+        id: gesture_handle
+        gesture_code: 0x02
+
+  on_right:
+    - script.execute:
+        id: gesture_handle
+        gesture_code: 0x01
+
+  on_up:
+    - script.execute:
+        id: gesture_handle
+        gesture_code: 0x04
+
+  on_down:
+    - script.execute:
+        id: gesture_handle
+        gesture_code: 0x08

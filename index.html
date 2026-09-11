@@ -22,8 +22,8 @@
       padding: 10px 0;
       text-align: center;
     }
-    .logo img {
-      max-width: 100px;
+    header img.logo {
+      max-width: min(90%, 768px);
       height: auto;
     }
     .content {
@@ -46,6 +46,7 @@
     .left-panel,
     .right-panel {
       width: 48%;
+      min-width: 0;
     }
     .selection-grid {
       display: flex;
@@ -53,6 +54,7 @@
       gap: 15px;
     }
     .selection-card {
+      box-sizing: border-box;
       flex: 1 1 calc(50% - 15px);
       max-width: calc(50% - 15px);
       border: 1px solid #ccc;
@@ -86,6 +88,18 @@
     #device-description,
     #application-description {
       margin-top: 20px;
+      overflow-wrap: anywhere;
+    }
+    .product-photo {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+    .install-note {
+      padding: 12px 16px;
+      border-left: 4px solid #89B4BA;
+      background: rgba(137, 180, 186, 0.12);
     }
     .button-row {
       margin-top: 20px;
@@ -309,6 +323,18 @@
               },
             },
           },
+          ZeroCoreS3: {
+            label: "ZeroCore S3",
+            html: "./ZeroCoreS3/ZeroCoreS3.html",
+            image: "./ZeroCoreS3/ZeroCoreS3.png?v=5399adae",
+            applications: {
+              HomeAssistant: {
+                label: "Voice DSP+ / Home Assistant (Beta)",
+                html: "./ZeroCoreS3/HomeAssistant/HomeAssistant.html",
+                github: "https://github.com/RASPIAUDIO/raspiaudio.github.io/tree/main/ZeroCoreS3/HomeAssistant",
+              },
+            },
+          },
           MuseRadio: {
             html: "./MuseRadio/MuseRadio.html",
             image: "./MuseRadio/MuseRadio.png",
@@ -370,7 +396,7 @@
             deviceImage.alt = `${deviceName} Image`;
 
             let deviceLabel = document.createElement("span");
-            deviceLabel.textContent = deviceName;
+            deviceLabel.textContent = devices[deviceName].label || deviceName;
 
             deviceCard.appendChild(deviceImage);
             deviceCard.appendChild(deviceLabel);
@@ -385,12 +411,13 @@
               deviceCard.classList.add('selected');
 
               selectedDevice = deviceName;
-              selectedDeviceElement.textContent = selectedDevice;
+              selectedDeviceElement.textContent = devices[deviceName].label || selectedDevice;
               selectedApplication = null;
               selectedApplicationElement.textContent = "None";
               applicationDescription.innerHTML = "";
+              applicationList.innerHTML = "";
               loadDeviceHTML(selectedDevice).then(() => {
-                generateApplicationList(selectedDevice);
+                if (selectedDevice === deviceName) generateApplicationList(deviceName);
               });
               updateInstallButton();
             });
@@ -411,10 +438,10 @@
           let doc = parser.parseFromString(data, 'text/html');
 
           // Extract and set the body content
-          deviceDescription.innerHTML = doc.body.innerHTML;
+          if (selectedDevice === deviceName) deviceDescription.innerHTML = doc.body.innerHTML;
         } catch (error) {
           console.error(error);
-          deviceDescription.innerHTML = "Device description not available.";
+          if (selectedDevice === deviceName) deviceDescription.innerHTML = "Device description not available.";
         }
       }
 
@@ -449,7 +476,10 @@
           }
 
           // Automatically select the first application
-          const firstAppCard = applicationList.querySelector('.application-card');
+          const requestedApp = new URLSearchParams(location.hash.slice(1)).get("application");
+          const requestedCard = Array.from(applicationList.querySelectorAll('.application-card'))
+            .find(card => card.dataset.application === requestedApp);
+          const firstAppCard = requestedCard || applicationList.querySelector('.application-card');
           if (firstAppCard) {
             firstAppCard.click();
           }
@@ -469,6 +499,7 @@
             let doc = parser.parseFromString(data, 'text/html');
 
             // Extract and set the body content
+            if (selectedDevice !== deviceName || selectedApplication !== appName) return;
             applicationDescription.innerHTML = doc.body.innerHTML;
 
             // Add GitHub repository link if available
@@ -478,7 +509,8 @@
           } catch (error) {
             console.error(error);
             // If HTML file not available, load README.md from GitHub
-            fetchReadmeFromGithub(application.github);
+            if (selectedDevice === deviceName && selectedApplication === appName)
+              fetchReadmeFromGithub(application.github, deviceName, appName);
           }
         }
 
@@ -491,7 +523,7 @@
         }
 
         // Function to load README.md from GitHub
-        async function fetchReadmeFromGithub(githubUrl) {
+        async function fetchReadmeFromGithub(githubUrl, deviceName, appName) {
           const branches = ["main", "master"];
           for (let branch of branches) {
             let readmeUrl = getRawReadmeUrl(githubUrl, branch);
@@ -504,6 +536,7 @@
               // Convert Markdown to HTML
               let converter = new showdown.Converter();
               let html = converter.makeHtml(markdown);
+              if (selectedDevice !== deviceName || selectedApplication !== appName) return;
               applicationDescription.innerHTML = html;
               // Add GitHub repository link
               applicationDescription.innerHTML += `<p>Repository: <a href="${githubUrl}" target="_blank">${githubUrl}</a></p>`;
@@ -514,7 +547,8 @@
             }
           }
           // If all branches fail
-          applicationDescription.innerHTML = "Application description not available.";
+          if (selectedDevice === deviceName && selectedApplication === appName)
+            applicationDescription.innerHTML = "Application description not available.";
         }
 
         // Function to update the install button
@@ -533,7 +567,10 @@
         function initialize() {
           generateDeviceList();
           // Automatically select the first device
-          const firstDeviceCard = deviceList.querySelector('.device-card');
+          const requestedDevice = new URLSearchParams(location.hash.slice(1)).get("device");
+          const requestedCard = Array.from(deviceList.querySelectorAll('.device-card'))
+            .find(card => card.dataset.device === requestedDevice);
+          const firstDeviceCard = requestedCard || deviceList.querySelector('.device-card');
           if (firstDeviceCard) {
             firstDeviceCard.click();
           }

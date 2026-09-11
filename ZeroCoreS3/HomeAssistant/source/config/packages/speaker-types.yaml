@@ -1,0 +1,119 @@
+---
+# Acoustic presets only. Sound profile, Bass, Treble and playback volume remain
+# independent. Large has no calibration and retains the last configured size.
+globals:
+  - id: speaker_type_last_configured
+    type: int
+    restore_value: true
+    initial_value: '0'
+  - id: speaker_type_applied
+    type: int
+    initial_value: '-1'
+  - id: speaker_type_pending
+    type: bool
+    initial_value: 'true'
+  - id: speaker_type_attempts
+    type: int
+    initial_value: '0'
+  - id: speaker_type_last_attempt_ms
+    type: uint32_t
+    initial_value: '0'
+
+select:
+  - platform: template
+    id: speaker_type
+    name: Speaker Type
+    icon: mdi:speaker
+    entity_category: config
+    options:
+      - Small
+      - Medium
+      - Large
+    initial_option: Small
+    optimistic: true
+    restore_value: true
+    on_value:
+      - lambda: |-
+          id(speaker_type_pending) = true;
+          id(speaker_type_attempts) = 0;
+          id(speaker_type_last_attempt_ms) = 0;
+          id(speaker_type_status).publish_state("Pending: " + x);
+
+text_sensor:
+  - platform: template
+    id: speaker_type_status
+    name: Speaker profile status
+    icon: mdi:tune
+    entity_category: diagnostic
+    update_interval: never
+
+interval:
+  - interval: 1s
+    then:
+      - lambda: |-
+          auto status = [&](const std::string &value) {
+            if (id(speaker_type_status).state != value)
+              id(speaker_type_status).publish_state(value);
+          };
+          const bool ready = id(voice_dsp_xmos_manager).ready() &&
+                             id(voice_dsp_controller).xmos_control_responding();
+          if (!ready) {
+            id(speaker_type_applied) = -1;
+            id(speaker_type_pending) = true;
+            id(speaker_type_attempts) = 0;
+            id(speaker_type_last_attempt_ms) = 0;
+            status("Pending: waiting for XMOS");
+            return;
+          }
+          if (!id(speaker_type_pending) || !id(speaker_type).has_state())
+            return;
+
+          // Never reset AEC adaptation in the middle of playback or a request.
+          const auto media = id(voice_dsp_media_player).state;
+          const auto &phase = id(assist_phase).state;
+          if (media == media_player::MediaPlayerState::MEDIA_PLAYER_STATE_PLAYING ||
+              media == media_player::MediaPlayerState::MEDIA_PLAYER_STATE_ANNOUNCING ||
+              (phase != "idle" && phase != "no_ha_client")) {
+            status("Pending: stop playback and wait for Assist idle");
+            return;
+          }
+
+          const auto requested = id(speaker_type).current_option();
+          const bool placeholder = requested == "Large";
+          const int last = id(speaker_type_last_configured) == 1 ? 1 : 0;
+          const int target = placeholder ? last : (requested == "Medium" ? 1 : 0);
+          const std::string label = target == 1 ? "Medium" : "Small";
+          if (id(speaker_type_applied) != target) {
+            if (id(speaker_type_attempts) >= 3) {
+              status("Error: profile not applied; reselect Speaker Type to retry");
+              return;
+            }
+            const uint32_t now = millis();
+            if (id(speaker_type_attempts) > 0 &&
+                now - id(speaker_type_last_attempt_ms) < 5000)
+              return;
+            id(speaker_type_attempts)++;
+            id(speaker_type_last_attempt_ms) = now;
+            // A failed multi-register write may have changed some parameters.
+            id(speaker_type_applied) = -1;
+            // These are the archived S baseline and M candidate, not an EQ.
+            // ECHOONOFF=false disables the post-filter, not the linear AEC.
+            const float far_gain_db = target == 1 ? 0.0f : -9.0f;
+            if (!id(voice_dsp_controller).apply_aec_profile(
+                    far_gain_db, false, 1.0f, 1.0f, 1.1f, true,
+                    1000.0f, 1.0f, 1.0f, 0)) {
+              status("Retry pending: XMOS did not confirm " + label);
+              return;
+            }
+            id(speaker_type_applied) = target;
+            id(speaker_type_last_configured) = target;
+            ESP_LOGI("speaker_type", "Applied %s acoustic profile; far=%.1f dB",
+                     label.c_str(), far_gain_db);
+          }
+          id(speaker_type_pending) = false;
+          if (placeholder)
+            status("Large not configured; keeping " + label);
+          else if (target == 1)
+            status("Medium active: M acoustic candidate, to evaluate");
+          else
+            status("Small active: previous S acoustic baseline");

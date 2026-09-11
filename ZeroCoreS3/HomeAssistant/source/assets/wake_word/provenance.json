@@ -1,0 +1,30 @@
+[
+  {
+    "model": "hey_jarvis",
+    "upstream_commit": "05b65922cc433c9df13e98e32a7fe520758c837e",
+    "source": "https://raw.githubusercontent.com/esphome/micro-wake-word-models/05b65922cc433c9df13e98e32a7fe520758c837e/models/v2/",
+    "matches_private_model": true,
+    "sha256": "21a7976add39ee24ec96c63d96b7aaa18e24d1d9824b963e451da8feb4b78b77"
+  },
+  {
+    "model": "okay_nabu",
+    "upstream_commit": "1c2d8666497543361f9fde059afa5f21b409cf0e",
+    "source": "https://github.com/OHF-Voice/micro-wake-word/releases/download/okay_nabu_20241226.3/",
+    "matches_private_model": true,
+    "sha256": "d89128c4d16a72de429119fb2254ce46649553c2a24f5dd840175c80d7b9d094"
+  },
+  {
+    "model": "stop",
+    "upstream_commit": "d0ef708aa3e1716a9f27d1ddfb3561d15cee40e7",
+    "source": "https://github.com/OHF-Voice/micro-wake-word/releases/download/stop/",
+    "matches_private_model": true,
+    "sha256": "b5a18c4ad681a89950dfade31011e1631bdcb333e93c84519a1a63ff4f071146"
+  },
+  {
+    "model": "vad",
+    "upstream_commit": "05b65922cc433c9df13e98e32a7fe520758c837e",
+    "source": "https://raw.githubusercontent.com/esphome/micro-wake-word-models/05b65922cc433c9df13e98e32a7fe520758c837e/models/v2/",
+    "matches_private_model": true,
+    "sha256": "7aa4db6d5fb7c5358609f6931e7847d303c16a43d178638bc14104f50d7eff5f"
+  }
+]
