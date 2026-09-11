@@ -1,6 +1,6 @@
 {
   "name": "Manga Cast for Music Assistant",
-  "version": "2026.8.4",
+  "version": "2026.8.5",
   "builds": [
     {
       "chipFamily": "ESP32",
