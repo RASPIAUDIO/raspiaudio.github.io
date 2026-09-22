@@ -1,0 +1,14 @@
+{
+  "name": "RASPIAUDIO.CoreZero-S3-Digital-Radio",
+  "version": "0.1.0-web-beta",
+  "new_install_prompt_erase": true,
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "improv": false,
+      "parts": [
+        { "path": "corezero-digital-radio-0.1.0.factory.bin", "offset": 0 }
+      ]
+    }
+  ]
+}
