@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>CoreZero S3 Digital Radio</title></head>
+<body>
+  <h2>CoreZero S3 – Digital Radio</h2>
+  <p>FM and DAB+ radio on a ZeroCore S3 fitted with the RASPIAUDIO Digital Radio 40-pin shield (SI4689). Control the shield from a local web page or USB serial. Audio plays from the shield's analog jack or speaker amplifier; it is not streamed to the browser.</p>
+  <p class="install-note"><strong>This factory installation replaces the ESP32 firmware and settings.</strong> It overwrites the existing ZeroCore application. Choose to erase the device for a clean installation. The download contains no home Wi-Fi credentials.</p>
+  <ol>
+    <li>Power off, fit the Digital Radio shield to the ZeroCore S3 40-pin header, and connect the external antenna.</li>
+    <li>Connect a USB data cable to the ZeroCore S3 USB-C port. Use Chrome or Edge on a computer, then click <strong>Connect</strong> below.</li>
+    <li>After installation, join the <code>RASPIAUDIO-Radio-XXXXXX</code> hotspot (password <code>raspiaudio</code>) and open <strong>http://192.168.4.1/</strong>.</li>
+    <li>To use your own 2.4 GHz Wi-Fi network, enter its SSID and password in the page's <strong>Connection</strong> section. If connection fails, the hotspot returns automatically.</li>
+  </ol>
+  <p>Use the page to tune FM or DAB+, scan a band, choose a DAB service, change the analog volume, and control the shield amplifier. The serial commands remain available at 115200 baud.</p>
+  <p><a href="https://github.com/RASPIAUDIOadmin/Digital-Radio-for-Raspberry-Pi/tree/main/esp32/zerocore_s3_digital_radio" target="_blank" rel="noopener">Firmware source, wiring and GPIO guide</a> · <a href="https://github.com/RASPIAUDIO/ZeroCore-S3" target="_blank" rel="noopener">ZeroCore S3 board</a></p>
+</body></html>
