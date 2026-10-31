@@ -3,8 +3,8 @@
 Installer: https://raspiaudio.github.io/S31/Squeezelite/
 
 Target: **ESP32-S31-Function-CoreBoard-1, 16 MB flash / 16 MB PSRAM**.
-Release `2026.10.31-4391a52` packages the MnCast application at firmware commit
-`4391a52`. This is an experimental development release, not the original ESP32
+Release `2026.10.31-1f52fd5` packages the MnCast application at firmware commit
+`1f52fd5`. This is an experimental development release, not the original ESP32
 MnCast release.
 
 The firmware includes the browser line-framing fix: responses start on a new line
@@ -14,8 +14,9 @@ even when the serial console has left a prompt pending.
 
 Connect using Chrome/Edge and the board's USB UART port, select **Install**, then
 **Next** after installation. Wi-Fi setup uses Improv Serial on the same USB port.
-Use **Join other** to enter an SSID when the cached scan is empty (particularly
-when Ethernet was already connected). Passwords are sent to the board locally.
+The network selector requests a fresh nearby-network scan, also when booting on
+Ethernet. Repeated polls reuse that scan for 30 seconds. Use **Join other** for a
+hidden SSID. Passwords are sent to the board locally.
 No BLE provisioning is enabled. The firmware defaults to Improv enabled, with a
 switch in **System → USB Wi-Fi setup (Improv Serial)**.
 
@@ -57,11 +58,15 @@ The dedicated page isolates S31 support from the existing store's legacy flasher
 `installer-source/` contains ESP Web Tools 10.4.0 sources with these scoped changes:
 
 - esptool-js **0.7.0** for ESP32-S31 detection and flashing;
-- Improv Serial SDK **2.8.1**;
+- Improv Serial SDK **2.8.1**, vendored under `src/improv-sdk/` with its Apache
+  license and a bounded retry of both state and device-info requests;
 - S31 chip-family declaration and 16 MB minimum check;
 - MD5 verification of written files;
 - `keep_user_data` manifest option, preserving settings and disabling full erase;
-- **Next** after installation opens Wi-Fi provisioning even when preserving data.
+- **Next - Configure Wi-Fi** after installation opens the network selector even
+  when preserving data;
+- explicit release of UART reset/boot signals after flashing;
+- 60-second post-flash detection and **Retry Wi-Fi setup** without closing the dialog.
 
 Rebuild from `installer-source/` with Node 24: `npm ci`, `npx tsc`, then
 `npx rollup -c` with `NODE_ENV=production`. Copy `dist/web/` to `web/`.
@@ -71,8 +76,7 @@ currently archived in the private RASPIAUDIO MNCAST_ESP31 repository; it is base
 
 ## Validation
 
-See `validation.json` for the precise checks and outstanding browser validation.
-An actual COM21 test uses the production `flash.ts` bundled under Node with a
-Web Serial adapter, followed by the official Improv SDK. This tests real hardware
-and the actual JavaScript protocols; it is **not** a claim that Chrome's port
-chooser and the entire visual browser flow were automated.
+See `validation.json` for the precise checks. Protocol/hardware tests and the
+Chrome visual end-to-end test are reported separately; a successful Node test is
+not treated as proof of the browser workflow. Fresh-NVS provisioning and audio
+performance are not retested in this release.

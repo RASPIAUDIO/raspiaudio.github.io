@@ -1,28 +1,27 @@
 {
-  "release": "2026.10.31-4391a52",
-  "board": "ESP32-S31-Function-CoreBoard-1, 16 MB flash",
+  "release": "2026.10.31-1f52fd5",
+  "status": "Hardware and protocol tests passed; Chrome end-to-end test pending",
+  "handshake_fault_injection": {
+    "lost_state_then_lost_info_recovered": true,
+    "silent_device_timeout_and_reader_cleanup": true
+  },
+  "browser_visual_end_to_end_tested": false,
+  "fresh_nvs_board_tested": false,
+  "audio_retested": false,
   "real_hardware_flash": {
     "passed": true,
-    "method": "Production ESP Web Tools flash.ts bundled under Node with Web Serial adapter",
-    "baud": 460800,
+    "method": "Production flash.ts with Node Web Serial adapter on COM21; not a browser test",
     "files_md5_verified": 5,
     "full_flash_erase": false
   },
   "improv_sdk": {
-    "version": "2.8.1",
-    "method": "Official browser SDK bundled under Node, real USB UART",
+    "version": "2.8.1 with bounded handshake retry",
+    "scan_found_expected_network": true,
+    "scan_count": 12,
     "wifi_provisioning_passed": true,
-    "returned_device_url_reachable": true,
+    "returned_url_reachable": true,
     "console_prompt_coexistence_queries_passed": 3
   },
-  "site_tests": {
-    "default_routing": true,
-    "s31_routing": true,
-    "manifest_hashes_ranges_and_nvs_exclusion": true,
-    "dedicated_page": true
-  },
-  "browser_visual_end_to_end_tested": false,
-  "browser_test_limitation": "Computer Use stopped because Chrome URL could not be reliably determined; no browser permission flow was automated.",
-  "fresh_nvs_board_tested": false,
-  "audio_retested": false
+  "configuration_retained": true,
+  "sendspin_pairings_retained": true
 }

@@ -1,6 +1,6 @@
 {
   "name": "S31 - Squeezelite (experimental)",
-  "version": "2026.10.31-4391a52",
+  "version": "2026.10.31-1f52fd5",
   "keep_user_data": true,
   "new_install_prompt_erase": false,
   "new_install_improv_wait_time": 60,

@@ -31,12 +31,12 @@ import {
   networkWifiFull,
 } from "./components/svg";
 import { Logger, Manifest, FlashStateType, FlashState } from "./const.js";
-import { ImprovSerial, Ssid } from "improv-wifi-serial-sdk/dist/serial";
+import { ImprovSerial, Ssid } from "./improv-sdk/serial";
 import {
   ImprovSerialCurrentState,
   ImprovSerialErrorState,
   PortNotReady,
-} from "improv-wifi-serial-sdk/dist/const";
+} from "./improv-sdk/const";
 import { flash } from "./flash";
 import { textDownload } from "./util/file-download";
 import { fireEvent } from "./util/fire-event";
@@ -346,6 +346,10 @@ export class EwtInstallDialog extends LitElement {
     content = html`
       <div slot="content">
         <ew-list>
+          <ew-list-item type="button" @click=${this._openWifiAfterInstall}>
+            ${listItemWifi}
+            <div slot="headline">Retry Wi-Fi setup</div>
+          </ew-list-item>
           <ew-list-item
             type="button"
             @click=${() => {
@@ -729,7 +733,6 @@ export class EwtInstallDialog extends LitElement {
       );
     } else if (this._installState.state === FlashStateType.FINISHED) {
       heading = undefined;
-      const supportsImprov = this._client !== null;
       content = html`
         <ewt-page-message
           slot="content"
@@ -739,14 +742,9 @@ export class EwtInstallDialog extends LitElement {
 
         <div slot="actions">
           <ew-text-button
-            @click=${() => {
-              this._state =
-                supportsImprov && (this._installErase || this._manifest.keep_user_data)
-                  ? "PROVISION"
-                  : "DASHBOARD";
-            }}
+            @click=${this._openWifiAfterInstall}
           >
-            Next
+            ${this._client ? "Next - Configure Wi-Fi" : "Retry Wi-Fi setup"}
           </ew-text-button>
         </div>
       `;
@@ -1001,17 +999,12 @@ export class EwtInstallDialog extends LitElement {
     });
     client.addEventListener("error-changed", () => this.requestUpdate());
     try {
-      // Improv re-sends the request every second until this timeout, so 1500ms
-      // gets us a single retry. That gives a device that was busy on our first
-      // try (ie. still streaming the results of a Wi-Fi scan from before a page
-      // reload) a second chance to answer us.
-      // If a device was just installed, give new firmware 10 seconds (overridable) to
-      // format the rest of the flash and do other stuff.
+      // Release UART reset/boot lines after the flasher closes and reopens it.
+      await this.port.setSignals({ dataTerminalReady: false, requestToSend: false });
+      if (justInstalled) await sleep(1000);
       const timeout = !justInstalled
-        ? 1500
-        : this._manifest.new_install_improv_wait_time !== undefined
-          ? this._manifest.new_install_improv_wait_time * 1000
-          : 10000;
+        ? 10000
+        : (this._manifest.new_install_improv_wait_time ?? 60) * 1000;
       this._info = await client.initialize(timeout);
       this._client = client;
       client.addEventListener("disconnect", this._handleDisconnect);
@@ -1026,6 +1019,28 @@ export class EwtInstallDialog extends LitElement {
         this._client = null; // not supported
         this.logger.error("Improv initialization failed.", err);
       }
+    }
+  }
+
+  private async _openWifiAfterInstall() {
+    if (!this._client) {
+      this._client = undefined;
+      if (!this.port.readable || !this.port.writable) {
+        try {
+          await this.port.open({ baudRate: 115200, bufferSize: 8192 });
+        } catch (err) {
+          this._state = "ERROR";
+          this._error = "Could not reopen the serial port. Close other serial applications and reconnect.";
+          return;
+        }
+      }
+      await this._initialize(true);
+    }
+    if (this._client) {
+      this._provisionForce = true;
+      this._state = "PROVISION";
+    } else if (this._state !== "ERROR") {
+      this._state = "DASHBOARD";
     }
   }
 
@@ -1054,7 +1069,11 @@ export class EwtInstallDialog extends LitElement {
             // Flashing closes the port
             .then(() => this.port.open({ baudRate: 115200, bufferSize: 8192 }))
             .then(() => this._initialize(true))
-            .then(() => this.requestUpdate());
+            .catch((err) => {
+              this._client = null;
+              this.logger.error("Post-flash connection failed", err);
+            })
+            .finally(() => this.requestUpdate());
         } else if (state.state === FlashStateType.ERROR) {
           sleep(100)
             // Flashing closes the port
