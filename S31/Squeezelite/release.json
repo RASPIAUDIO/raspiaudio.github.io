@@ -1,0 +1,16 @@
+{
+  "version": "2026.10.31-4391a52",
+  "firmware_commit": "4391a52",
+  "board": "ESP32-S31-Function-CoreBoard-1, 16 MB flash / 16 MB PSRAM",
+  "experimental_features": [
+    "Improv Serial browser Wi-Fi provisioning after flash"
+  ],
+  "sha256": {
+    "bootloader.bin": "12b2173fd63c9831d077e8634e3b780889bfbf9272798b472c27df99b916aac7",
+    "partition-table.bin": "8303db18a0a3a117865439792a987202c4690e3f7db5795aa8f07534fe0007fd",
+    "boot-ota0.bin": "4187e23640ddb4d9e00a91376d2df4aec3b0316e51b2f8f784bd43df49ce8ba9",
+    "recovery.bin": "dad09e4d9bfabc7ee988530cdeb5d4fd20de15406ad8f99656dc8015db69f33e",
+    "squeezelite.bin": "b9ad08bad8613c0f51b349abcd4d39312823c8c9a444d824b7832dfb7bc82235"
+  },
+  "contains_nvs_dump": false
+}

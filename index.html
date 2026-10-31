@@ -189,6 +189,7 @@
     </div>
     <p class="button-row" align="center">
       <esp-web-install-button class="upload-button"></esp-web-install-button>
+      <a id="s31-install-link" href="./S31/Squeezelite/" hidden>Install S31 - Squeezelite (experimental) →</a>
     </p>
     <!-- ESP Web Tools Script -->
     <script
@@ -199,6 +200,12 @@
       // JavaScript to handle the logic
       document.addEventListener("DOMContentLoaded", () => {
         const devices = {
+          S31: {
+            label: "S31 (experimental)",
+            html: "./S31/S31.html",
+            image: "./S31/S31.svg",
+            applications: {Squeezelite: {label: "Squeezelite (experimental)", html: "./S31/Squeezelite/Squeezelite.html", github: "https://github.com/RASPIAUDIO/raspiaudio.github.io/tree/main/S31/Squeezelite"}},
+          },
           Luxe: {
             html: "./Luxe/Luxe.html",
             image: "./Luxe/Luxe.png",
@@ -558,6 +565,9 @@
 
         // Function to update the install button
         function updateInstallButton() {
+          const isS31 = selectedDevice === "S31";
+          document.getElementById("s31-install-link").hidden = !isS31;
+          if (isS31) { installButton.style.visibility = "hidden"; return; }
           if (selectedDevice && selectedApplication) {
             let manifestPath = `./${selectedDevice}/${selectedApplication}/manifest_${selectedDevice}_${selectedApplication}.json`;
             installButton.setAttribute("manifest", manifestPath);
@@ -575,7 +585,7 @@
           const requestedDevice = new URLSearchParams(location.hash.slice(1)).get("device");
           const requestedCard = Array.from(deviceList.querySelectorAll('.device-card'))
             .find(card => card.dataset.device === requestedDevice);
-          const firstDeviceCard = requestedCard || deviceList.querySelector('.device-card');
+          const firstDeviceCard = requestedCard || deviceList.querySelector('[data-device="Luxe"]') || deviceList.querySelector('.device-card');
           if (firstDeviceCard) {
             firstDeviceCard.click();
           }

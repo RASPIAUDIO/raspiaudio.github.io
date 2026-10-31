@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "lib": ["es2019", "dom"],
+    "target": "es2019",
+    "module": "es2020",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "rootDir": "src",
+    "outDir": "dist",
+    "declaration": true,
+    "experimentalDecorators": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "importHelpers": true
+  },
+  "include": ["src/*"]
+}
