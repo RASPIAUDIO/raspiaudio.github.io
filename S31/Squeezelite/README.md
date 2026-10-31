@@ -80,3 +80,9 @@ See `validation.json` for the precise checks. Protocol/hardware tests and the
 Chrome visual end-to-end test are reported separately; a successful Node test is
 not treated as proof of the browser workflow. Fresh-NVS provisioning and audio
 performance are not retested in this release.
+
+Chrome validation on this release passed: after installation, **Next - Configure
+Wi-Fi** opened the network selector without closing/reconnecting. Nearby SSIDs
+were listed, connection completed and the device URL responded. The user handled
+the USB permission and confirmed the complete flow. Existing settings and Sendspin
+pairings were preserved.
