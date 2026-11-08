@@ -1,0 +1,34 @@
+{
+  "name": "S31 - Squeezelite (experimental)",
+  "version": "2026.10.31-1f52fd5",
+  "keep_user_data": true,
+  "new_install_prompt_erase": false,
+  "new_install_improv_wait_time": 60,
+  "builds": [
+    {
+      "chipFamily": "ESP32-S31",
+      "parts": [
+        {
+          "path": "bootloader.bin",
+          "offset": 8192
+        },
+        {
+          "path": "partition-table.bin",
+          "offset": 32768
+        },
+        {
+          "path": "boot-ota0.bin",
+          "offset": 53248
+        },
+        {
+          "path": "recovery.bin",
+          "offset": 65536
+        },
+        {
+          "path": "squeezelite.bin",
+          "offset": 4259840
+        }
+      ]
+    }
+  ]
+}
