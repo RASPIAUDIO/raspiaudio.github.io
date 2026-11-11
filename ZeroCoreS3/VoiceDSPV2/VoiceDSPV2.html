@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>ZeroCore S3 + Voice DSP+ V2</title></head>
+<body>
+  <h2>ZeroCore S3 + Voice DSP+ V2</h2>
+  <p><strong>Home Assistant satellite, beta 0.6.53.</strong> One ESP32 installation includes the matching XMOS firmware. No XTAG needed.</p>
+  <p class="install-note"><strong>V2 hardware only:</strong> RASPIAUDIO ZeroCore S3 (16 MB flash, 8 MB octal PSRAM) connected to a Voice DSP+ V2 shield. Do not use this image on V1 or Satellite1 hardware.</p>
+  <ol>
+    <li>Assemble the boards with power disconnected. Connect a USB data cable to the <strong>ZeroCore S3</strong>, not the XMOS USB port, and power the shield appropriately.</li>
+    <li>Use Chrome or Edge on a desktop computer. Click <strong>Connect</strong> below and install. Erasing also removes saved Wi-Fi and settings.</li>
+    <li>After installation, press <strong>RESET</strong> once if needed (do not hold BOOT). Configure your 2.4 GHz Wi-Fi through the installer's serial Improv setup. Bluetooth provisioning is not included.</li>
+    <li>Add the new ESPHome device in Home Assistant. Its network name is <code>voicedsp-v2-xxxxxx</code>, with a unique suffix for each board. Select your Assist pipeline.</li>
+    <li>Wait for <strong>Audio Controller Ready</strong> and <strong>XMOS SPI Boot: Ready</strong>. Choose internal stereo, external speaker, or jack in <strong>Sortie audio</strong>. Start at low volume.</li>
+  </ol>
+  <p>The XMOS image is stored inside the ESP32 firmware and loaded into XMOS RAM automatically at every ESP32 startup. <strong>This does not program XMOS QSPI</strong>; the ZeroCore must remain connected.</p>
+  <p class="install-note"><strong>Known beta limitation:</strong> an I2C bus lock has been observed. If the controller stays unavailable, disconnect all power to both boards for 10 seconds. Recovery was observed, but long-term stability is not qualified. Power-Good remains diagnostic only; this build does not enforce power limits.</p>
+  <p>Includes local Hey Jarvis, Assist, media, gestures, LED feedback and the external-mono AEC profile. The private audio capture server is removed. Microphone audio is sent to your configured Home Assistant pipeline during an activated request.</p>
+  <p><a href="./ZeroCoreS3/VoiceDSPV2/voicedsp-v2-0.6.53-web-beta.factory.bin" download>Download the ESP32 factory .bin</a> &middot; <a href="./ZeroCoreS3/VoiceDSPV2/README.md">Installation and recovery notes</a> &middot; <a href="https://my.home-assistant.io/redirect/config_flow_start/?domain=esphome" target="_blank" rel="noopener">Add to Home Assistant</a></p>
+</body></html>

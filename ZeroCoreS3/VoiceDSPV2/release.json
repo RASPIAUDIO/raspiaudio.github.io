@@ -1,0 +1,22 @@
+{
+  "version": "0.6.53-web-beta.20261111",
+  "publication": "Public beta binary and installation documentation; firmware sources not published in this release",
+  "esphome": "2026.8.1",
+  "esp_idf": "5.5.5",
+  "hardware": "ZeroCore S3 16MB/8MB + Voice DSP+ V2",
+  "hardware_test": "web candidate not flashed; predecessor SPI bootstrap tested",
+  "xmos_boot": "automatic SPI RAM at ESP startup; QSPI not written",
+  "known_issue": "spontaneous I2C SDA-low lock unresolved",
+  "artifacts": [
+    {
+      "path": "voicedsp-v2-0.6.53-web-beta.factory.bin",
+      "bytes": 2650192,
+      "sha256": "f282e4bcb618f409714275ab752cf222045303172d744feb62b99df95b928144"
+    },
+    {
+      "path": "voicedsp-v2-0.6.53-web-beta.ota.bin",
+      "bytes": 2584656,
+      "sha256": "86eef6936785939581845ef0c6852c15851b940b913248cd50d0abd40b26d9b4"
+    }
+  ]
+}

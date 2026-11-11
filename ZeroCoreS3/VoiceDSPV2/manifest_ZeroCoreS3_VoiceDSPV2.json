@@ -1,0 +1,15 @@
+{
+  "name": "RASPIAUDIO ZeroCore S3 Voice DSP+ V2",
+  "version": "0.6.53-web-beta.20261111",
+  "home_assistant_domain": "esphome",
+  "new_install_prompt_erase": true,
+  "new_install_improv_wait_time": 120,
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "parts": [
+        { "path": "voicedsp-v2-0.6.53-web-beta.factory.bin", "offset": 0 }
+      ]
+    }
+  ]
+}
