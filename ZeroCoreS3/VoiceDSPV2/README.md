@@ -1,6 +1,6 @@
 # ZeroCore S3 + Voice DSP+ V2
 
-**0.6.53-web-beta.20261111, V2 hardware only.**
+**0.6.54-web-beta.20261111, V2 hardware only.**
 
 [Open the installer](https://raspiaudio.github.io/#device=ZeroCoreS3&application=VoiceDSPV2).
 Select ZeroCore S3, then Voice DSP+ V2 / Assistant (Beta).
@@ -36,6 +36,29 @@ to the Internet. The development microphone capture server is absent.
 
 ## Features and limits
 
+### Firmware controls in Home Assistant
+
+Open the V2 device page under Settings > Devices & services > ESPHome.
+
+- **Reload embedded XMOS firmware** stops audio and restarts the ESP32, which
+  reloads its matched XMOS image into RAM. This does not download a new version
+  and does not erase or program XMOS QSPI.
+- **ESP32 + XMOS Firmware** offers paired release updates over verified HTTPS.
+  Installation is manual; periodic checks do not install anything automatically.
+- **Check firmware updates** checks the release manifest immediately.
+- **XMOS firmware status**, **XMOS loading progress** and **Embedded XMOS image
+  SHA256** report the bootstrap and bundled image. 100% requires a responding
+  audio controller, not just a completed SPI transfer. The hash identifies the
+  embedded bytes, not an independent running-firmware readback.
+
+Updates stop media and Assist and preserve stored Wi-Fi credentials. Keep power
+connected until completion. A persistent SDA-low bus lock may still require
+removing ALL power from both boards; the reload button is not a hardware repair.
+The update always includes the matched ESP32 and XMOS images; arbitrary XMOS
+uploads and standalone QSPI flashing are not supported by this menu.
+
+### Audio and remaining qualification
+
 - Local Hey Jarvis runs on ESP32; XMOS handles the audio processing.
 - Internal stereo speakers, external speaker, jack, gestures and LED feedback.
 - External speaker selects Both mono and the accepted relaxed AEC profile automatically.
@@ -51,7 +74,8 @@ merely because this manifest is published.
 ## Provenance
 
 ESPHome 2026.8.1, ESP-IDF 5.5.5; RASPIAUDIO V2 .6.52 external-mono baseline plus
-.6.53 automatic SPI bootstrap. Matched XMOS payload SHA256:
+.6.53 automatic SPI bootstrap and .6.54 Home Assistant firmware controls.
+Matched XMOS payload SHA256:
 `152334171334c9608783985ee83ed4e3daad94385dd220bc4a5884b4eaa7dc50`.
 XMOS/VocalFusion/BeClear is distributed as a hardware-specific binary, not as
 open-source DSP code. Release hashes are in `SHA256SUMS` and `release.json`.
