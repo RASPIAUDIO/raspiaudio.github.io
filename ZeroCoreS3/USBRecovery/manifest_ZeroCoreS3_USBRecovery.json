@@ -1,0 +1,16 @@
+{
+  "name": "Voice DSP+ V2 USB Recovery (Beta)",
+  "version": "0.1.0-usb-0.8.9-r4",
+  "new_install_prompt_erase": true,
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "parts": [
+        {
+          "path": "voicedsp-usb-recovery-0.1.0.factory.bin",
+          "offset": 0
+        }
+      ]
+    }
+  ]
+}

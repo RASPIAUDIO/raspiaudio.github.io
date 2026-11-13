@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Voice DSP+ USB Recovery Status</title>
+  <style>
+    :root{color-scheme:light;--ink:#182d28;--paper:#f5efe3;--accent:#cc512c}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(at top left,#e1eee2,transparent 65%),var(--paper);color:var(--ink);font:18px Georgia,serif;line-height:1.5}
+    main{max-width:850px;margin:auto;padding:40px 22px}h1{font-size:clamp(2rem,6vw,3.5rem);line-height:1.06}button,a.action{display:inline-block;background:var(--accent);color:white;border:0;border-radius:8px;padding:13px 18px;font:600 16px Georgia,serif;margin:4px 0;text-decoration:none;cursor:pointer}button:disabled{opacity:.5;cursor:default}
+    pre{background:var(--ink);color:#e3f1e9;padding:18px;border-radius:12px;white-space:pre-wrap;overflow-wrap:anywhere;max-height:450px;overflow:auto;font:13px Consolas,monospace}#result{font-weight:bold}small{display:block}
+  </style>
+</head>
+<body><main>
+  <p>RASPIAUDIO / ZEROCORE S3 / V2 ONLY</p>
+  <h1>Bring USB back.</h1>
+  <p>Install USB Recovery from the App Store first, then power-cycle both boards. This page reads the ZeroCore log; it does not flash XMOS or start playback.</p>
+  <p>Close the ESP installer and other serial monitors before connecting. Select the <strong>ZeroCore S3</strong> serial port, not the XMOS audio device.</p>
+  <button id="connect">Read recovery status</button>
+  <button id="disconnect" disabled>Disconnect monitor</button>
+  <p id="result" role="status">Waiting for ZeroCore.</p>
+  <pre id="log" aria-label="Recovery log"></pre>
+  <p>The log must identify <code>VOICE_DSP_V2_USB_RECOVERY_0.1.0</code>. If it identifies the factory tester or another app, reinstall USB Recovery.</p>
+  <p>A successful SPI transfer is only the first step. The USB updater must detect XMOS with DFU and complete installation. Then power off, remove ZeroCore, and check autonomous USB startup.</p>
+  <a class="action" href="https://raspiaudio.com/voicedsp/webflasher/?firmware=v2-usb-mono-48k" target="_blank" rel="noopener">Open XMOS USB updater</a>
+  <p><a href="../../#device=ZeroCoreS3&amp;application=USBRecovery">Back to USB Recovery installer</a></p>
+  <small>No Wi-Fi credentials, Home Assistant or XTAG required. Blank/corrupt QSPI still requires factory provisioning.</small>
+</main><script type="module" src="status.js"></script></body></html>

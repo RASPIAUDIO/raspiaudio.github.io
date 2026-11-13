@@ -1,0 +1,97 @@
+{
+  "version": "0.1.0",
+  "embedded_xmos_version": "0.8.9-r4",
+  "embedded_spi_sha256": "4fd9bb38fd1112cd37164d79c35e140971c62503acc95e3a1e235c509115b439",
+  "compiled": true,
+  "hardware_validated": false,
+  "qspi_written_by_bridge": false,
+  "source": "source/",
+  "parts_offsets": {
+    "bootloader.bin": 0,
+    "partitions.bin": 32768,
+    "boot_app0.bin": 57344,
+    "firmware.bin": 65536
+  },
+  "files": {
+    ".gitattributes": {
+      "bytes": 89,
+      "sha256": "cd119a3dac514354500a1e34741bb224fc543543cda7e8328c49e0e4224416e1"
+    },
+    "boot_app0.bin": {
+      "bytes": 8192,
+      "sha256": "f94c5d786a7a8fab06ac5d10e33bf37711a6697636dc037559ea19cc410a17f0"
+    },
+    "bootloader.bin": {
+      "bytes": 14032,
+      "sha256": "1033730a6df733f53a7a347353c1c5450547f76e98e0746da633079310a563b9"
+    },
+    "firmware.bin": {
+      "bytes": 1217664,
+      "sha256": "4484e4b92aadbbaf29de5e100a6c120c3b079ba02f1b03a90951fe98191aa977"
+    },
+    "manifest_ZeroCoreS3_USBRecovery.json": {
+      "bytes": 328,
+      "sha256": "7564f52ba6cfb83ff8ed70c13556870359ec042e08a8c586af3e0f2e2e445922"
+    },
+    "partitions.bin": {
+      "bytes": 3072,
+      "sha256": "aaae2888c5a6a348004b5b436f47abb25ae32e72d9003902955a998eda723edd"
+    },
+    "README.md": {
+      "bytes": 3307,
+      "sha256": "486435fb8623554314ba8ddefd708ef0be7b1bf3e7aea75a36b8ab77e3ce2bc2"
+    },
+    "source/.gitignore": {
+      "bytes": 21,
+      "sha256": "0c418f74e3a00ed2e3710f424faeb645d6c3aa1e595a449bbdc7eb51adec8cc6"
+    },
+    "source/images/factory.bin": {
+      "bytes": 946176,
+      "sha256": "4fd9bb38fd1112cd37164d79c35e140971c62503acc95e3a1e235c509115b439"
+    },
+    "source/LICENSE": {
+      "bytes": 1201,
+      "sha256": "8cb7e866f0406910c04d767a67ec5d7aaa34b60179f12cd8d60cf2bebcba5688"
+    },
+    "source/platformio.ini": {
+      "bytes": 370,
+      "sha256": "b93c3af8c8c4ee2ae1ed4afe051d38ff72d0d52e3c18a31264a74a0a06959169"
+    },
+    "source/src/factory_autoboot.h": {
+      "bytes": 507,
+      "sha256": "0cc28b2a0d771d69cbb31ea0c748084b9770c77aab7a6b0002a83bc66bad8bc9"
+    },
+    "source/src/factory_pcal_boot.h": {
+      "bytes": 512,
+      "sha256": "5ac95913072df1b1606a17035d95f8002e1d00194dfe6fac959150d3cc87288a"
+    },
+    "source/src/main.cpp": {
+      "bytes": 10721,
+      "sha256": "57739358764ed9edf3a636b60e27309dbc087e5fa67a0b5ae668c79b5a691e2c"
+    },
+    "source/src/spi_images.h": {
+      "bytes": 64,
+      "sha256": "2e09c3872078a73a2ddbdb34e1deca875ac9cbd90b99b60c9182e14d29cdc762"
+    },
+    "status.html": {
+      "bytes": 2467,
+      "sha256": "eef88f0d396dd2216cea03240f9153e3c616ff2421cc2d691acfed6805b59220"
+    },
+    "status.js": {
+      "bytes": 3131,
+      "sha256": "bce50a716bf6a9eb30e808594a5ed2747ac8f94a21081d5e592ce894a995ee15"
+    },
+    "test.cjs": {
+      "bytes": 2863,
+      "sha256": "bf2d81e69dc35ba473c35fd0d291847d626e6ac8a4f6f8ae8ca115f559be228d"
+    },
+    "USBRecovery.html": {
+      "bytes": 2512,
+      "sha256": "80ef03d98602be45b84694d6ad22b8ca6ba03da9a7e28ada0e23ae0e070d0305"
+    },
+    "voicedsp-usb-recovery-0.1.0.factory.bin": {
+      "bytes": 1283200,
+      "sha256": "94c0ac8d3f6cc88546229184ecd10aa564b56b5e3d0d80b7d8b8a55308a3c6c0"
+    }
+  }
+}

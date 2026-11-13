@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Voice DSP+ USB Recovery</title></head>
+<body>
+  <h2>Voice DSP+ V2 USB Recovery</h2>
+  <p><strong>Restore the XMOS USB interface with ZeroCore S3. No Home Assistant, Wi-Fi or XTAG.</strong></p>
+  <p>This temporary recovery tool loads the accepted USB mono 48 kHz firmware <strong>0.8.9-r4</strong> into XMOS RAM. Then use the USB updater to install the persistent upgrade.</p>
+  <p class="install-note"><strong>ZeroCore S3 + Voice DSP+ V2 only.</strong> Installing replaces the ESP32 application (including the factory tester or Home Assistant). It does not erase or program XMOS QSPI. Stop playback and disconnect speakers for recovery: the restored USB runtime may restore saved output/volume settings.</p>
+  <ol>
+    <li>With all power disconnected, attach ZeroCore S3 to the V2 40-pin header. Connect the ZeroCore USB data port to your PC.</li>
+    <li>Click <strong>Connect</strong> below and install the recovery app. Select erase for a clean recovery installation. Close the installer when complete.</li>
+    <li>Disconnect <strong>all power to both boards for 10 seconds</strong>. Reconnect their USB data cables to the PC, without XTAG. Recovery starts automatically; wait about 15 seconds. If the ESP32 remains in download mode, press RESET once without BOOT.</li>
+    <li><a href="./ZeroCoreS3/USBRecovery/status.html" target="_blank" rel="noopener">Open recovery status</a> if you need the ZeroCore log. A completed SPI transfer is not yet proof that XMOS USB is running.</li>
+    <li>Keep power connected. Open the <a href="https://raspiaudio.com/voicedsp/webflasher/?firmware=v2-usb-mono-48k" target="_blank" rel="noopener">XMOS USB updater</a>, connect the <strong>XMOS USB port</strong> and install the recommended V2 USB firmware. Do not select V1.</li>
+    <li>After a successful USB update, power off, remove ZeroCore and reconnect only Voice DSP+ USB. Check that it boots autonomously before reconnecting speakers.</li>
+  </ol>
+  <p><strong>Scope:</strong> this restores USB access on a V2 with an existing compatible QSPI factory layout. It is not a complete factory programmer for blank/corrupt QSPI. Those boards need initial factory provisioning; an upgrade alone is not enough.</p>
+  <p><strong>Beta status:</strong> compiled and software-checked; based on the tested SPI loader. This new combined installer has not yet been tested end-to-end on hardware. Firmware audio/AEC settings were not changed.</p>
+</body></html>
