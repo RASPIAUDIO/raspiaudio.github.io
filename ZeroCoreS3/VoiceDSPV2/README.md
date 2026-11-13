@@ -1,81 +1,53 @@
 # ZeroCore S3 + Voice DSP+ V2
 
-**0.6.54-web-beta.20261111, V2 hardware only.**
+**Validated Home Assistant 0.6.61**, original accepted binaries. V2 hardware only.
 
-[Open the installer](https://raspiaudio.github.io/#device=ZeroCoreS3&application=VoiceDSPV2).
-Select ZeroCore S3, then Voice DSP+ V2 / Assistant (Beta).
-The V1 entry remains separate and unchanged.
+[Install now](https://apps.raspiaudio.com/#device=ZeroCoreS3&application=VoiceDSPV2) |
+[Simple guide](https://github.com/RASPIAUDIO/Voice-DSP-Plus/blob/V2/Home%20Assistant/README.md) |
+[Sources](https://github.com/RASPIAUDIO/Voice-DSP-Plus/tree/V2/Home%20Assistant/Sources)
 
-## One ESP32 image, both processors
+1. Assemble ZeroCore S3 (16 MB / 8 MB PSRAM) and Voice DSP+ V2 with power off.
+2. Connect the **ZeroCore S3 USB data port**, not XMOS. Use desktop Chrome/Edge.
+3. Install, press RESET if needed, then provision 2.4 GHz Wi-Fi with serial Improv.
+   Alternatively use AP `VoiceDSP V2 Setup`, password `voicedsp-setup`. No BLE.
+4. Add the ESPHome device in Home Assistant, select your Assist pipeline and wait
+   for Audio Controller Ready. Allow at least 65 seconds for startup/mode restore.
+5. Select Voice Compact / Full Speaker / Custom and Apply Product Mode.
+   Check output and level before playback. Save Mode Settings remembers adjustments.
 
-Connect the ZeroCore S3 USB data port and install the factory image. It contains
-the ESP32 bootloader, partitions, ESPHome application and matched XMOS SPI image.
-Flash the factory `.bin` at **offset 0**. The `.ota.bin` is for ESPHome OTA only.
-Neither file belongs in the XMOS USB DFU loader.
+The factory image is merged for ESP32 offset **0**; the OTA file is only for
+compatible ESPHome installations. Erasing removes Wi-Fi/preferences. The matching
+XMOS is embedded and loaded into **RAM at each boot**; QSPI is not programmed.
+No XTAG is required. The ZeroCore must remain connected for this mode.
 
-XMOS is loaded into RAM by the ESP32 at each startup, before I2S/audio starts.
-No XTAG and no separate manual XMOS upload are required. XMOS QSPI is not written:
-the shield will not boot this image independently without the ZeroCore.
+Includes harmonized internal/external level controls (-60 to 0 dB), local Hey
+Jarvis, Assist, music, gestures, LED/sound feedback and diagnostics. AEC and filter
+settings are unchanged from the accepted checkpoint. No acoustic retuning or
+new endurance qualification is implied by this publication.
 
-Requires ZeroCore S3 with 16 MB flash and 8 MB octal PSRAM, Voice DSP+ V2 shield,
-matching 40-pin connection, adequate power and a Home Assistant server.
-Do not install on Voice DSP+ V1 or FutureProof Satellite1 hardware.
+**External / Full Speaker require USB-C PD directly on Voice DSP+**, 65 W or
+more recommended. Do not feed multiple power supplies through the shared header.
+Full Speaker: L woofer / R tweeter, matched crossover and protective capacitor.
+Do not use unfiltered External for a bare tweeter. Power-Good remains diagnostic,
+not a substitute for correct supply/load or conservative playback levels.
 
-## First connection
+The Home Assistant update entity uses `manifest-stable.json`; Beta Firmware uses
+`manifest-beta.json`. Both currently offer this same validated release. Checks
+are automatic but **installation remains manual**. Reload embedded XMOS firmware
+reloads the bundled RAM image, not arbitrary firmware or a QSPI update.
 
-1. Install using desktop Chrome or Edge. Erase only if you want to remove stored settings.
-2. If the ESP32 remains in download mode, tap RESET once without holding BOOT.
-3. Configure 2.4 GHz Wi-Fi using serial Improv in the installer. No personal Wi-Fi credentials are built in. BLE provisioning is not included.
-4. Serial provisioning fallback: use the captive AP `VoiceDSP V2 Setup`, password `voicedsp-setup`, on a trusted local network.
-5. Add the ESPHome device `voicedsp-v2-xxxxxx` to Home Assistant and assign an Assist pipeline. Each board gets its own MAC-based suffix.
-6. Check `Audio Controller Ready` and `XMOS SPI Boot`. Select the output in `Sortie audio`, starting at low volume.
+Use a trusted LAN: this accepted build retains unencrypted API/OTA and opt-in
+capture diagnostics. If the audio controller remains unavailable after an update,
+remove all power to both boards for 10 seconds. Do not expose ports to the Internet.
 
-Native ESPHome API and OTA are intended for a trusted LAN; this development
-build does not configure API encryption or an OTA password. Do not expose them
-to the Internet. The development microphone capture server is absent.
+## Downloads and provenance
 
-## Features and limits
+- [Factory](voicedsp-v2-0.6.61.factory.bin)
+- [OTA](voicedsp-v2-0.6.61.ota.bin)
+- [SHA256](SHA256SUMS) and [release record](release.json)
+- [Source and dependency notices](https://github.com/RASPIAUDIO/Voice-DSP-Plus/blob/V2/UPSTREAM.md)
 
-### Firmware controls in Home Assistant
-
-Open the V2 device page under Settings > Devices & services > ESPHome.
-
-- **Reload embedded XMOS firmware** stops audio and restarts the ESP32, which
-  reloads its matched XMOS image into RAM. This does not download a new version
-  and does not erase or program XMOS QSPI.
-- **ESP32 + XMOS Firmware** offers paired release updates over verified HTTPS.
-  Installation is manual; periodic checks do not install anything automatically.
-- **Check firmware updates** checks the release manifest immediately.
-- **XMOS firmware status**, **XMOS loading progress** and **Embedded XMOS image
-  SHA256** report the bootstrap and bundled image. 100% requires a responding
-  audio controller, not just a completed SPI transfer. The hash identifies the
-  embedded bytes, not an independent running-firmware readback.
-
-Updates stop media and Assist and preserve stored Wi-Fi credentials. Keep power
-connected until completion. A persistent SDA-low bus lock may still require
-removing ALL power from both boards; the reload button is not a hardware repair.
-The update always includes the matched ESP32 and XMOS images; arbitrary XMOS
-uploads and standalone QSPI flashing are not supported by this menu.
-
-### Audio and remaining qualification
-
-- Local Hey Jarvis runs on ESP32; XMOS handles the audio processing.
-- Internal stereo speakers, external speaker, jack, gestures and LED feedback.
-- External speaker selects Both mono and the accepted relaxed AEC profile automatically.
-- Warm-start/cold-start SPI loading was observed on the predecessor engineering build with the same XMOS payload. This web variant changes identity and removes bench controls/capture; compilation is not full hardware acceptance.
-- A spontaneous SDA-low I2C lock remains unresolved. Full power removal from both boards for 10 seconds recovered one occurrence. A 90-second external-route observation passed; this is not endurance qualification.
-- Power-Good/PD reporting does not inhibit audio in this build. Use appropriate power, speaker load and conservative volume; do not interpret the gain slider as a safe-power guarantee.
-- Internal AEC, acoustics of new assemblies and long-term stability are not qualified here.
-
-Installation may play the short startup cue on internal speakers. Keep the
-speakers clear of your ears. No connected hardware is automatically updated
-merely because this manifest is published.
-
-## Provenance
-
-ESPHome 2026.8.1, ESP-IDF 5.5.5; RASPIAUDIO V2 .6.52 external-mono baseline plus
-.6.53 automatic SPI bootstrap and .6.54 Home Assistant firmware controls.
-Matched XMOS payload SHA256:
+ESPHome 2026.8.1, ESP-IDF 5.5.5. Embedded XMOS SHA256:
 `152334171334c9608783985ee83ed4e3daad94385dd220bc4a5884b4eaa7dc50`.
-XMOS/VocalFusion/BeClear is distributed as a hardware-specific binary, not as
-open-source DSP code. Release hashes are in `SHA256SUMS` and `release.json`.
+The V1 entry remains separate and unchanged. Older files are retained for recovery
+but are not selected by the installer.

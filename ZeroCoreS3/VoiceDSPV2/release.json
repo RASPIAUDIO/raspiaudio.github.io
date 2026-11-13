@@ -1,23 +1,21 @@
 {
-  "version": "0.6.54-web-beta.20261111",
-  "esphome": "2026.8.1",
-  "esp_idf": "5.5.5",
-  "hardware": "ZeroCore S3 16MB/8MB + Voice DSP+ V2 only",
-  "xmos_boot": "SPI RAM at ESP startup, no QSPI programming",
-  "xmos_sha256": "152334171334c9608783985ee83ed4e3daad94385dd220bc4a5884b4eaa7dc50",
-  "update_policy": "manual HTTPS paired update; no automatic installation",
-  "known_issue": "SDA-low bus lock may require full power cycle",
-  "qualification": "offline checks only; live evidence tracked privately",
-  "artifacts": [
-    {
-      "path": "voicedsp-v2-0.6.54-web-beta.factory.bin",
-      "bytes": 2674192,
-      "sha256": "114392b3c5f99122ae4c3bebea361bcdd6236c34ae0ca9921bdd6c01e7cbab5c"
+  "version": "0.6.61",
+  "hardware": "Voice DSP+ V2 + ZeroCore S3 (16 MB / 8 MB PSRAM)",
+  "checkpoint_tag": "v2-0.6.61-absolute-levels-20261111",
+  "checkpoint_commit": "50b5aad6db99f71f6fd1def6b3efef9069f7918b",
+  "publication": "Original accepted binary, not a new firmware build or acoustic qualification",
+  "files": {
+    "voicedsp-v2-0.6.61.factory.bin": {
+      "bytes": 2695264,
+      "sha256": "db2bd3fce3366a8ecc2fa7115f7fa27025031c05ceb2121494ed9b3fee21912d"
     },
-    {
-      "path": "voicedsp-v2-0.6.54-web-beta.ota.bin",
-      "bytes": 2608656,
-      "sha256": "4fb636204d5752adac2a1190cc34b52445484cb485a518ad82b0daca7a9f65d6"
+    "voicedsp-v2-0.6.61.ota.bin": {
+      "bytes": 2629728,
+      "sha256": "1fa838384f7b40637131b07675a704141e1a07258c1245c60ec034bed7fd1606"
+    },
+    "xmos-i2s48.spi_boot.bin": {
+      "bytes": 864256,
+      "sha256": "152334171334c9608783985ee83ed4e3daad94385dd220bc4a5884b4eaa7dc50"
     }
-  ]
+  }
 }

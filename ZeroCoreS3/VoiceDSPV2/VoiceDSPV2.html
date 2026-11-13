@@ -2,18 +2,20 @@
 <html lang="en"><head><meta charset="utf-8"><title>ZeroCore S3 + Voice DSP+ V2</title></head>
 <body>
   <h2>ZeroCore S3 + Voice DSP+ V2</h2>
-  <p><strong>Home Assistant satellite, beta 0.6.54.</strong> One ESP32 installation includes the matching XMOS firmware. No XTAG needed.</p>
+  <p><strong>Home Assistant satellite, validated release 0.6.61.</strong> One ESP32 installation includes the matching XMOS firmware. No XTAG needed.</p>
   <p class="install-note"><strong>V2 hardware only:</strong> RASPIAUDIO ZeroCore S3 (16 MB flash, 8 MB octal PSRAM) connected to a Voice DSP+ V2 shield. Do not use this image on V1 or Satellite1 hardware.</p>
   <ol>
     <li>Assemble the boards with power disconnected. Connect a USB data cable to the <strong>ZeroCore S3</strong>, not the XMOS USB port, and power the shield appropriately.</li>
     <li>Use Chrome or Edge on a desktop computer. Click <strong>Connect</strong> below and install. Erasing also removes saved Wi-Fi and settings.</li>
     <li>After installation, press <strong>RESET</strong> once if needed (do not hold BOOT). Configure your 2.4 GHz Wi-Fi through the installer's serial Improv setup. Bluetooth provisioning is not included.</li>
     <li>Add the new ESPHome device in Home Assistant. Its network name is <code>voicedsp-v2-xxxxxx</code>, with a unique suffix for each board. Select your Assist pipeline.</li>
-    <li>Wait for <strong>Audio Controller Ready</strong> and <strong>XMOS SPI Boot: Ready</strong>. Choose internal stereo, external speaker, or jack in <strong>Sortie audio</strong>. Start at low volume.</li>
+    <li>Wait for <strong>Audio Controller Ready</strong> and <strong>XMOS firmware status: Ready</strong>. Choose <strong>Voice Compact / Full Speaker / Custom</strong>, then <strong>Apply Product Mode</strong>. Start at low volume.</li>
   </ol>
   <p>The XMOS image is stored inside the ESP32 firmware and loaded into XMOS RAM automatically at every ESP32 startup. <strong>This does not program XMOS QSPI</strong>; the ZeroCore must remain connected.</p>
   <p class="install-note"><strong>Known beta limitation:</strong> an I2C bus lock has been observed. If the controller stays unavailable, disconnect all power to both boards for 10 seconds. Recovery was observed, but long-term stability is not qualified. Power-Good remains diagnostic only; this build does not enforce power limits.</p>
-  <p>Includes local Hey Jarvis, Assist, media, gestures, LED feedback and the external-mono AEC profile. The private audio capture server is removed. Microphone audio is sent to your configured Home Assistant pipeline during an activated request.</p>
+  <p>Includes local Hey Jarvis, Assist, media, gestures enabled by default, LED/sound feedback, output selection, bass/treble and diagnostics. Internal and external level controls reach 0 dB without a hidden general attenuation. The validated AEC and crossover settings are unchanged.</p>
+  <p class="install-note"><strong>External / Full Speaker:</strong> connect a USB-C Power Delivery supply directly to Voice DSP+ (65 W or more recommended). Do not connect a second power supply through the shared header. Full Speaker uses L woofer / R tweeter with a matched crossover; never select unfiltered External for a bare tweeter.</p>
+  <p>Wake word runs on ESP32; XMOS handles four-microphone processing and AEC. Home Assistant handles speech recognition and responses. This release retains opt-in capture diagnostics and unencrypted local API/OTA: use a trusted LAN, not Internet-exposed ports.</p>
   <p>In Home Assistant, use <strong>Reload embedded XMOS firmware</strong> to restart with the bundled image, or <strong>ESP32 + XMOS Firmware</strong> to install a new paired release. Updates are manual. Loading progress reaches 100% only when the controller responds.</p>
-  <p><a href="./ZeroCoreS3/VoiceDSPV2/voicedsp-v2-0.6.54-web-beta.factory.bin" download>Download the ESP32 factory .bin</a> &middot; <a href="./ZeroCoreS3/VoiceDSPV2/README.md">Installation and recovery notes</a> &middot; <a href="https://my.home-assistant.io/redirect/config_flow_start/?domain=esphome" target="_blank" rel="noopener">Add to Home Assistant</a></p>
+  <p><a href="./ZeroCoreS3/VoiceDSPV2/voicedsp-v2-0.6.61.factory.bin" download>Download the ESP32 factory .bin</a> &middot; <a href="https://github.com/RASPIAUDIO/Voice-DSP-Plus/blob/V2/Home%20Assistant/README.md">Simple guide and controls</a> &middot; <a href="https://github.com/RASPIAUDIO/Voice-DSP-Plus/tree/V2/Home%20Assistant/Sources">Source code</a> &middot; <a href="https://my.home-assistant.io/redirect/config_flow_start/?domain=esphome" target="_blank" rel="noopener">Add to Home Assistant</a></p>
 </body></html>

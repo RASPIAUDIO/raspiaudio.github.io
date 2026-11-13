@@ -1,6 +1,6 @@
 {
   "name": "RASPIAUDIO ZeroCore S3 Voice DSP+ V2",
-  "version": "0.6.54-web-beta.20261111",
+  "version": "0.6.61-absolute-levels.20261111",
   "home_assistant_domain": "esphome",
   "new_install_prompt_erase": true,
   "new_install_improv_wait_time": 120,
@@ -9,15 +9,15 @@
       "chipFamily": "ESP32-S3",
       "parts": [
         {
-          "path": "voicedsp-v2-0.6.54-web-beta.factory.bin",
+          "path": "voicedsp-v2-0.6.61.factory.bin",
           "offset": 0
         }
       ],
       "ota": {
-        "path": "voicedsp-v2-0.6.54-web-beta.ota.bin",
-        "md5": "6fbc772c7dc3f870d4719cfcb5f0d383",
-        "summary": "Home Assistant firmware menu: reload embedded XMOS RAM image, paired ESP32 + XMOS updates. QSPI unchanged. V2 hardware only.",
-        "release_url": "https://github.com/RASPIAUDIO/raspiaudio.github.io/blob/main/ZeroCoreS3/VoiceDSPV2/README.md"
+        "path": "voicedsp-v2-0.6.61.ota.bin",
+        "md5": "b6dc37c1e0863b45b87fda5c4a22a3d7",
+        "summary": "Validated V2 0.6.61: Voice Compact / Full Speaker / Custom, harmonized levels, gestures and matched XMOS. AEC/filter tuning unchanged. Stop playback before updating.",
+        "release_url": "https://github.com/RASPIAUDIO/Voice-DSP-Plus/blob/V2/Home%20Assistant/README.md"
       }
     }
   ]
