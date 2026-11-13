@@ -30,8 +30,8 @@
       "sha256": "4484e4b92aadbbaf29de5e100a6c120c3b079ba02f1b03a90951fe98191aa977"
     },
     "manifest_ZeroCoreS3_USBRecovery.json": {
-      "bytes": 328,
-      "sha256": "7564f52ba6cfb83ff8ed70c13556870359ec042e08a8c586af3e0f2e2e445922"
+      "bytes": 312,
+      "sha256": "7830125cee21efb446aed65db682172fe6f9dff4479f72ce1ab8398407776586"
     },
     "partitions.bin": {
       "bytes": 3072,
@@ -54,8 +54,8 @@
       "sha256": "8cb7e866f0406910c04d767a67ec5d7aaa34b60179f12cd8d60cf2bebcba5688"
     },
     "source/platformio.ini": {
-      "bytes": 370,
-      "sha256": "b93c3af8c8c4ee2ae1ed4afe051d38ff72d0d52e3c18a31264a74a0a06959169"
+      "bytes": 359,
+      "sha256": "d85b9a3084054ede47555a7546d1dd91bcc5a06fcb3b4021ab4587f6ce528a02"
     },
     "source/src/factory_autoboot.h": {
       "bytes": 507,
@@ -66,12 +66,12 @@
       "sha256": "5ac95913072df1b1606a17035d95f8002e1d00194dfe6fac959150d3cc87288a"
     },
     "source/src/main.cpp": {
-      "bytes": 10721,
-      "sha256": "57739358764ed9edf3a636b60e27309dbc087e5fa67a0b5ae668c79b5a691e2c"
+      "bytes": 10456,
+      "sha256": "de4477bae1aefe8010f939ee11aeb053fb71babcb18f3cef99b87ee553f24987"
     },
     "source/src/spi_images.h": {
-      "bytes": 64,
-      "sha256": "2e09c3872078a73a2ddbdb34e1deca875ac9cbd90b99b60c9182e14d29cdc762"
+      "bytes": 62,
+      "sha256": "f9dfa2937a651e40d705bc3b3db6dc0a1e6ae23663dcf4d01ddfd74a4e2f67bb"
     },
     "status.html": {
       "bytes": 2467,
