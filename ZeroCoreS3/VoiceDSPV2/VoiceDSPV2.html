@@ -2,7 +2,8 @@
 <html lang="en"><head><meta charset="utf-8"><title>ZeroCore S3 + Voice DSP+ V2</title></head>
 <body>
   <h2>ZeroCore S3 + Voice DSP+ V2</h2>
-  <p><strong>Home Assistant satellite, validated release 0.6.61.</strong> One ESP32 installation includes the matching XMOS firmware. No XTAG needed.</p>
+  <p><strong>Home Assistant satellite, release 0.6.68.</strong> Repeated gesture controls validated on hardware. One ESP32 installation includes the matching XMOS firmware. No XTAG needed.</p>
+  <p>New: fast PAJ recovery, selectable Hey Jarvis / Okay Nabu / Hey Mycroft, contextual Action button, adjustable LED color/brightness and volume gauge, Voice PE sounds and timer animations. The accepted mono AEC settings are retained. Alternate wake words and spoken Stop during replies still need acoustic qualification.</p>
   <p class="install-note"><strong>V2 hardware only:</strong> RASPIAUDIO ZeroCore S3 (16 MB flash, 8 MB octal PSRAM) connected to a Voice DSP+ V2 shield. Do not use this image on V1 or Satellite1 hardware.</p>
   <ol>
     <li>Assemble the boards with power disconnected. Connect a USB data cable to the <strong>ZeroCore S3</strong>, not the XMOS USB port, and power the shield appropriately.</li>
@@ -17,5 +18,5 @@
   <p class="install-note"><strong>External / Full Speaker:</strong> connect a USB-C Power Delivery supply directly to Voice DSP+ (65 W or more recommended). Do not connect a second power supply through the shared header. Full Speaker uses L woofer / R tweeter with a matched crossover; never select unfiltered External for a bare tweeter.</p>
   <p>Wake word runs on ESP32; XMOS handles four-microphone processing and AEC. Home Assistant handles speech recognition and responses. This release retains opt-in capture diagnostics and unencrypted local API/OTA: use a trusted LAN, not Internet-exposed ports.</p>
   <p>In Home Assistant, use <strong>Reload embedded XMOS firmware</strong> to restart with the bundled image, or <strong>ESP32 + XMOS Firmware</strong> to install a new paired release. Updates are manual. Loading progress reaches 100% only when the controller responds.</p>
-  <p><a href="./ZeroCoreS3/VoiceDSPV2/voicedsp-v2-0.6.61.factory.bin" download>Download the ESP32 factory .bin</a> &middot; <a href="https://github.com/RASPIAUDIO/Voice-DSP-Plus/blob/V2/Home%20Assistant/README.md">Simple guide and controls</a> &middot; <a href="https://github.com/RASPIAUDIO/Voice-DSP-Plus/tree/V2/Home%20Assistant/Sources">Source code</a> &middot; <a href="https://my.home-assistant.io/redirect/config_flow_start/?domain=esphome" target="_blank" rel="noopener">Add to Home Assistant</a></p>
+  <p><a href="./ZeroCoreS3/VoiceDSPV2/voicedsp-v2-0.6.68.factory.bin" download>Download the ESP32 factory .bin</a> &middot; <a href="https://github.com/RASPIAUDIO/Voice-DSP-Plus/blob/V2/Home%20Assistant/README.md">Simple guide and controls</a> &middot; <a href="https://github.com/RASPIAUDIO/Voice-DSP-Plus/tree/V2/Home%20Assistant/Sources">Source code</a> &middot; <a href="https://my.home-assistant.io/redirect/config_flow_start/?domain=esphome" target="_blank" rel="noopener">Add to Home Assistant</a></p>
 </body></html>
