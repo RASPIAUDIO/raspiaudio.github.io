@@ -1,17 +1,17 @@
 {
-  "version": "0.6.68",
+  "version": "0.6.69",
   "hardware": "Voice DSP+ V2 + ZeroCore S3 (16 MB / 8 MB PSRAM)",
-  "checkpoint_tag": "v2-ha-0.6.68-paj-validated-20261114",
-  "checkpoint_commit": "39006e75b8352f5028a4e0ba8aa1b6451abbc6aa",
-  "publication": "Owner accepted repeated gestures; matching installed binaries. AEC tuning preserved; no new acoustic qualification of alternate wake words.",
+  "checkpoint_tag": "v2-ha-0.6.69-timer-gesture-20261114",
+  "checkpoint_commit": "1140fe4b53475d22368c997684918647001eca50",
+  "publication": "Owner authorized publication. Compiled and installed; native gesture/timer tests and settings preservation passed. Physical gesture-to-alarm dismissal acceptance pending. AEC and XMOS unchanged.",
   "files": {
-    "voicedsp-v2-0.6.68.factory.bin": {
-      "bytes": 3000912,
-      "sha256": "2f7f03bcc797ba30636464b7c4af85cc5fc851555c4aacd2dd55dedb7e5efa47"
+    "voicedsp-v2-0.6.69.factory.bin": {
+      "bytes": 3001056,
+      "sha256": "a5989c50ff9b459c176b3ba7f32a504b5ec266396d6412aba721d7c4d143b95a"
     },
-    "voicedsp-v2-0.6.68.ota.bin": {
-      "bytes": 2935376,
-      "sha256": "5ab008416ce48afbde9a8014e439e5e787dbb4fca43ec2d4d824ed04451c4715"
+    "voicedsp-v2-0.6.69.ota.bin": {
+      "bytes": 2935520,
+      "sha256": "7b48760098ba7507b1bf2f306d5324fc5f9ae33818ffb7f5702f38ca8475db0e"
     },
     "xmos-i2s48.spi_boot.bin": {
       "bytes": 864256,
