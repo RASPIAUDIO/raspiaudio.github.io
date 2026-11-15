@@ -105,6 +105,15 @@
       margin-top: 20px;
       text-align: center;
     }
+    .install-link:not([hidden]) {
+      display: inline-block;
+      background: #285d64;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+    }
     footer {
       background-color: #89B4BA;
       padding: 5px 0;
@@ -330,6 +339,31 @@
               },
             },
           },
+          VoiceDSP: {
+            label: "Voice DSP+ V2",
+            html: "./VoiceDSP/VoiceDSP.html",
+            image: "./VoiceDSP/VoiceDSP.png",
+            applications: {
+              USB: {
+                label: "USB Sound Card",
+                html: "./VoiceDSP/USB.html",
+                installUrl: "https://raspiaudio.com/voicedsp/webflasher/?firmware=v2-usb-mono-48k",
+                github: "https://github.com/RASPIAUDIO/Voice-DSP-Plus/tree/V2/USB",
+              },
+              I2S: {
+                label: "I2S Firmware",
+                html: "./VoiceDSP/I2S.html",
+                installUrl: "https://raspiaudio.com/voicedsp/webflasher/?firmware=v2-i2s-48k",
+                github: "https://github.com/RASPIAUDIO/Voice-DSP-Plus/tree/V2/USB/Firmware",
+              },
+              HomeAssistant: {
+                label: "Home Assistant (ZeroCore S3)",
+                html: "./ZeroCoreS3/VoiceDSPV2/VoiceDSPV2.html",
+                installUrl: "https://apps.raspiaudio.com/#device=ZeroCoreS3&application=VoiceDSPV2",
+                github: "https://github.com/RASPIAUDIO/Voice-DSP-Plus/tree/V2/Home%20Assistant",
+              },
+            },
+          },
           ZeroCoreS3: {
             label: "ZeroCore S3",
             html: "./ZeroCoreS3/ZeroCoreS3.html",
@@ -402,6 +436,13 @@
         const deviceDescription = document.getElementById("device-description");
         const applicationDescription = document.getElementById("application-description");
         const installButton = document.querySelector("esp-web-install-button");
+        const externalInstallLink = document.createElement("a");
+        externalInstallLink.id = "external-install-link";
+        externalInstallLink.hidden = true;
+        externalInstallLink.className = "install-link";
+        externalInstallLink.target = "_blank";
+        externalInstallLink.rel = "noopener";
+        installButton.parentNode.insertBefore(externalInstallLink, installButton);
 
         let selectedDevice = null;
         let selectedApplication = null;
@@ -575,6 +616,16 @@
 
         // Function to update the install button
         function updateInstallButton() {
+          const application = devices[selectedDevice]?.applications[selectedApplication];
+          externalInstallLink.hidden = !application?.installUrl;
+          if (application?.installUrl) {
+            document.getElementById("s31-install-link").hidden = true;
+            installButton.style.visibility = "hidden";
+            installButton.removeAttribute("manifest");
+            externalInstallLink.href = application.installUrl;
+            externalInstallLink.textContent = `Open ${application.label} installer`;
+            return;
+          }
           const isS31 = selectedDevice === "S31";
           document.getElementById("s31-install-link").hidden = !isS31;
           if (isS31) { installButton.style.visibility = "hidden"; return; }
