@@ -1,6 +1,6 @@
 {
   "name": "RASPIAUDIO ZeroCore S3 Voice DSP+ V2",
-  "version": "0.6.69-timer-gesture.20261114",
+  "version": "0.6.75-product-ui.20261115",
   "home_assistant_domain": "esphome",
   "new_install_prompt_erase": true,
   "new_install_improv_wait_time": 120,
@@ -9,14 +9,14 @@
       "chipFamily": "ESP32-S3",
       "parts": [
         {
-          "path": "voicedsp-v2-0.6.69.factory.bin",
+          "path": "voicedsp-v2-0.6.75.factory.bin",
           "offset": 0
         }
       ],
       "ota": {
-        "path": "voicedsp-v2-0.6.69.ota.bin",
-        "md5": "725b474b7106b580255c861a34f588ed",
-        "summary": "Any detected gesture dismisses a ringing timer, with a one-second guard against a second action. Gesture Control must be enabled. AEC, wake models and audio settings unchanged. Stop playback before updating.",
+        "path": "voicedsp-v2-0.6.75.ota.bin",
+        "md5": "0d4a2eca16b35df4b78339e473be1582",
+        "summary": "Validated native device UI: Outputs, Inputs, Assistant and Diagnostic names; output selection in Controls, PAJ motion and USB-C PD in Sensors. Modes apply when idle. General gains are 0 dB; start with low main volume. AEC, XMOS and crossover tuning unchanged. Stop playback before updating.",
         "release_url": "https://github.com/RASPIAUDIO/Voice-DSP-Plus/blob/V2/Home%20Assistant/README.md"
       }
     }
