@@ -34,6 +34,7 @@ static bool highClock() {
   return true;
 }
 static void releaseBus() { release(SDA_PIN); release(SCL_PIN); }
+#include "bridge_bus_clear.inc"
 static bool startBus(bool repeated = false) {
   release(SDA_PIN);
   if (!highClock()) return false;
@@ -79,6 +80,7 @@ static bool readRegister(uint8_t address, uint8_t reg, uint8_t &value) {
     }
   }
   stopBus();
+  if(!ok || fault)Serial.printf("I2C_READ_FAILED address=0x%02X reg=0x%02X fault=%u SDA=%d SCL=%d\n",address,reg,fault,digitalRead(SDA_PIN),digitalRead(SCL_PIN));
   return ok && !fault;
 }
 static void scan() {
@@ -125,6 +127,9 @@ static void bootImage(const uint8_t *image, size_t size, size_t tile0block) {
   }
   // A running USB firmware owns I2C. Never reset it by racing its transfers.
   releaseBus();
+  if(!coldBoot && !clearStalledBus()) {
+    bootOutcome="BOOT_ABORT bus_not_recoverable";Serial.println(bootOutcome);return;
+  }
   uint32_t quiet=micros();
   while((uint32_t)(micros()-quiet)<(coldBoot?5000u:1000000u)) {
     if(!digitalRead(SDA_PIN) || !digitalRead(SCL_PIN) || (coldBoot && digitalRead(8))) {
@@ -203,7 +208,7 @@ static void bootImage(const uint8_t *image, size_t size, size_t tile0block) {
 #include "recovery_controller.inc"
 #include "fixture_diagnostic.inc"
 static void help() {
-  Serial.println("VOICE_DSP_V2_SAFE_INSTALL_0.5.7");
+  Serial.println("VOICE_DSP_V2_SAFE_INSTALL_0.5.8_CANDIDATE");
   Serial.println("Commands: help, status, cold-status, registers, restart, rearm-idle, boot-factory. RESET starts one USB recovery attempt.");
 
   Serial.println("Safe installer: writes USB recovery 5s plus accepted I2S in XMOS QSPI. Keep power connected until INSTALL_QSPI_VERIFIED. No audio test or factory button gate.");

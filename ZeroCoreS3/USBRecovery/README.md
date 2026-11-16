@@ -1,4 +1,4 @@
-# Voice DSP+ V2 Safe Recovery 0.5.7 (USB / I2S)
+# Voice DSP+ V2 Safe Recovery 0.5.8 (USB / I2S)
 
 [Install on ZeroCore S3](https://apps.raspiaudio.com/#device=ZeroCoreS3&application=USBRecovery)
 | [Installation status](https://apps.raspiaudio.com/ZeroCoreS3/USBRecovery/status.html)
@@ -9,6 +9,25 @@ application. USB recovery appears for five seconds at startup, then boots the
 installed application (initially I2S). A DFU connection holds recovery open.
 Invalid/missing application stays in recovery. Unlike previous 0.2.0 USB-only
 recovery, this preserves a USB update path after selecting I2S.
+
+0.5.8 fixes `BOOT_ABORT PCAL_READ` / a static SDA-low bus on the ZeroCore
+installer. It uses bounded bus recovery only before handing control to XMOS,
+then checks idle state and expander registers. XMOS images remain unchanged.
+The exact accepted binary still reports `0.5.8_CANDIDATE` in its serial banner;
+this label is retained to avoid rebuilding the tested release.
+
+## After Recovery: restore Home Assistant
+
+**Recovery is an installer, not the Home Assistant application.** For Home
+Assistant, after `INSTALL_QSPI_VERIFIED`, install
+[Voice DSP+ V2 Home Assistant on ZeroCore S3](https://apps.raspiaudio.com/#device=ZeroCoreS3&application=VoiceDSPV2).
+This replaces the ESP32 Recovery app, not the Safe Mode installed in XMOS QSPI.
+Keep ZeroCore connected for normal Home Assistant operation.
+
+With Recovery still on ZeroCore, the XMOS switches to I2S after its five-second
+USB window and waits for host initialization. LEDs can remain static in this
+state; Recovery does not start Home Assistant audio. For standalone USB audio,
+select the USB firmware in the XMOS web updater instead.
 
 ## First installation
 
@@ -54,7 +73,7 @@ with XTC 15.3.1: `xcc -O2 -g -mcmodel=large target.xn -I. main.xc writer.c i2c_s
 `safe-mode/` contains the custom loader and recovery hooks; these are not a
 standalone replacement for the licensed XMOS SDK. Release hashes are in
 `release.json` and `SHA256SUMS`. Older versioned binaries are retained only
-for rollback; the installer selects 0.5.7.
+for rollback; the installer selects 0.5.8.
 
 RASPIAUDIO code is MIT; third-party notices remain unchanged. XMOS audio
 binaries are not MIT. No credentials or private measurement captures included.

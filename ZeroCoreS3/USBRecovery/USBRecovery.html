@@ -3,7 +3,8 @@
 <body>
   <h2>Voice DSP+ V2 Safe Recovery - USB / I2S</h2>
   <p><strong>Install once with ZeroCore S3. Switch USB / I2S later using only the XMOS USB port.</strong></p>
-  <p>Version <strong>0.5.7</strong> permanently installs a USB recovery window and the validated I2S 48 kHz application in XMOS flash. At each power-on, USB recovery is available for <strong>five seconds</strong>, then I2S starts by default. Connecting the USB updater during this window keeps recovery open.</p>
+  <p>Version <strong>0.5.8</strong> permanently installs a USB recovery window and the validated I2S 48 kHz application in XMOS flash. At each power-on, USB recovery is available for <strong>five seconds</strong>, then I2S starts by default. Connecting the USB updater during this window keeps recovery open.</p>
+  <p>Includes recovery for the static I2C bus blockage that could prevent installation with <code>BOOT_ABORT PCAL_READ</code>. XMOS firmware and AEC settings are unchanged.</p>
   <p class="install-note"><strong>ZeroCore S3 + Voice DSP+ V2 only.</strong> Replaces the ESP32 application and the lower XMOS boot partition. Upper flash settings, AEC and filter algorithms are preserved. Stop playback and disconnect speakers during provisioning.</p>
   <ol>
     <li>With all power off, mount ZeroCore S3 on the Voice DSP+ V2 40-pin header. Connect ZeroCore USB data to your PC.</li>
@@ -12,6 +13,9 @@
     <li><a href="./ZeroCoreS3/USBRecovery/status.html" target="_blank" rel="noopener">Read recovery status</a> and wait for <strong>INSTALL_QSPI_VERIFIED</strong>. A RAM transfer alone is not a successful installation.</li>
     <li>Power off, remove ZeroCore, then power the Voice DSP+ again. Recovery appears for five seconds, then the installed I2S firmware starts. I2S needs its normal host to initialize audio; it is not a USB sound card.</li>
   </ol>
+  <h3>Using Home Assistant? Reinstall it on ZeroCore afterwards</h3>
+  <p><strong>Recovery is only an installer, not Home Assistant.</strong> After <code>INSTALL_QSPI_VERIFIED</code>, install <a href="https://apps.raspiaudio.com/#device=ZeroCoreS3&amp;application=VoiceDSPV2">Voice DSP+ V2 Home Assistant on ZeroCore S3</a> and keep the boards connected. This replaces the ESP32 Recovery app without erasing the XMOS Safe Mode.</p>
+  <p>With Recovery still on ZeroCore, XMOS enters I2S after the five-second USB window and waits for its host. LEDs may remain static: this alone does not indicate a failed installation. Recovery does not start Home Assistant audio.</p>
   <h3>Choose USB sound card or I2S afterwards</h3>
   <p>Open the <a href="https://raspiaudio.com/voicedsp/webflasher/" target="_blank" rel="noopener">XMOS USB updater</a> first. Power-cycle the Voice DSP+, click Connect and select <strong>Voice DSP+ USB Recovery 5s</strong> within the window. Choose USB or I2S and install. Once connected, you do not need to finish flashing within five seconds. If you miss the window, power-cycle and try again.</p>
   <p class="details">No ZeroCore, XTAG, Wi-Fi or Home Assistant is needed for these later updates. Use the recovery window for reliable switching; a transfer from the running USB audio application failed during qualification and was recovered through Safe Mode.</p>

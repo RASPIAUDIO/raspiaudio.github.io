@@ -1,5 +1,5 @@
 {
-  "version": "0.5.7",
+  "version": "0.5.8",
   "embedded_xmos_version": "Safe Mode 0.5.7 + I2S 48 kHz UI2",
   "embedded_spi_sha256": "08f2cdc8e81946b630c52761fdb16aebe8de524a3ef6dbf6c4759fa7673de851",
   "compiled": true,
@@ -27,8 +27,8 @@
       "sha256": "1033730a6df733f53a7a347353c1c5450547f76e98e0746da633079310a563b9"
     },
     "firmware.bin": {
-      "bytes": 2144672,
-      "sha256": "3e8c9476cdc55bfdeb8f314b642213f5c6a6f3fd6776322da0953e1fd8f3c1f8"
+      "bytes": 2145248,
+      "sha256": "9e20bf249fe784f86d5d095096e030b5c419e764ef4dab9b1c4c8eeec4d410ad"
     },
     "LICENSE": {
       "bytes": 1222,
@@ -36,15 +36,15 @@
     },
     "manifest_ZeroCoreS3_USBRecovery.json": {
       "bytes": 322,
-      "sha256": "573efbb4603c86a389834df492786e711e8576c484ae92d1ad398a19dde48eb3"
+      "sha256": "0d8a5dec106f227cab86aa0f2404dabebc3efbad0a8d3f0df0dfd110ede70090"
     },
     "partitions.bin": {
       "bytes": 3072,
       "sha256": "aaae2888c5a6a348004b5b436f47abb25ae32e72d9003902955a998eda723edd"
     },
     "README.md": {
-      "bytes": 3556,
-      "sha256": "a7754a11a083750386fbc631d64974a6b3e6527a28c16c08f90977d2c2f8c857"
+      "bytes": 4650,
+      "sha256": "fc469861d82f605b390362f44332404c9899d0bee5dbda2e508cd1ed581caef8"
     },
     "safe-mode/include/voicedsp_v2_attributes.h": {
       "bytes": 192,
@@ -98,6 +98,10 @@
       "bytes": 383,
       "sha256": "1a9e92877be58c29ac9ae36709b922d2b8f6a4e3056651e83fbe053e90983088"
     },
+    "source/src/bridge_bus_clear.inc": {
+      "bytes": 1145,
+      "sha256": "15c48a4208c65ce016d298e5f4e3e8dc7dea5356562caf2897a0a102ce21fc76"
+    },
     "source/src/factory_autoboot.h": {
       "bytes": 507,
       "sha256": "0cc28b2a0d771d69cbb31ea0c748084b9770c77aab7a6b0002a83bc66bad8bc9"
@@ -111,8 +115,8 @@
       "sha256": "d6497cd37ef67720b8feea3e626364be8ce2dcaeaa976ad5405f2175e71cdbfc"
     },
     "source/src/main.cpp": {
-      "bytes": 11113,
-      "sha256": "842988ff564398f8b5a7eea261bd144c8eeabd864a2aba6277e3e0b9fc636873"
+      "bytes": 11447,
+      "sha256": "3920f8709ef3c6f73f4a633ba8706982888af8a2888a27dc424a6b737895a6e4"
     },
     "source/src/production_image.h": {
       "bytes": 260,
@@ -131,20 +135,20 @@
       "sha256": "7365cbc3e17aee2215410a39cdc6d2f6acdb8836674694c1b54c17b27d7d622a"
     },
     "status.html": {
-      "bytes": 2763,
-      "sha256": "d629d6c50c9ed02c884d46dc2ae0a36e2f561ee6a8323679282625928c0f6a62"
+      "bytes": 3162,
+      "sha256": "e9d7591590f8fb7a15c95cca6bb61dde4ed980c11603e371025454b466fb80b6"
     },
     "status.js": {
       "bytes": 2724,
       "sha256": "e07dbb50afe8868acb12aaded52822b5013df4b198fe821f8124c0ab4c1a6d71"
     },
     "test.cjs": {
-      "bytes": 2873,
-      "sha256": "69a31c00e419b46f2af0791f3c1ad07fc62b2b2060438d1aa72443f2bb0e4374"
+      "bytes": 3104,
+      "sha256": "3e05a875716bebc966a52c8af62ffb5da0d8de1b8ca89044533d996037a20755"
     },
     "USBRecovery.html": {
-      "bytes": 2744,
-      "sha256": "0477c610ba1df7233ce802cc994d0ac8579c298776f4696c092cafc8642ca31c"
+      "bytes": 3590,
+      "sha256": "5ac8f7cfdaa9f8430addd0b9422ba7808fcd0b8d73ba19e7378e0fc59d675d34"
     },
     "voicedsp-usb-recovery-0.1.0.factory.bin": {
       "bytes": 1283200,
@@ -157,6 +161,10 @@
     "voicedsp-usb-recovery-0.5.7.factory.bin": {
       "bytes": 2210208,
       "sha256": "d682a55031ec5f4411dcc2b264c650106885b4f36076f58b5dfed9231c1144e5"
+    },
+    "voicedsp-usb-recovery-0.5.8.factory.bin": {
+      "bytes": 2210784,
+      "sha256": "c39ae000b9c123bf50d4c3dc7c988cde4166eb3291db9d5769cfecac3d1dabd0"
     },
     "xmos-writer/factory_image.h": {
       "bytes": 75,
@@ -215,11 +223,17 @@
     "standalone recovery cold boot",
     "five-second USB window",
     "I2S bootstrap identity",
-    "recovery DFU to USB and I2S"
+    "recovery DFU to USB and I2S",
+    "static SDA recovery on affected board",
+    "QSPI readback and I2S bootstrap after recovery",
+    "user-accepted power-cycle test"
   ],
   "limitations": [
     "No new acoustic AEC test",
     "One active USB audio DFU transfer failed; use the recovery window"
   ],
-  "aec_and_filter_unchanged": true
+  "aec_and_filter_unchanged": true,
+  "bridge_fix": "Bounded recovery of static SDA-low before handoff",
+  "binary_identity": "VOICE_DSP_V2_SAFE_INSTALL_0.5.8_CANDIDATE",
+  "validation_note": "Exact tested binary retained, including candidate serial label; user accepted after power cycle."
 }

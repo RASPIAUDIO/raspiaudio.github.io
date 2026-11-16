@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {recoveryState} from './ZeroCoreS3/USBRecovery/status-state.mjs';
-const id = 'VOICE_DSP_V2_SAFE_INSTALL_0.5.7\n';
+const id = 'VOICE_DSP_V2_SAFE_INSTALL_0.5.8_CANDIDATE\n';
 assert.match(recoveryState(id+'COLD handed_off=1').message,/not confirmed/);
 assert.match(recoveryState(id+'INSTALL_BEGIN').message,/Keep both boards powered/);
 assert.match(recoveryState(id+'INSTALL_WRITE 128/950272').message,/128\/950272/);
