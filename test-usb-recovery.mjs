@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {recoveryState} from './ZeroCoreS3/USBRecovery/status-state.mjs';
+const id = 'VOICE_DSP_V2_USB_RECOVERY_0.2.0_PERSISTENT\n';
+assert.match(recoveryState(id+'COLD handed_off=1').message,/not confirmed/);
+assert.match(recoveryState(id+'INSTALL_BEGIN').message,/Keep both boards powered/);
+assert.match(recoveryState(id+'INSTALL_WRITE 128/950272').message,/128\/950272/);
+assert.match(recoveryState(id+'INSTALL_QSPI_VERIFIED').message,/check standalone startup/);
+assert.match(recoveryState(id+'RECOVERY attempted=1 verified=1').message,/readback verified/);
+assert.match(recoveryState(id+'INSTALL_FAILED').message,/failed/);
+assert.match(recoveryState(id+'BOOT_ABORT\nSPI_RAM_SENT_NOT_VERIFIED').message,/not confirmed/);
+assert.match(recoveryState('VOICE_DSP_V2_USB_RECOVERY_0.1.0\nCOLD handed_off=1').message,/Old RAM-only/);
+assert.match(recoveryState('INSTALL_ERASE',true).message,/do not reset/);
+console.log('PASS: recovery status distinguishes RAM, QSPI, failure and standalone verification');

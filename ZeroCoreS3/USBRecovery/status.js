@@ -1,26 +1,24 @@
+import {recoveryState} from './status-state.mjs';
 const connect = document.querySelector('#connect');
 const disconnect = document.querySelector('#disconnect');
 const log = document.querySelector('#log');
 const result = document.querySelector('#result');
 let port, reader, reading;
 let stopping = false;
-let identified = false;
-let tail = '';
+let persistent = false;
+let pendingLine = '';
 
 function append(text) {
   log.textContent = (log.textContent + text).slice(-24000);
   log.scrollTop = log.scrollHeight;
-  tail = (tail + text).slice(-2000);
-  if (tail.includes('VOICE_DSP_V2_USB_RECOVERY_0.1.0')) identified = true;
-  if (tail.includes('VOICE_DSP_V2_FACTORY_RAM_LOADER')) {
-    result.textContent = 'Factory tester still installed. Install USB Recovery on this ZeroCore first.';
-  } else if (identified && /handed_off=1/.test(tail)) {
-    result.textContent = 'SPI transfer completed. Now verify XMOS detection and install with the USB updater; QSPI is not written yet.';
-  } else if (identified && /outcome=(BOOT_ABORT|AUTO_SKIPPED|SPI_RAM_ABORT)/.test(tail)) {
-    result.textContent = 'Recovery did not finish. Disconnect all power for 10 seconds, reconnect, then read the log again.';
-  } else if (!identified && tail.includes('READY')) {
-    result.textContent = 'Serial device responds, but USB Recovery identity is not confirmed.';
-  }
+  pendingLine += text;
+  const end = pendingLine.lastIndexOf('\n');
+  if (end < 0) return;
+  const complete = pendingLine.slice(0, end + 1);
+  pendingLine = pendingLine.slice(end + 1);
+  const state = recoveryState(complete, persistent);
+  persistent = state.persistent;
+  if (!state.message.startsWith('Waiting')) result.textContent = state.message;
 }
 
 async function readLoop() {
@@ -51,7 +49,7 @@ async function closeMonitor() {
 }
 
 connect.addEventListener('click', async () => {
-  connect.disabled = true; identified = false; tail = ''; log.textContent = '';
+  connect.disabled = true; persistent = false; pendingLine = ''; log.textContent = '';
   try {
     if (!navigator.serial) throw new Error('Use desktop Chrome or Edge over HTTPS.');
     port = await navigator.serial.requestPort({filters:[{usbVendorId:0x303a}]});
@@ -61,7 +59,7 @@ connect.addEventListener('click', async () => {
     result.textContent = 'Reading ZeroCore identity and last boot result...';
     // Read-only commands: never reset or request another SPI transfer here.
     const writer = port.writable.getWriter();
-    try { await writer.write(new TextEncoder().encode('help\ncold-status\n')); }
+    try { await writer.write(new TextEncoder().encode('help\ncold-status\nrecovery-status\n')); }
     finally { writer.releaseLock(); }
   } catch (error) {
     result.textContent = error.message;

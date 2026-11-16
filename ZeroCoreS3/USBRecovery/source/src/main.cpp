@@ -200,11 +200,12 @@ static void bootImage(const uint8_t *image, size_t size, size_t tile0block) {
   Serial.println(ok ? "SPI_RAM_SENT_NOT_VERIFIED QSPI_unchanged I2C_locked_until_power_cycle"
                     : "SPI_RAM_ABORT boot_pin_release_failed power_off_required");
 }
+#include "recovery_controller.inc"
 static void help() {
-  Serial.println("VOICE_DSP_V2_USB_RECOVERY_0.1.0");
-  Serial.println("Commands: help, status, cold-status, registers, restart, rearm-idle, boot-usb. RESET loads USB firmware into RAM once; finish with the USB web updater.");
+  Serial.println("VOICE_DSP_V2_USB_RECOVERY_0.2.0_PERSISTENT");
+  Serial.println("Commands: help, status, cold-status, registers, restart, rearm-idle, boot-factory. RESET starts one USB recovery attempt.");
 
-  Serial.println("Automatic SPI RAM USB recovery at startup/RESET. No external amplifier or XMOS QSPI writes.");
+  Serial.println("Persistent USB Recovery: writes and verifies USB 0.8.9 in XMOS QSPI. Keep power connected until INSTALL_QSPI_VERIFIED. No audio test or factory button gate.");
 }
 void setup() {
   for(int pin : {7,8,9,15,16})release(pin);
@@ -223,6 +224,7 @@ void setup() {
 
 }
 void loop() {
+  recoveryLoop();
   static char command[32];
   static size_t used = 0;
   static bool overflow = false;
@@ -235,8 +237,9 @@ void loop() {
       else if (!strcmp(command, "status"))
         Serial.printf("READY uptime_ms=%lu heap=%u SDA=%d SCL=%d bus_activity=automatic_once_per_reset\n",
                       (unsigned long)millis(), ESP.getFreeHeap(), digitalRead(SDA_PIN), digitalRead(SCL_PIN));
+      else if (!strcmp(command,"recovery-status")) Serial.printf("RECOVERY attempted=%u verified=%u\n",installAttempted,installComplete);
       else if (!strcmp(command,"restart")) {
-        Serial.println("RESTART_USB_RECOVERY");Serial.flush();delay(100);ESP.restart();
+        Serial.println("RESTART_AUTO_TEST");Serial.flush();delay(100);ESP.restart();
       }
       else if (!strcmp(command,"registers")) {
         Serial.printf("PCAL_BOOT_SNAPSHOT valid=0x%02X cached_not_live\n",bootRegistersValid);
@@ -255,7 +258,7 @@ void loop() {
         else Serial.println("REARM_ABORT active_bus");
       }
       else if (handedOff && used) Serial.println("BUS_LOCKED XMOS_owns_bus power_cycle_both_to_rearm");
-      else if (!strcmp(command, "boot-usb")) bootImage(factory_start, factory_end - factory_start, factory_tile0_block);
+      else if (!strcmp(command, "boot-factory")) bootImage(factory_start, factory_end - factory_start, factory_tile0_block);
       else if (used) Serial.println("UNKNOWN_COMMAND");
       used = 0; overflow = false;
     } else if (used < sizeof(command) - 1) command[used++] = c;

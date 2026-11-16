@@ -1,10 +1,11 @@
 {
-  "version": "0.1.0",
+  "version": "0.2.0",
   "embedded_xmos_version": "0.8.9-r4",
-  "embedded_spi_sha256": "4fd9bb38fd1112cd37164d79c35e140971c62503acc95e3a1e235c509115b439",
+  "embedded_spi_sha256": "16dfca1e82a004ad7c1b0d6a4e05308a72a8c68e136fc93da6f833b615aaefad",
   "compiled": true,
-  "hardware_validated": false,
-  "qspi_written_by_bridge": false,
+  "hardware_validated": true,
+  "qspi_written_by_bridge": true,
+  "persistent_xmos_install": true,
   "source": "source/",
   "parts_offsets": {
     "bootloader.bin": 0,
@@ -26,72 +27,141 @@
       "sha256": "1033730a6df733f53a7a347353c1c5450547f76e98e0746da633079310a563b9"
     },
     "firmware.bin": {
-      "bytes": 1217664,
-      "sha256": "4484e4b92aadbbaf29de5e100a6c120c3b079ba02f1b03a90951fe98191aa977"
+      "bytes": 1266880,
+      "sha256": "7137ad3de657eb2f9f3f23eaaae13000cbfa16d93a5d9897d1620a5758965bf2"
+    },
+    "LICENSE": {
+      "bytes": 1222,
+      "sha256": "b388b47236b98352377d1a22f4f90594aebb47adc0b6a1f14bc7306e0112a031"
     },
     "manifest_ZeroCoreS3_USBRecovery.json": {
-      "bytes": 312,
-      "sha256": "7830125cee21efb446aed65db682172fe6f9dff4479f72ce1ab8398407776586"
+      "bytes": 318,
+      "sha256": "4cd4f9a88e6be2ac9eebb2916dfa7ec3b0f1ff7b4b3d64923f25aafc682e42ee"
     },
     "partitions.bin": {
       "bytes": 3072,
       "sha256": "aaae2888c5a6a348004b5b436f47abb25ae32e72d9003902955a998eda723edd"
     },
     "README.md": {
-      "bytes": 3307,
-      "sha256": "486435fb8623554314ba8ddefd708ef0be7b1bf3e7aea75a36b8ab77e3ce2bc2"
+      "bytes": 3624,
+      "sha256": "14acd6f07be25113151163e8749be228692dd6db01bfb703d2a7bbbfaffd8f68"
     },
     "source/.gitignore": {
       "bytes": 21,
       "sha256": "0c418f74e3a00ed2e3710f424faeb645d6c3aa1e595a449bbdc7eb51adec8cc6"
     },
     "source/images/factory.bin": {
-      "bytes": 946176,
-      "sha256": "4fd9bb38fd1112cd37164d79c35e140971c62503acc95e3a1e235c509115b439"
+      "bytes": 24576,
+      "sha256": "16dfca1e82a004ad7c1b0d6a4e05308a72a8c68e136fc93da6f833b615aaefad"
+    },
+    "source/images/production.bin": {
+      "bytes": 950272,
+      "sha256": "b14a117f3077c77379773312579442706061ead5b14f8c98a5879a6ce47d7e6e"
     },
     "source/LICENSE": {
       "bytes": 1201,
       "sha256": "8cb7e866f0406910c04d767a67ec5d7aaa34b60179f12cd8d60cf2bebcba5688"
     },
     "source/platformio.ini": {
-      "bytes": 359,
-      "sha256": "d85b9a3084054ede47555a7546d1dd91bcc5a06fcb3b4021ab4587f6ce528a02"
+      "bytes": 383,
+      "sha256": "1a9e92877be58c29ac9ae36709b922d2b8f6a4e3056651e83fbe053e90983088"
     },
     "source/src/factory_autoboot.h": {
       "bytes": 507,
       "sha256": "0cc28b2a0d771d69cbb31ea0c748084b9770c77aab7a6b0002a83bc66bad8bc9"
     },
     "source/src/factory_pcal_boot.h": {
-      "bytes": 512,
-      "sha256": "5ac95913072df1b1606a17035d95f8002e1d00194dfe6fac959150d3cc87288a"
+      "bytes": 721,
+      "sha256": "714e004da65166c8ce5d649a870a0c60cea4b2d518139bde53cadf1fa76998e2"
     },
     "source/src/main.cpp": {
-      "bytes": 10456,
-      "sha256": "de4477bae1aefe8010f939ee11aeb053fb71babcb18f3cef99b87ee553f24987"
+      "bytes": 10694,
+      "sha256": "5ec9916faf190d98ece1c847f855e51e15c1dde0d028be46ca8bfeb3c6585131"
+    },
+    "source/src/production_image.h": {
+      "bytes": 269,
+      "sha256": "c2211f65ffa59ff8ea6c43f4fe2e56c38f4c2a9b05da2c50998f2e0b9a55f442"
+    },
+    "source/src/recovery_controller.inc": {
+      "bytes": 6017,
+      "sha256": "cf019b22d6f3c416186236163de0495b6568b5d6e73df44af05088efe5d4d13c"
     },
     "source/src/spi_images.h": {
-      "bytes": 62,
-      "sha256": "f9dfa2937a651e40d705bc3b3db6dc0a1e6ae23663dcf4d01ddfd74a4e2f67bb"
+      "bytes": 60,
+      "sha256": "634bda3eb58a2059c781d5cadee8e991403ab86b8f14a98adb840418ed109456"
+    },
+    "status-state.mjs": {
+      "bytes": 1958,
+      "sha256": "65a834d6160677851c1b9e7e4687bebeeff70adfde44e11099163bccece65ffc"
     },
     "status.html": {
-      "bytes": 2467,
-      "sha256": "eef88f0d396dd2216cea03240f9153e3c616ff2421cc2d691acfed6805b59220"
+      "bytes": 2581,
+      "sha256": "ae77ffc0a4126d2bd44e924aa12672cd0382d4413c5bd320fb7302ae91e364a0"
     },
     "status.js": {
-      "bytes": 3131,
-      "sha256": "bce50a716bf6a9eb30e808594a5ed2747ac8f94a21081d5e592ce894a995ee15"
+      "bytes": 2724,
+      "sha256": "e07dbb50afe8868acb12aaded52822b5013df4b198fe821f8124c0ab4c1a6d71"
     },
     "test.cjs": {
-      "bytes": 2863,
-      "sha256": "bf2d81e69dc35ba473c35fd0d291847d626e6ac8a4f6f8ae8ca115f559be228d"
+      "bytes": 2574,
+      "sha256": "660ea5c42f9130c2a57e0301d02e4bc939ff6033ecce13d419d6cd4408f4e4fa"
     },
     "USBRecovery.html": {
-      "bytes": 2512,
-      "sha256": "80ef03d98602be45b84694d6ad22b8ca6ba03da9a7e28ada0e23ae0e070d0305"
+      "bytes": 2347,
+      "sha256": "d4405b2d6a19040ec4c3810f1631f31ad0a7ca78bd2c15f8a20cf0d640b9bace"
     },
     "voicedsp-usb-recovery-0.1.0.factory.bin": {
       "bytes": 1283200,
       "sha256": "94c0ac8d3f6cc88546229184ecd10aa564b56b5e3d0d80b7d8b8a55308a3c6c0"
+    },
+    "voicedsp-usb-recovery-0.2.0.factory.bin": {
+      "bytes": 1332416,
+      "sha256": "bd6d75d6704a5f3dbcd928f3d9a76eda6c5c2cba79c6debca12c787436de6797"
+    },
+    "xmos-writer/factory_image.h": {
+      "bytes": 74,
+      "sha256": "5c8f17bbdfb8762489c2dd46e02bbd8b0fd8ef4c520cfe7bfab10c83bac4e7e2"
+    },
+    "xmos-writer/factory_program.c": {
+      "bytes": 4070,
+      "sha256": "cd27844008fa0a5973193a371e60baaac6c75511acadcb35796fe489a6c87f4f"
+    },
+    "xmos-writer/factory_program.h": {
+      "bytes": 398,
+      "sha256": "c34545053d778418d173462d031108df09d2796a8a20fd146349eaa6da2bcef8"
+    },
+    "xmos-writer/i2c.h": {
+      "bytes": 12257,
+      "sha256": "ff3a3eacee896a049e35a9a9ec8d0f76ada17215f4fac800f894ea19b8c5fa17"
+    },
+    "xmos-writer/i2c_reg.h": {
+      "bytes": 12685,
+      "sha256": "89b9091829969830fd3aa44b0ea7701a1552f0adb94376b90b1bfe17ad147f20"
+    },
+    "xmos-writer/i2c_slave.c": {
+      "bytes": 11382,
+      "sha256": "a59c792c381a1a34bdc65a64f5fb43b9faa715c8ac3ff9cff3671d94c216f44a"
+    },
+    "xmos-writer/main.xc": {
+      "bytes": 277,
+      "sha256": "13e3059f7c5ed5cb93e3597021b438a1923d33f78a956ab195ad9030d5f558bd"
+    },
+    "xmos-writer/target.xn": {
+      "bytes": 4576,
+      "sha256": "19096124b9e469a40ae28310318853e9a1f99183aef57a9d9c31a092d3de05f8"
+    },
+    "xmos-writer/writer.c": {
+      "bytes": 6026,
+      "sha256": "f65b0f1ecf719c85c28d19a811721d71c9f21d204a63d0dbd0a018fa4705a338"
+    },
+    "xmos-writer/XMOS-PUBLIC-LICENSE.rst": {
+      "bytes": 10650,
+      "sha256": "1442dd4eee56734a180151c5579e83e39327a4991a1814afec305b1c8d5d9a65"
     }
-  }
+  },
+  "production_bytes": 950272,
+  "production_sha256": "b14a117f3077c77379773312579442706061ead5b14f8c98a5879a6ce47d7e6e",
+  "production_crc32": 4147793331,
+  "settings_preserved_from": 2097152,
+  "writer_source": "xmos-writer/"
 }

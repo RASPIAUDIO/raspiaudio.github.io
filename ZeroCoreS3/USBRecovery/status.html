@@ -19,9 +19,9 @@
   <button id="disconnect" disabled>Disconnect monitor</button>
   <p id="result" role="status">Waiting for ZeroCore.</p>
   <pre id="log" aria-label="Recovery log"></pre>
-  <p>The log must identify <code>VOICE_DSP_V2_USB_RECOVERY_0.1.0</code>. If it identifies the factory tester or another app, reinstall USB Recovery.</p>
-  <p>A successful SPI transfer is only the first step. The USB updater must detect XMOS with DFU and complete installation. Then power off, remove ZeroCore, and check autonomous USB startup.</p>
+  <p>The log must identify <code>VOICE_DSP_V2_USB_RECOVERY_0.2.0_PERSISTENT</code>. If it identifies the factory tester or old RAM-only 0.1.0, reinstall USB Recovery.</p>
+  <p>Wait for <code>INSTALL_QSPI_VERIFIED</code>. Do not disconnect or reset during erase, write or readback. Then power off both boards, remove ZeroCore from the header, and check standalone Voice DSP+ USB startup. A successful RAM transfer alone is not enough.</p>
   <a class="action" href="https://raspiaudio.com/voicedsp/webflasher/?firmware=v2-usb-mono-48k" target="_blank" rel="noopener">Open XMOS USB updater</a>
   <p><a href="../../#device=ZeroCoreS3&amp;application=USBRecovery">Back to USB Recovery installer</a></p>
-  <small>No Wi-Fi credentials, Home Assistant or XTAG required. Blank/corrupt QSPI still requires factory provisioning.</small>
+  <small>No Wi-Fi credentials, Home Assistant or XTAG required. Recovery writes a complete factory image, not just a temporary RAM application.</small>
 </main><script type="module" src="status.js"></script></body></html>
