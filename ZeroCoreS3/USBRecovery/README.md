@@ -1,63 +1,60 @@
-# Voice DSP+ V2 USB Recovery (Persistent)
+# Voice DSP+ V2 Safe Recovery 0.5.7 (USB / I2S)
 
 [Install on ZeroCore S3](https://apps.raspiaudio.com/#device=ZeroCoreS3&application=USBRecovery)
-| [Read installation status](https://apps.raspiaudio.com/ZeroCoreS3/USBRecovery/status.html)
+| [Installation status](https://apps.raspiaudio.com/ZeroCoreS3/USBRecovery/status.html)
+| [XMOS USB / I2S updater](https://raspiaudio.com/voicedsp/webflasher/)
 
-Restore standalone USB audio, even with a blank or damaged XMOS boot image.
-No Home Assistant, Wi-Fi credentials or XTAG. Recovery **0.2.0** installs the
-accepted USB mono 48 kHz **0.8.9-r4** firmware permanently. Unlike the old 0.1.0,
-it does not require a second DFU upgrade or leave USB running only from RAM.
+Provisions V2 with permanent USB Safe Mode and the accepted I2S 48 kHz UI2
+application. USB recovery appears for five seconds at startup, then boots the
+installed application (initially I2S). A DFU connection holds recovery open.
+Invalid/missing application stays in recovery. Unlike previous 0.2.0 USB-only
+recovery, this preserves a USB update path after selecting I2S.
 
-## Install once, then remove ZeroCore
+## First installation
 
-1. Stop playback and disconnect speakers. With all power off, fit ZeroCore S3
-   to the Voice DSP+ V2 40-pin header. Connect ZeroCore USB data to the PC.
-2. Install this app, choosing erase for a clean ESP32 installation. This
-   replaces Home Assistant/the factory tester on ZeroCore. Close the installer.
-3. Disconnect **all power for ten seconds**, then connect both USB data ports
-   to the PC. Installation starts automatically and takes several minutes.
-   If ESP32 stays in download mode, press RESET once without BOOT before it starts.
-4. Open the status page and select ZeroCore. Wait for `INSTALL_QSPI_VERIFIED`.
-   **Do not unplug or reset during erase, write or verification.**
-5. Power off both boards, physically remove ZeroCore from the header, then
-   connect only Voice DSP+ USB data. Check standalone USB detection and volume
-   before reconnecting speakers.
+1. Stop playback and disconnect speakers. With all power off, mount ZeroCore
+   on the V2 header and connect its USB data cable to the PC.
+2. Install this app and select erase. It replaces the ZeroCore application.
+3. Close the installer, cut all power for ten seconds, reconnect both USBs.
+4. Read ZeroCore status. Wait for `INSTALL_QSPI_VERIFIED`; do not unplug during
+   erase/write/readback. The initial SPI RAM transfer is not completion.
+5. Power off, physically remove ZeroCore, power up Voice DSP+ alone. USB
+   recovery appears for five seconds then I2S starts. The normal I2S host
+   must configure clocks, audio and codec; USB disappearance is not an audio test.
 
-Subsequent updates can use the [XMOS USB updater](https://raspiaudio.com/voicedsp/webflasher/?firmware=v2-usb-mono-48k).
-Keep the ZeroCore recovery app only if you need a provisioning fixture; it can
-attempt installation again after reset. The factory tester is a separate app.
+To switch later, open the XMOS updater, power-cycle Voice DSP+ and connect to
+`Voice DSP+ USB Recovery 5s` within five seconds. Select USB or I2S. Once DFU
+is connected, recovery stays open throughout the update. Missing the window
+only requires another power cycle. The selected application survives power loss.
 
-## What changes
+The fixture remembers successful provisioning by payload CRC. For a **different
+board**, erase/reinstall this ESP32 app before provisioning; a stored verified
+flag is not proof that the newly attached board has been programmed.
 
-- Replaces the lower 2 MiB XMOS boot partition with the complete accepted USB image.
-- Preserves the upper 2 MiB settings area; does not change AEC/filter algorithms.
-- Checks the embedded SHA-256, each written block and full image CRC on readback.
-- Commits the boot header after payload transfer and block readback.
-- Resets XMOS into QSPI boot, without reloading its USB application through SPI.
-- Refuses unknown flash geometry and stops after an uncertain write/failure.
+## Scope and validation
 
-`SPI_RAM_SENT_NOT_VERIFIED` only reports transfer of the small RAM writer.
-`INSTALL_QSPI_VERIFIED` confirms flash readback, not an independent cold boot.
-That final check requires the power-off/removal step above. If installation
-fails, keep the log; do not assume the old boot firmware is still intact.
+- Lower 2 MiB of supported 4 MiB XMOS QSPI replaced; upper settings preserved.
+- Payload SHA256, block readback and full CRC checked before booting QSPI.
+- Exact tested ZeroCore binary, not a rebuild of audio/AEC code.
+- Confirmed: standalone recovery cold boot, five-second window, I2S bootstrap
+  identity and DFU from recovery to USB and back to I2S.
+- One transfer from active USB audio failed. Its interrupted image recovered
+  through Safe Mode. Prefer that recovery path for updates.
+- No new acoustic AEC test; existing AEC/filter code and accepted I2S unchanged.
+- Initial provisioning interruption can require ZeroCore again. Factory Check
+  remains a separate RAM-only tester, not part of this provisioning app.
 
-## Source and build
+## Sources and binaries
 
-`source/` is the complete ESP32 PlatformIO project, including both embedded
-images. Build using `pio run -d source` with Espressif32 6.12.0 / Arduino 2.0.17.
-`xmos-writer/` contains the small RAM writer, public XMOS I2C HIL dependency and
-target definition. With the XTC 15.3.1 environment configured, build there with:
+`source/` is the ESP32 PlatformIO project (Espressif32 6.12.0 / Arduino 2.0.17).
+`source/images/factory.bin` is the small SPI RAM writer, not the audio firmware.
+`source/images/production.bin` is the complete Safe Mode + I2S QSPI bundle.
+`xmos-writer/` contains the RAM writer and public XMOS I2C dependency. Build it
+with XTC 15.3.1: `xcc -O2 -g -mcmodel=large target.xn -I. main.xc writer.c i2c_slave.c -lquadflash -o recovery-writer.xe`.
+`safe-mode/` contains the custom loader and recovery hooks; these are not a
+standalone replacement for the licensed XMOS SDK. Release hashes are in
+`release.json` and `SHA256SUMS`. Older versioned binaries are retained only
+for rollback; the installer selects 0.5.7.
 
-```sh
-xcc -O2 -g -mcmodel=large target.xn -I. main.xc writer.c i2c_slave.c -lquadflash -o recovery-writer.xe
-```
-
-The SPI image embedded in `source/images/factory.bin` is this writer, not the
-audio firmware. `production.bin` is the pinned USB factory image with trailing
-FF alignment padding. `release.json` and `SHA256SUMS` record the shipped hashes
-and hardware-validation status. No credentials or private test captures ship.
-
-RASPIAUDIO bridge/writer code is MIT. XMOS HIL files retain their XMOS Public
-Licence; Arduino/framework licenses remain unchanged. The accepted XMOS audio
-binary is not MIT; its corresponding source package and notices are in the
-[V2 USB directory](https://github.com/RASPIAUDIO/Voice-DSP-Plus/tree/V2/USB).
+RASPIAUDIO code is MIT; third-party notices remain unchanged. XMOS audio
+binaries are not MIT. No credentials or private measurement captures included.

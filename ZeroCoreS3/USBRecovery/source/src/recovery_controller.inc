@@ -75,7 +75,7 @@ static bool installProduction(void) {
   Wire.setBufferSize(256);Wire.setTimeOut(250);
   if(!Wire.begin(SDA_PIN,SCL_PIN,100000))return false;
   delay(300);
-  uint8_t s[16];
+  uint8_t s[16]={0};
   if(!programStatus(s) || s[4]!=1) {
     Serial.printf("WRITER_STATUS state=%u error=%u stage=%u\n",s[4],s[5],s[6]);
     Serial.println("INSTALL_ABORT recovery_writer_not_ready");return false;
@@ -125,6 +125,7 @@ static void recoveryLoop() {
   if(millis()-installWaitStarted<3000 || !digitalRead(13))return;
   delay(50);if(!digitalRead(13))return;
   installAttempted=true;installComplete=installProduction();
+  if(installComplete){Preferences p;if(p.begin("safe-install",false)){p.putUInt("verified-crc",PRODUCTION_CRC);p.end();}}
   if(!installComplete)Serial.println("INSTALL_FAILED no_automatic_retry");
   Wire.end();releaseBus();
 }

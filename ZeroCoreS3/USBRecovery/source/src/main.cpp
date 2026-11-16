@@ -201,16 +201,22 @@ static void bootImage(const uint8_t *image, size_t size, size_t tile0block) {
                     : "SPI_RAM_ABORT boot_pin_release_failed power_off_required");
 }
 #include "recovery_controller.inc"
+#include "fixture_diagnostic.inc"
 static void help() {
-  Serial.println("VOICE_DSP_V2_USB_RECOVERY_0.2.0_PERSISTENT");
+  Serial.println("VOICE_DSP_V2_SAFE_INSTALL_0.5.7");
   Serial.println("Commands: help, status, cold-status, registers, restart, rearm-idle, boot-factory. RESET starts one USB recovery attempt.");
 
-  Serial.println("Persistent USB Recovery: writes and verifies USB 0.8.9 in XMOS QSPI. Keep power connected until INSTALL_QSPI_VERIFIED. No audio test or factory button gate.");
+  Serial.println("Safe installer: writes USB recovery 5s plus accepted I2S in XMOS QSPI. Keep power connected until INSTALL_QSPI_VERIFIED. No audio test or factory button gate.");
 }
 void setup() {
   for(int pin : {7,8,9,15,16})release(pin);
   releaseBus();
   Serial.begin(115200);
+  Preferences saved;
+  if(saved.begin("safe-install",true)) {
+    bool done=saved.getUInt("verified-crc",0)==PRODUCTION_CRC;saved.end();
+    if(done){installAttempted=true;installComplete=true;bootOutcome="QSPI_already_installed_no_SPI_reload";return;}
+  }
   esp_reset_reason_t reason=esp_reset_reason();
   bool abnormal=reason==ESP_RST_PANIC || reason==ESP_RST_INT_WDT ||
     reason==ESP_RST_TASK_WDT || reason==ESP_RST_WDT || reason==ESP_RST_BROWNOUT;
@@ -238,6 +244,8 @@ void loop() {
         Serial.printf("READY uptime_ms=%lu heap=%u SDA=%d SCL=%d bus_activity=automatic_once_per_reset\n",
                       (unsigned long)millis(), ESP.getFreeHeap(), digitalRead(SDA_PIN), digitalRead(SCL_PIN));
       else if (!strcmp(command,"recovery-status")) Serial.printf("RECOVERY attempted=%u verified=%u\n",installAttempted,installComplete);
+      else if (!strcmp(command,"i2s-status")) safeDiagnostic(false);
+      else if (!strcmp(command,"reset-qspi")) safeDiagnostic(true);
       else if (!strcmp(command,"restart")) {
         Serial.println("RESTART_AUTO_TEST");Serial.flush();delay(100);ESP.restart();
       }

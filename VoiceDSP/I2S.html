@@ -1,7 +1,8 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><title>Voice DSP+ I2S</title></head><body>
 <h2>I2S Firmware: 48 kHz, host-controlled</h2>
-<p>Install the accepted XMOS I2S application used by the current Home Assistant package, without changing its AEC processing. The new USB-to-I2S update package still needs hardware installation qualification.</p>
-<p><strong>After installation, USB audio and browser updating disappear.</strong> An I2S host must initialize audio. Returning to USB requires the ZeroCore recovery loader or Raspberry Pi/SPI provisioning.</p>
+<p>Install the accepted XMOS I2S application without changing its AEC processing. Installation through Safe Mode and I2S startup have been tested.</p>
+<p><strong>I2S is not a USB sound card.</strong> An I2S host must initialize audio. With Safe Mode 0.5.7 provisioned, USB recovery remains available for five seconds at each power-on. Connect the updater during that window to install USB or I2S without ZeroCore.</p>
+<p>For initial provisioning, use <a href="https://apps.raspiaudio.com/#device=ZeroCoreS3&amp;application=USBRecovery">Safe Recovery on ZeroCore S3</a> once. An application-only DFU update does not add Safe Mode to an older board.</p>
 <p>For Home Assistant, choose <strong>Home Assistant (ZeroCore S3)</strong> instead: its ESP32 installer already includes its XMOS image. For Raspberry Pi, use the complete Pi kit with its qualified image and host settings; this newer UI2 image is not a replacement Pi qualification.</p>
 <p><a href="https://raspiaudio.com/voicedsp/webflasher/?firmware=v2-i2s-48k" target="_blank" rel="noopener">Open the I2S firmware installer</a></p>
 </body></html>

@@ -19,9 +19,9 @@
   <button id="disconnect" disabled>Disconnect monitor</button>
   <p id="result" role="status">Waiting for ZeroCore.</p>
   <pre id="log" aria-label="Recovery log"></pre>
-  <p>The log must identify <code>VOICE_DSP_V2_USB_RECOVERY_0.2.0_PERSISTENT</code>. If it identifies the factory tester or old RAM-only 0.1.0, reinstall USB Recovery.</p>
+  <p>The current log identifies <code>VOICE_DSP_V2_SAFE_INSTALL_0.5.7</code>. If it identifies the factory tester or old USB-only recovery, install Safe Recovery from the App Store.</p>
   <p>Wait for <code>INSTALL_QSPI_VERIFIED</code>. Do not disconnect or reset during erase, write or readback. Then power off both boards, remove ZeroCore from the header, and check standalone Voice DSP+ USB startup. A successful RAM transfer alone is not enough.</p>
   <a class="action" href="https://raspiaudio.com/voicedsp/webflasher/?firmware=v2-usb-mono-48k" target="_blank" rel="noopener">Open XMOS USB updater</a>
   <p><a href="../../#device=ZeroCoreS3&amp;application=USBRecovery">Back to USB Recovery installer</a></p>
-  <small>No Wi-Fi credentials, Home Assistant or XTAG required. Recovery writes a complete factory image, not just a temporary RAM application.</small>
+  <small>No Wi-Fi credentials, Home Assistant or XTAG required. Recovery writes the permanent five-second USB window plus I2S. USB disappearing after five seconds is expected. Connect the XMOS updater during this window to keep recovery open. A stored verification flag does not qualify a newly attached board.</small>
 </main><script type="module" src="status.js"></script></body></html>

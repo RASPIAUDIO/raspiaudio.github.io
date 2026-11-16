@@ -1,17 +1,19 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>Voice DSP+ USB Recovery</title></head>
+<html lang="en"><head><meta charset="utf-8"><title>Voice DSP+ Safe Recovery USB / I2S</title></head>
 <body>
-  <h2>Voice DSP+ V2 USB Recovery</h2>
-  <p><strong>Restore the XMOS USB interface with ZeroCore S3. No Home Assistant, Wi-Fi or XTAG.</strong></p>
-  <p>This recovery app installs USB mono 48 kHz <strong>0.8.9-r4 permanently in XMOS flash</strong>. ZeroCore is needed only for installation; afterwards Voice DSP+ can start by itself. No second USB-flasher step is required.</p>
-  <p class="install-note"><strong>ZeroCore S3 + Voice DSP+ V2 only.</strong> This replaces the ESP32 application AND the XMOS boot firmware. The upper flash settings area is preserved. Stop playback and disconnect speakers: USB may restore previously saved output/volume settings.</p>
+  <h2>Voice DSP+ V2 Safe Recovery - USB / I2S</h2>
+  <p><strong>Install once with ZeroCore S3. Switch USB / I2S later using only the XMOS USB port.</strong></p>
+  <p>Version <strong>0.5.7</strong> permanently installs a USB recovery window and the validated I2S 48 kHz application in XMOS flash. At each power-on, USB recovery is available for <strong>five seconds</strong>, then I2S starts by default. Connecting the USB updater during this window keeps recovery open.</p>
+  <p class="install-note"><strong>ZeroCore S3 + Voice DSP+ V2 only.</strong> Replaces the ESP32 application and the lower XMOS boot partition. Upper flash settings, AEC and filter algorithms are preserved. Stop playback and disconnect speakers during provisioning.</p>
   <ol>
-    <li>With all power disconnected, attach ZeroCore S3 to the V2 40-pin header. Connect the ZeroCore USB data port to your PC.</li>
-    <li>Click <strong>Connect</strong> below and install the recovery app. Select erase for a clean recovery installation. Close the installer when complete.</li>
-    <li>Disconnect <strong>all power to both boards for 10 seconds</strong>. Reconnect their USB data cables to the PC, without XTAG. Installation starts automatically and takes several minutes. If the ESP32 stays in download mode, press RESET once without BOOT before installation begins.</li>
-    <li><a href="./ZeroCoreS3/USBRecovery/status.html" target="_blank" rel="noopener">Open recovery status</a> and wait for <strong>INSTALL_QSPI_VERIFIED</strong>. Keep power connected throughout erase, write and readback. A RAM transfer alone does not mean installation succeeded.</li>
-    <li>After verification, power off both boards, physically remove ZeroCore from the header, and connect only the Voice DSP+ USB data port. Check standalone USB detection before reconnecting speakers.</li>
+    <li>With all power off, mount ZeroCore S3 on the Voice DSP+ V2 40-pin header. Connect ZeroCore USB data to your PC.</li>
+    <li>Install this app below, choosing <strong>erase</strong> for a clean installation. Close the ESP32 installer.</li>
+    <li>Disconnect all power for ten seconds, then reconnect both USB data cables. Provisioning starts automatically and takes several minutes. Do not reset or disconnect while writing.</li>
+    <li><a href="./ZeroCoreS3/USBRecovery/status.html" target="_blank" rel="noopener">Read recovery status</a> and wait for <strong>INSTALL_QSPI_VERIFIED</strong>. A RAM transfer alone is not a successful installation.</li>
+    <li>Power off, remove ZeroCore, then power the Voice DSP+ again. Recovery appears for five seconds, then the installed I2S firmware starts. I2S needs its normal host to initialize audio; it is not a USB sound card.</li>
   </ol>
-  <p><strong>Scope:</strong> a complete USB factory image is written to supported V2 4 MB flash, including when the old boot image is missing or corrupt. The factory microphone tester remains a separate app. Audio processing, AEC and filters are unchanged.</p>
-  <p>For later updates, use the <a href="https://raspiaudio.com/voicedsp/webflasher/?firmware=v2-usb-mono-48k" target="_blank" rel="noopener">XMOS USB updater</a> directly, without ZeroCore.</p>
+  <h3>Choose USB sound card or I2S afterwards</h3>
+  <p>Open the <a href="https://raspiaudio.com/voicedsp/webflasher/" target="_blank" rel="noopener">XMOS USB updater</a> first. Power-cycle the Voice DSP+, click Connect and select <strong>Voice DSP+ USB Recovery 5s</strong> within the window. Choose USB or I2S and install. Once connected, you do not need to finish flashing within five seconds. If you miss the window, power-cycle and try again.</p>
+  <p class="details">No ZeroCore, XTAG, Wi-Fi or Home Assistant is needed for these later updates. Use the recovery window for reliable switching; a transfer from the running USB audio application failed during qualification and was recovered through Safe Mode.</p>
+  <p class="details">The ZeroCore remembers successful provisioning and skips the same bundle after reset. For a different board, erase/reinstall this ESP32 app first. The Factory Check tester is separate and is not installed by this app.</p>
 </body></html>

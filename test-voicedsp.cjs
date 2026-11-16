@@ -4,6 +4,8 @@ const html=fs.readFileSync(__dirname+'/index.html','utf8');
 const definition=html.match(/const devices = (\{[\s\S]*?\n        \});/)[1];
 const devices=vm.runInNewContext('('+definition+')');
 const apps=devices.VoiceDSP.applications;
+assert.equal(devices.ZeroCoreS3.applications.HomeAssistant,undefined);
+assert.ok(devices.ZeroCoreS3.applications.USBRecovery.label.includes('Safe Recovery'));
 assert.deepEqual(Object.keys(apps),['USB','I2S','HomeAssistant']);
 assert.equal(new URL(apps.USB.installUrl).searchParams.get('firmware'),'v2-usb-mono-48k');
 assert.equal(new URL(apps.I2S.installUrl).searchParams.get('firmware'),'v2-i2s-48k');

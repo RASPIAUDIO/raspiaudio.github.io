@@ -1,13 +1,13 @@
 {
-  "name": "Voice DSP+ V2 USB Recovery (Persistent)",
-  "version": "0.2.0-usb-0.8.9-r4",
+  "name": "Voice DSP+ V2 Safe Recovery (USB / I2S)",
+  "version": "0.5.7-safe-mode-i2s-5s",
   "new_install_prompt_erase": true,
   "builds": [
     {
       "chipFamily": "ESP32-S3",
       "parts": [
         {
-          "path": "voicedsp-usb-recovery-0.2.0.factory.bin",
+          "path": "voicedsp-usb-recovery-0.5.7.factory.bin",
           "offset": 0
         }
       ]

@@ -1,7 +1,7 @@
 // Pure log interpretation: no device commands or inferred boot success.
 export function recoveryState(text, persistent = false) {
-  const identity = text.match(/VOICE_DSP_V2_USB_RECOVERY_[^\s]+/g)?.at(-1);
-  persistent ||= !!identity?.includes('_PERSISTENT');
+  const identity = text.match(/VOICE_DSP_V2_(?:USB_RECOVERY|SAFE_INSTALL)_[^\s]+/g)?.at(-1);
+  persistent ||= !!identity?.includes('_PERSISTENT') || !!identity?.includes('_SAFE_INSTALL_');
   let message = persistent ? 'Waiting for the persistent writer status...' : 'Waiting for USB Recovery identity...';
   for (const line of text.split(/\r?\n/)) {
     if (line.includes('VOICE_DSP_V2_FACTORY_RAM_LOADER'))
@@ -16,7 +16,11 @@ export function recoveryState(text, persistent = false) {
       message = 'Writing and reading back XMOS firmware: ' + line.split('INSTALL_WRITE ')[1] + ' bytes. Keep power connected.';
     else if (/INSTALL_ABORT|INSTALL_FAILED|INSTALL_STATUS_TIMEOUT|INSTALL_STATUS_FAILED/.test(line))
       message = 'Installation failed. Keep the log; do not assume XMOS firmware is installed.';
-    else if (/INSTALL_QSPI_VERIFIED|RECOVERY attempted=1 verified=1/.test(line))
+    else if (line.includes('QSPI_already_installed_no_SPI_reload'))
+      message = 'Previously verified bundle: no SPI reload or flash write this boot. For a different board, erase/reinstall the ZeroCore app first.';
+    else if (line.includes('RECOVERY attempted=1 verified=1'))
+      message = 'Stored installation verification found. This is not a new check of the attached board. Check standalone startup; erase/reinstall this app before provisioning another board.';
+    else if (/INSTALL_QSPI_VERIFIED/.test(line))
       message = 'QSPI write and readback verified. Power off both boards, remove ZeroCore, then connect Voice DSP+ USB alone to check standalone startup.';
     else if (line.includes('RECOVERY attempted=1 verified=0'))
       message = 'Persistent installation not confirmed. Check the preceding log for a failure or active operation.';
