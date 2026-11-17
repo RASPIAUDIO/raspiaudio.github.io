@@ -1,17 +1,20 @@
 {
-  "version": "0.6.75",
+  "version": "0.6.75-qspi-lab-r8-ble.20261117",
   "hardware": "Voice DSP+ V2 + ZeroCore S3 (16 MB / 8 MB PSRAM)",
-  "checkpoint_tag": "v2-ha-0.6.75-product-ui-20261115",
-  "checkpoint_commit": "51626fb7509b39a19be34c7b18f5252ebdb8bba6",
-  "publication": "Owner accepted the native product UI and authorized publication. Exact installed binaries; compilation, source/native tests, OTA and live settings preservation passed. XMOS/AEC/filter unchanged. No new acoustic AEC qualification claimed.",
+  "checkpoint_tag": "v2-ha-0.6.75-r8-ble-20261117",
+  "checkpoint_commit": "53d53dffd386a53500e8cb6cf3d06c77e1730c62",
+  "publication": "Owner confirmed DOA, output memory and Home Assistant timer; exact installed binaries. 29 software tests plus 24 native route/mode combinations. XMOS payload and AEC/filter unchanged. No new acoustic AEC qualification claimed.",
+  "sources": "https://github.com/RASPIAUDIO/Voice-DSP-Plus/tree/V2/Home%20Assistant/Sources/ESPHome-BLE-r8",
+  "boot": "Resume persistent XMOS I2S. Blank/USB-only boards require I2S Recovery first. Manual Install XMOS in Flash remains available; routine boot does not rewrite QSPI.",
+  "known_limitation": "One warm OTA restart left the audio controller unavailable; full 10-second power-off recovered it.",
   "files": {
-    "voicedsp-v2-0.6.75.factory.bin": {
-      "bytes": 3009040,
-      "sha256": "8248fbb6eca66d303a312afceba9011866a91e0a00ea3de71e3d3574054f0737"
+    "voicedsp-v2-0.6.75-r8-ble.factory.bin": {
+      "bytes": 5202208,
+      "sha256": "35e4c78c6d35cc2b5045745ba556873f8ac0ddb72c61b1c4b00be93517bbee26"
     },
-    "voicedsp-v2-0.6.75.ota.bin": {
-      "bytes": 2943504,
-      "sha256": "8e33f2db5c8207ab910aea4a784953eebee1cc9abbb075671ecf5dcbbc0c223d"
+    "voicedsp-v2-0.6.75-r8-ble.ota.bin": {
+      "bytes": 5136672,
+      "sha256": "b0261f965f9489ac1a74441ba69cbb34f1712c97e174a57985b36d4493231552"
     },
     "xmos-i2s48.spi_boot.bin": {
       "bytes": 864256,

@@ -1,23 +1,23 @@
 {
   "name": "RASPIAUDIO ZeroCore S3 Voice DSP+ V2",
-  "version": "0.6.75-product-ui.20261115",
+  "version": "0.6.75-qspi-lab-r8-ble.20261117",
   "home_assistant_domain": "esphome",
   "new_install_prompt_erase": true,
-  "new_install_improv_wait_time": 120,
+  "new_install_improv_wait_time": 180,
   "builds": [
     {
       "chipFamily": "ESP32-S3",
       "parts": [
         {
-          "path": "voicedsp-v2-0.6.75.factory.bin",
+          "path": "voicedsp-v2-0.6.75-r8-ble.factory.bin",
           "offset": 0
         }
       ],
       "ota": {
-        "path": "voicedsp-v2-0.6.75.ota.bin",
-        "md5": "0d4a2eca16b35df4b78339e473be1582",
-        "summary": "Validated native device UI: Outputs, Inputs, Assistant and Diagnostic names; output selection in Controls, PAJ motion and USB-C PD in Sensors. Modes apply when idle. General gains are 0 dB; start with low main volume. AEC, XMOS and crossover tuning unchanged. Stop playback before updating.",
-        "release_url": "https://github.com/RASPIAUDIO/Voice-DSP-Plus/blob/V2/Home%20Assistant/README.md"
+        "path": "voicedsp-v2-0.6.75-r8-ble.ota.bin",
+        "md5": "f08914ce123b598148f633bc1759c779",
+        "summary": "Owner-validated r8: restores the last audio output, idle DOA and timers; BLE first-install Wi-Fi provisioning. AEC/filter tuning unchanged. Resumes persistent XMOS I2S; blank or USB-only boards need I2S Recovery first. Stop playback before updating. If audio stays unavailable, disconnect all power for 10 seconds.",
+        "release_url": "https://github.com/RASPIAUDIO/Voice-DSP-Plus/blob/V2/Home%20Assistant/Firmware/RELEASE-r8.md"
       }
     }
   ]

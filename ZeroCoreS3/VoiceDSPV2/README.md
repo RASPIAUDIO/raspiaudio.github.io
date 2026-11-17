@@ -1,58 +1,64 @@
 # ZeroCore S3 + Voice DSP+ V2
 
-**Validated Home Assistant 0.6.75**, exact accepted binaries. V2 hardware only.
+**Validated 0.6.75 r8**, exact version `0.6.75-qspi-lab-r8-ble.20261117`.
+Owner-confirmed DOA, output memorization and Home Assistant timer.
+AEC, filter values and XMOS payloads are unchanged.
 
-[Install now](https://apps.raspiaudio.com/#device=ZeroCoreS3&application=VoiceDSPV2) |
-[Simple guide](https://github.com/RASPIAUDIO/Voice-DSP-Plus/blob/V2/Home%20Assistant/README.md) |
-[Sources](https://github.com/RASPIAUDIO/Voice-DSP-Plus/tree/V2/Home%20Assistant/Sources)
+[Install](https://apps.raspiaudio.com/#device=ZeroCoreS3&application=VoiceDSPV2) |
+[Guide](https://github.com/RASPIAUDIO/Voice-DSP-Plus/blob/V2/Home%20Assistant/README.md) |
+[Source](https://github.com/RASPIAUDIO/Voice-DSP-Plus/tree/V2/Home%20Assistant/Sources/ESPHome-BLE-r8)
+
+## Installation
 
 1. Assemble ZeroCore S3 (16 MB / 8 MB PSRAM) and Voice DSP+ V2 with power off.
-2. Connect the **ZeroCore S3 USB data port**, not XMOS. Use desktop Chrome/Edge.
-3. Install, press RESET if needed, then provision 2.4 GHz Wi-Fi with serial Improv.
-   Alternatively use AP `VoiceDSP V2 Setup`, password `voicedsp-setup`. No BLE.
-4. Add the ESPHome device in Home Assistant, select your Assist pipeline and wait
-   for Diagnostic - XMOS firmware status: Ready. Allow at least 65 seconds for startup.
-5. Select Voice Compact / Full Speaker / Custom; changes apply when audio is idle
-   and settings are saved automatically. Start with a low main volume.
+2. **Blank or USB-only XMOS:** run
+   [Safe Recovery (I2S)](https://apps.raspiaudio.com/#device=ZeroCoreS3&application=USBRecovery)
+   first, complete persistent provisioning, then install this Home Assistant image.
+   Already provisioned persistent I2S boards do not need this extra step.
+3. Connect the ZeroCore USB data port, not XMOS. Install with desktop Chrome/Edge.
+   Erasing removes Wi-Fi/preferences. Press RESET if needed, not BOOT.
+4. Configure 2.4 GHz Wi-Fi with serial Improv, BLE Improv or the fallback AP
+   `VoiceDSP V2 Setup` (password `voicedsp-setup`). BLE opens for ten minutes
+   without saved Wi-Fi, stops after setup and stays off on configured boots.
+   HA needs working Bluetooth or compatible provisioning support; VirtualBox
+   does not automatically pass the host Bluetooth adapter to its VM.
+5. Add ESPHome in HA, choose an Assist pipeline and wait for the audio controller.
+   Choose Voice Compact / Full Speaker / Custom. Start with low main volume.
 
-The factory image is merged for ESP32 offset **0**; the OTA file is only for
-compatible ESPHome installations. Erasing removes Wi-Fi/preferences. The matching
-XMOS is embedded and loaded into **RAM at each boot**; QSPI is not programmed.
-No XTAG is required. The ZeroCore must remain connected for this mode.
+## Output memory and updates
 
-One native device page, no extra dashboard: Outputs, Inputs, Assistant and
-Diagnostic prefixes. Audio Output is in Controls; PAJ Motion and USB-C PD contract,
-voltage/current/power are in Sensors. PAJ Motion indicates a recent gesture, not
-occupancy; PD Power is available contract power, not measured consumption.
-Internal/external general gains are 0 dB, hidden by default; main volume remains
-adjustable. Local wake words, Assist, gestures, LEDs/sounds and diagnostics remain.
-AEC, XMOS and filter tuning are unchanged. No new acoustic qualification is claimed.
+The last output is restored from memory. Accepted changes commit after the idle/
+debounce gate. Explicitly selecting a product mode still uses its preset output.
+Outputs, Inputs, Assistant and Diagnostic remain on the native device page.
 
-**External / Full Speaker require USB-C PD directly on Voice DSP+**, 65 W or
-more recommended. Do not feed multiple power supplies through the shared header.
-Full Speaker: L woofer / R tweeter, matched crossover and protective capacitor.
-Do not use unfiltered External for a bare tweeter. Power-Good remains diagnostic,
-not a substitute for correct supply/load or conservative playback levels.
+Routine boots resume XMOS I2S in QSPI; no RAM upload or QSPI rewrite at each boot.
+**Install XMOS in Flash** is a separate explicit persistent action.
+**Reload embedded XMOS firmware** is temporary RAM recovery.
 
-The Home Assistant update entity uses `manifest-stable.json`; Beta Firmware uses
-`manifest-beta.json`. Both currently offer this same validated release. Checks
-run after startup networking and every six hours, or via Check firmware updates;
-**installation remains manual**. An XMOS change is delivered in a new paired ESP32
-package/version, not a separate update entity. Reload embedded XMOS firmware
-reloads the bundled RAM image, not arbitrary firmware or a QSPI update.
+HA's **Diagnostic - ESP32 + XMOS Firmware** uses `manifest-stable.json`;
+Beta Firmware uses `manifest-beta.json`. Both offer r8. Checks run after network
+startup and every six hours, or press **Diagnostic - Check firmware updates**.
+Installation stays manual. A board already on r8 is up to date.
+This ESP32 update does not change the installed XMOS; future XMOS updates need
+their documented persistent installation step.
 
-Use a trusted LAN: this accepted build retains unencrypted API/OTA and opt-in
-capture diagnostics. If the audio controller remains unavailable after an update,
-remove all power to both boards for 10 seconds. Do not expose ports to the Internet.
+**Known limitation:** a warm OTA restart can leave the audio controller unavailable.
+Disconnect all power to both boards for ten seconds, then reconnect.
 
-## Downloads and provenance
+## Audio and downloads
 
-- [Factory](voicedsp-v2-0.6.75.factory.bin)
-- [OTA](voicedsp-v2-0.6.75.ota.bin)
-- [SHA256](SHA256SUMS) and [release record](release.json)
-- [Source and dependency notices](https://github.com/RASPIAUDIO/Voice-DSP-Plus/blob/V2/UPSTREAM.md)
+General gains stay at 0 dB and hidden; use the main volume.
+**External / Full Speaker need USB-C PD on Voice DSP+**, 65 W or more recommended.
+Do not feed multiple supplies through the shared header.
+Full Speaker uses L woofer / R tweeter with a matched crossover and protective
+capacitor. Do not select an unfiltered output for a bare tweeter.
+Power Good is diagnostic, not a protection against excessive power.
 
-ESPHome 2026.8.1, ESP-IDF 5.5.5. Embedded XMOS SHA256:
-`207b73b9ead1e84769ca4b8b208917ab2c5086fcd809b16edca11e224759c2bc`.
-The V1 entry remains separate and unchanged. Older files are retained for recovery
-but are not selected by the installer.
+- [Factory, ESP32 offset 0](voicedsp-v2-0.6.75-r8-ble.factory.bin)
+- [OTA for compatible ESPHome installations](voicedsp-v2-0.6.75-r8-ble.ota.bin)
+- [Checksums](SHA256SUMS), [release record](release.json)
+- [Notices](https://github.com/RASPIAUDIO/Voice-DSP-Plus/blob/V2/UPSTREAM.md)
+
+ESPHome 2026.8.1 / ESP-IDF 5.5.5. 29 software tests and 24 native output
+combinations pass; no new acoustic AEC qualification is claimed. Use a trusted
+LAN: unencrypted API/OTA remains enabled. Older binaries remain for rollback.
